@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from 'react';
 import { getAllDocsFromCollection } from '@/service/Firebase/getFirestore';
 import { ProductType } from '@/Types/data/ProductType';
-import Image from 'next/image';
 
 const ProductByVideos = () => {
   const [products, setProducts] = useState<ProductType[]>([]);
