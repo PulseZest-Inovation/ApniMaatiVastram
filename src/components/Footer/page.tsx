@@ -8,8 +8,19 @@ import Link from "next/link";
 import { Divider, Input } from "@nextui-org/react";
 import { FaFacebookF, FaInstagram, FaTwitter } from "react-icons/fa";
 
+// Define types for Category and Page
+type Category = {
+  slug: string;
+  name: string;
+};
+
+type Page = {
+  slug: string;
+  name: string;
+};
+
 export function Footer() {
-  const [footerData, setFooterData] = useState<{ categories: any[]; pages: any[] }>({
+  const [footerData, setFooterData] = useState<{ categories: Category[]; pages: Page[] }>({
     categories: [],
     pages: [],
   });
