@@ -16,6 +16,7 @@ import { ApplicationConfig } from "@/config/ApplicationConfig";
 import { fetchCategories } from "./fetchCategories";
 import Image from "next/image";
 import UserModel from "@/components/Login/page"; // Updated to UserModel
+import CartDrawer from "@/components/Cart/page";
 
 interface Category {
   name: string;
@@ -36,6 +37,8 @@ export default function NavBar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
+  const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false); // Cart drawer state
+
 
   useEffect(() => {
     const loadCategories = async () => {
@@ -52,6 +55,8 @@ export default function NavBar() {
 
   // Toggle modal visibility
   const openModal = () => setIsModalOpen(true);
+  const openCartDrawer = () => setIsCartDrawerOpen(true);
+
 
   return (
     <Navbar isBordered isMenuOpen={isMenuOpen} onMenuOpenChange={setIsMenuOpen}>
@@ -89,9 +94,9 @@ export default function NavBar() {
           </Link>
         </NavbarItem>
         <NavbarItem>
-          <Link href="#">
-            <FaShoppingCart className="text-lg" /> {/* Cart Icon */}
-          </Link>
+        <Link href="#" onClick={openCartDrawer}>
+        <FaShoppingCart className="text-lg" /> {/* Cart Icon */}
+      </Link>
         </NavbarItem>
       </NavbarContent>
 
@@ -108,6 +113,9 @@ export default function NavBar() {
 
       {/* User Modal */}
       <UserModel isOpen={isModalOpen} onOpenChange={setIsModalOpen} />
+      {/* Cart Drawer */}
+      <CartDrawer  isOpen={isCartDrawerOpen} onOpenChange={setIsCartDrawerOpen} />
+
     </Navbar>
   );
 }
