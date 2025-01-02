@@ -21,12 +21,12 @@ const UserProfilePage: React.FC = () => {
             </div>
           </div>
           <div>
-            <h2 className="text-2xl font-semibold text-gray-800">John Doe</h2>
+            <h2 className="text-2xl font-semibold text-gray-800 text-center">John Doe</h2>
             <p className="text-lg text-gray-600">johndoe@example.com</p>
           </div>
         </div>
         <button
-          onClick={() => handleNavigation("/edit-profile")}
+          onClick={() => handleNavigation("/profile")}
           className="mt-4 lg:mt-0 text-blue-500 hover:underline text-lg"
         >
           Edit Profile
@@ -51,13 +51,7 @@ const UserProfilePage: React.FC = () => {
           <p className="text-gray-600">View your saved items and wishlist for later.</p>
         </div>
 
-        <div
-          className="p-6 bg-gray-100 rounded-lg hover:bg-gray-200 cursor-pointer"
-          onClick={() => handleNavigation("/cart")}
-        >
-          <h3 className="text-2xl font-semibold text-gray-800">Shopping Cart</h3>
-          <p className="text-gray-600">View the items you’ve added to your cart.</p>
-        </div>
+   
 
         <div
           className="p-6 bg-gray-100 rounded-lg hover:bg-gray-200 cursor-pointer"
@@ -67,13 +61,6 @@ const UserProfilePage: React.FC = () => {
           <p className="text-gray-600">Manage your shipping and billing addresses.</p>
         </div>
 
-        <div
-          className="p-6 bg-gray-100 rounded-lg hover:bg-gray-200 cursor-pointer"
-          onClick={() => handleNavigation("/payment-methods")}
-        >
-          <h3 className="text-2xl font-semibold text-gray-800">Payment Methods</h3>
-          <p className="text-gray-600">Add or update your payment methods for easy checkout.</p>
-        </div>
 
         <div
           className="p-6 bg-gray-100 rounded-lg hover:bg-gray-200 cursor-pointer"
