@@ -10,8 +10,7 @@ const UserProfilePage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
-
+    <div className="max-w-7xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg mb-5">
       {/* User Info Section */}
       <div className="flex flex-col lg:flex-row justify-between items-center mb-10 p-6 bg-gray-50 shadow rounded-lg">
         <div className="flex flex-col lg:flex-row items-center lg:items-start">
