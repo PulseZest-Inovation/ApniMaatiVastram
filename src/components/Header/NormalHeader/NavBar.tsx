@@ -15,13 +15,13 @@ import { FaUser, FaShoppingCart } from "react-icons/fa";
 import { ApplicationConfig } from "@/config/ApplicationConfig";
 import { fetchCategories } from "./fetchCategories";
 import Image from "next/image";
+import UserModel from "@/components/Login/page"; // Updated to UserModel
 
 interface Category {
   name: string;
   slug: string;
 }
 
-// Logo Component
 const ApplicationLogo = () => (
   <Image
     src={ApplicationConfig.applicationLogo}
@@ -32,12 +32,11 @@ const ApplicationLogo = () => (
   />
 );
 
-// Navbar Component
 export default function NavBar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
 
-  // Fetch categories on component mount
   useEffect(() => {
     const loadCategories = async () => {
       try {
@@ -50,6 +49,10 @@ export default function NavBar() {
 
     loadCategories();
   }, []);
+
+  // Toggle modal visibility
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
   return (
     <Navbar isBordered isMenuOpen={isMenuOpen} onMenuOpenChange={setIsMenuOpen}>
@@ -82,7 +85,7 @@ export default function NavBar() {
       {/* Right Section: Icons */}
       <NavbarContent justify="end">
         <NavbarItem>
-          <Link href="#">
+          <Link href="#" onClick={openModal}>
             <FaUser className="text-lg" /> {/* User Icon */}
           </Link>
         </NavbarItem>
@@ -97,17 +100,15 @@ export default function NavBar() {
       <NavbarMenu>
         {categories.map((category) => (
           <NavbarMenuItem key={category.slug}>
-            <Link
-              className="w-full"
-              color="foreground"
-              href={`/${category.slug}`}
-              size="lg"
-            >
+            <Link className="w-full" color="foreground" href={`/${category.slug}`} size="lg">
               {category.name}
             </Link>
           </NavbarMenuItem>
         ))}
       </NavbarMenu>
+
+      {/* User Modal */}
+      <UserModel isOpen={isModalOpen} onOpenChange={setIsModalOpen} />
     </Navbar>
   );
 }
