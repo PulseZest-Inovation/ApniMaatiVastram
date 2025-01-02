@@ -1,4 +1,3 @@
-import { ApplicationConfig } from "@/config/ApplicationConfig";
 import {
     Modal,
     ModalContent,
@@ -10,7 +9,6 @@ import {
     Input,
     Link,
   } from "@nextui-org/react";
-import Image from "next/image";
   import { FaEnvelope, FaLock } from "react-icons/fa"; // Using FontAwesome icons
   
 // Define the types for the component props
