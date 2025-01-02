@@ -33,15 +33,18 @@ export default function DisplayProductByTags() {
             {products.map(product => (
               <div
                 key={product.slug}
-                className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-2 sm:p-4  lg:h-96 w-full max-w-xs mx-auto"
+                className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-2 sm:p-4 w-full max-w-xs mx-auto relative"
               >
-                <Image
-                  height={150}
-                  width={150}
-                  src={product.featuredImage}
-                  alt={product.slug}
-                  className="rounded-t-lg w-full h-40 lg:h-96 sm:h-64 object-cover mb-2 sm:mb-4"
-                />
+                {/* Image Container with Portrait aspect ratio */}
+                <div className="relative w-full h-80 sm:h-[22rem] lg:h-[24rem]">
+                  <Image
+                    src={product.featuredImage}
+                    alt={product.slug}
+                    layout="fill"
+                    objectFit="cover"
+                    className="rounded-t-lg"
+                  />
+                </div>
                 <h3 className="text-sm sm:text-base text-gray-800 truncate mb-1 sm:mb-2">
                   {product.id}
                 </h3>
