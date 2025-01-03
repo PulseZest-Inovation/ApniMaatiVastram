@@ -7,7 +7,7 @@ const CustomerReviews: React.FC = () => (
       <span className="text-yellow-400">⭐⭐⭐⭐⭐</span>
       <span className="text-gray-600">4.5 (150 reviews)</span>
     </div>
-    <p className="text-gray-600 mt-2">"Great product! Highly recommend it!"</p>
+    <p className="text-gray-600 mt-2">&quot;Great product! Highly recommend it!&quot;</p>
   </div>
 );
 

@@ -4,4 +4,5 @@ export interface PageType{
     id: string;
     modifiedAt: Timestamp;
     title: string;
+    content: string;
 }
