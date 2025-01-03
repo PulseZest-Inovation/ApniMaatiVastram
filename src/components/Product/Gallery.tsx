@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import React from 'react';
 
 interface GalleryProps {
@@ -11,7 +12,8 @@ const Gallery: React.FC<GalleryProps> = ({ galleryImages, selectedImage, setSele
     <h2 className="text-xl font-bold mb-4">Gallery</h2>
     <div className="flex flex-row md:flex-col space-x-2 md:space-x-0 md:space-y-2">
       {galleryImages.map((img, index) => (
-        <img
+        <Image
+          height={100} width={100}
           key={index}
           className={`h-24 w-24 object-cover rounded-lg shadow-md cursor-pointer transition-transform duration-200 ${
             selectedImage === img ? 'border-2 border-blue-600' : ''

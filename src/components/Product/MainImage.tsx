@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import React from 'react';
 
 interface MainImageProps {
@@ -7,10 +8,11 @@ interface MainImageProps {
 const MainImage: React.FC<MainImageProps> = ({ selectedImage }) => (
   <div className="md:w-2/5">
     {selectedImage && (
-      <img
+      <Image
         className="h-auto w-full object-contain rounded-lg shadow-lg"
         src={selectedImage}
-        alt="Selected Product"
+        alt='apni maati'
+        height={200} width={200}
       />
     )}
   </div>
