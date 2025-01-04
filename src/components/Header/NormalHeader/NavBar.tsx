@@ -134,8 +134,8 @@ export default function NavBar() {
         ))}
       </NavbarMenu>
 
-      {/* User Modal */}
-      <OtpModal isOpen={isModalOpen} onClose={closeModal} />
+     
+      <OtpModal isOpen={isModalOpen} onOpenChange={closeModal} />
 
       {/* Cart Drawer */}
       <CartDrawer isOpen={isCartDrawerOpen} onOpenChange={setIsCartDrawerOpen} />

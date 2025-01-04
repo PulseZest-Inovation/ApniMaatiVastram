@@ -1,35 +1,54 @@
-'use client'
-import React, { useState } from "react";
-import { signOut } from "firebase/auth";
-import { getAuth } from "firebase/auth";
+'use client';
+import React, { useState, useEffect } from "react";
+import { signOut, getAuth } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { message } from "antd";
+import PhoneLoginModel from "@/components/Login/PhoneLoginModel";
+import { isUserLoggedIn } from "@/service/isUserLogin";
 
 const UserProfilePage: React.FC = () => {
   const router = useRouter();
-  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false); // Modal state for logout confirmation
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [isPhoneLoginModalOpen, setIsPhoneLoginModalOpen] = useState(false); // Modal state for phone login
+  const [user, setUser] = useState<any>(null); // Track the user state
+
+  // Check if the user is authenticated
+  useEffect(() => {
+    const checkUserLogin = async () => {
+      const loggedIn = await isUserLoggedIn(); // Use the isUserLoggedIn function
+
+      if (loggedIn) {
+        const auth = getAuth();
+        const currentUser = auth.currentUser;
+        setUser(currentUser);
+      } else {
+        setUser(null);
+        setIsPhoneLoginModalOpen(true); // Open the phone login modal if no user is found
+      }
+    };
+
+    checkUserLogin();
+  }, []);
 
   const handleNavigation = (path: string) => {
     router.push(path); // Navigates to the specified path
   };
 
-  
   const handleLogout = async () => {
     const auth = getAuth(); // Get the Firebase authentication instance
 
-    message.loading("Logging out..We Miss You 🥲")
+    message.loading("Logging out..We Miss You 🥲");
 
     try {
       await signOut(auth); // Sign the user out
       console.log("User logged out successfully");
 
       // Redirect to login page or homepage after logout
-      router.push("/"); // You can change this to "/" if you want to navigate to the homepage
+      window.location.reload();
     } catch (error) {
       console.error("Error signing out: ", error);
     }
   };
-
 
   const openLogoutModal = () => setIsLogoutModalOpen(true);
   const closeLogoutModal = () => setIsLogoutModalOpen(false);
@@ -114,6 +133,9 @@ const UserProfilePage: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Phone Login Modal */}
+      {isPhoneLoginModalOpen && <PhoneLoginModel isOpen={true} onOpenChange={() => {}} />}
     </div>
   );
 };
