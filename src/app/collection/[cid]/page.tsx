@@ -39,29 +39,28 @@ export default function CollectionPage() {
     fetchProducts();
   }, [category]);
 
-  const handleLoveClick = (productId: string) => {
+  const handleLoveClick = (productId: string, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent the click from propagating to the parent div
     console.log(`Product ${productId} loved!`);
     // Add logic for handling the love icon click, e.g., updating the database
   };
 
   if (loading)
     return (
-  <div>
-      <h1 className="text-2xl font-bold mb-4 uppercase text-center">{category}</h1>
-      <div className="flex items-center justify-center ">
-       <Image
-         src={ApplicationConfig.applicationLogo}
-         alt={ApplicationConfig.applicationName}
-         height={100}
-         width={100}
-         className="opacity-0 transition-opacity duration-75 ease-in-out"
-         onLoad={(e) => (e.currentTarget.style.opacity = '1')}
-       />
-     </div>
-  </div>
-);
-  
-  
+      <div>
+        <h1 className="text-2xl font-bold mb-4 uppercase text-center">{category}</h1>
+        <div className="flex items-center justify-center ">
+          <Image
+            src={ApplicationConfig.applicationLogo}
+            alt={ApplicationConfig.applicationName}
+            height={100}
+            width={100}
+            className="opacity-0 transition-opacity duration-75 ease-in-out"
+            onLoad={(e) => (e.currentTarget.style.opacity = '1')}
+          />
+        </div>
+      </div>
+    );
 
   return (
     <div className="p-4">
@@ -70,15 +69,13 @@ export default function CollectionPage() {
         {products.map((product) => (
           <div
             key={product.id}
-            className="border p-2 rounded shadow flex flex-col items-center bg-white"
+            className="border p-2 rounded flex flex-col items-center"
             onMouseEnter={() => setHoveredProduct(product.id)}
             onMouseLeave={() => setHoveredProduct(null)}
-            onClick={()=> {  Route.push(`/collection/${category}/product/${product.id}`)}}
+            onClick={() => Route.push(`/collection/${category}/product/${product.id}`)} // Navigate when clicking on the product card
           >
             <div className="relative w-full h-60 sm:h-80">
-              {hoveredProduct === product.id &&
-              product.galleryImages &&
-              product.galleryImages.length > 0 ? (
+              {hoveredProduct === product.id && product.galleryImages && product.galleryImages.length > 0 ? (
                 <Image
                   src={product.galleryImages[0]} // Display the first gallery image on hover
                   alt={`${product.productTitle} - gallery`}
@@ -95,7 +92,7 @@ export default function CollectionPage() {
               )}
               <div
                 className="absolute bottom-2 right-2 bg-white p-1 rounded-full shadow cursor-pointer"
-                onClick={() => handleLoveClick(product.id)}
+                onClick={(e) => handleLoveClick(product.id, e)} // Call handleLoveClick and pass the event to stop propagation
               >
                 <Image
                   src="/Icons/heart.png" // Replace with the path to your love icon
