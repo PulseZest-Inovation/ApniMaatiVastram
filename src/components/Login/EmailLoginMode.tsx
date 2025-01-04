@@ -12,13 +12,13 @@ import {
   import { FaEnvelope, FaLock } from "react-icons/fa"; // Using FontAwesome icons
   
 // Define the types for the component props
-interface UserModalProps {
+interface UserLoginModalProps {
     isOpen: boolean;           // Modal visibility
     onOpenChange: (isOpen: boolean) => void;  // Function to change modal visibility
   }
 
-  // Main App component using useState
-  export default function UserModal({ isOpen, onOpenChange }: UserModalProps) {
+
+  export default function UserEmailModel({ isOpen, onOpenChange }: UserLoginModalProps) {
     return (
       <Modal isOpen={isOpen} placement="top-center" onOpenChange={onOpenChange}>
         <ModalContent>

@@ -1,13 +1,60 @@
-'use client'
-import React from "react";
+'use client';
+import React, { useState, useEffect } from "react";
+import { signOut, getAuth } from "firebase/auth";
 import { useRouter } from "next/navigation";
+import { message } from "antd";
+import PhoneLoginModel from "@/components/Login/PhoneLoginModel";
+import { isUserLoggedIn } from "@/service/isUserLogin";
 
 const UserProfilePage: React.FC = () => {
   const router = useRouter();
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [isPhoneLoginModalOpen, setIsPhoneLoginModalOpen] = useState(false);  
+  const [isUserLoggedInState, setIsUserLoggedInState] = useState<boolean | null>(null);
+
+  // Check if the user is authenticated
+  useEffect(() => {
+    const checkUserLogin = async () => {
+      const loggedIn = await isUserLoggedIn(); // Use the isUserLoggedIn function
+      setIsUserLoggedInState(loggedIn); // Update the login status
+      console.log(isPhoneLoginModalOpen);
+    };
+
+    checkUserLogin();
+  }, []);
 
   const handleNavigation = (path: string) => {
     router.push(path); // Navigates to the specified path
   };
+
+  const handleLogout = async () => {
+    const auth = getAuth(); // Get the Firebase authentication instance
+
+    message.loading("Logging out..We Miss You 🥲");
+
+    try {
+      await signOut(auth); // Sign the user out
+      console.log("User logged out successfully");
+
+      // Redirect to login page or homepage after logout
+      window.location.reload();
+    } catch (error) {
+      console.error("Error signing out: ", error);
+    }
+  };
+
+  const openLogoutModal = () => setIsLogoutModalOpen(true);
+  const closeLogoutModal = () => setIsLogoutModalOpen(false);
+
+  // If user is not logged in, show the phone login modal
+  if (isUserLoggedInState === false) {
+    return <PhoneLoginModel isOpen={true} onOpenChange={() => setIsPhoneLoginModalOpen(false)} />;
+  }
+
+  // If login status is unknown (still loading), we can return null or a loading indicator
+  if (isUserLoggedInState === null) {
+    return <div>Loading...</div>; // You can show a loading spinner here if needed
+  }
 
   return (
     <div className="max-w-7xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg mb-5">
@@ -50,8 +97,6 @@ const UserProfilePage: React.FC = () => {
           <p className="text-gray-600">View your saved items and wishlist for later.</p>
         </div>
 
-   
-
         <div
           className="p-6 bg-gray-100 rounded-lg hover:bg-gray-200 cursor-pointer"
           onClick={() => handleNavigation("/addresses")}
@@ -60,15 +105,37 @@ const UserProfilePage: React.FC = () => {
           <p className="text-gray-600">Manage your shipping and billing addresses.</p>
         </div>
 
-
         <div
           className="p-6 bg-gray-100 rounded-lg hover:bg-gray-200 cursor-pointer"
-          onClick={() => handleNavigation("/logout")}
+          onClick={openLogoutModal} // Open the logout confirmation modal
         >
           <h3 className="text-2xl font-semibold text-red-600">Logout</h3>
           <p className="text-gray-600">Sign out of your account.</p>
         </div>
       </div>
+
+      {/* Logout Confirmation Modal */}
+      {isLogoutModalOpen && (
+        <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+            <h3 className="text-xl font-semibold text-gray-800 mb-4">Are you sure you want to log out?</h3>
+            <div className="flex justify-between">
+              <button
+                onClick={handleLogout} // Proceed with logout
+                className="bg-red-500 text-white px-6 py-2 rounded-lg"
+              >
+                Yes, Log Out
+              </button>
+              <button
+                onClick={closeLogoutModal} // Close the modal
+                className="bg-gray-300 text-gray-800 px-6 py-2 rounded-lg"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

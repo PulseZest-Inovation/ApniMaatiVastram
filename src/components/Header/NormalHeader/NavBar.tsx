@@ -1,3 +1,5 @@
+// components/NavBar.tsx
+
 'use client';
 
 import React, { useEffect, useState } from "react";
@@ -15,8 +17,10 @@ import { FaUser, FaShoppingCart } from "react-icons/fa";
 import { ApplicationConfig } from "@/config/ApplicationConfig";
 import { fetchCategories } from "./fetchCategories";
 import Image from "next/image";
-import UserModel from "@/components/Login/page"; // Updated to UserModel
+import OtpModal from "@/components/Login/PhoneLoginModel";
 import CartDrawer from "@/components/Cart/page";
+import { useRouter } from "next/navigation"; // Ensure this is imported correctly
+import { isUserLoggedIn } from "@/service/isUserLogin";
 
 interface Category {
   name: string;
@@ -38,7 +42,8 @@ export default function NavBar() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false); // Cart drawer state
-
+  const [isUserLoggedInState, setIsUserLoggedInState] = useState(false); // State to store user login status
+  const router = useRouter(); // Next.js Router to navigate to /account
 
   useEffect(() => {
     const loadCategories = async () => {
@@ -51,12 +56,33 @@ export default function NavBar() {
     };
 
     loadCategories();
+
+    // Check if the user is logged in
+    const checkUserStatus = async () => {
+      const userLoggedIn = await isUserLoggedIn();
+      console.log(userLoggedIn, "status of the user")
+      setIsUserLoggedInState(userLoggedIn);
+    };
+
+    checkUserStatus();
   }, []);
 
   // Toggle modal visibility
   const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false); // Close modal function
+
   const openCartDrawer = () => setIsCartDrawerOpen(true);
 
+  const handleUserIconClick = async () => {
+    if (isUserLoggedInState) {
+      router.push("/account"); // Navigate to /account if the user is logged in
+
+    } else {
+      // Open modal if the user is not logged in
+      openModal(); 
+
+    }
+  };
 
   return (
     <Navbar isBordered isMenuOpen={isMenuOpen} onMenuOpenChange={setIsMenuOpen}>
@@ -89,14 +115,14 @@ export default function NavBar() {
       {/* Right Section: Icons */}
       <NavbarContent justify="end">
         <NavbarItem>
-          <Link href="#" onClick={openModal}>
+          <Link href="#" onClick={handleUserIconClick}>
             <FaUser className="text-lg" /> {/* User Icon */}
           </Link>
         </NavbarItem>
         <NavbarItem>
-        <Link href="#" onClick={openCartDrawer}>
-        <FaShoppingCart className="text-lg" /> {/* Cart Icon */}
-      </Link>
+          <Link href="#" onClick={openCartDrawer}>
+            <FaShoppingCart className="text-lg" /> {/* Cart Icon */}
+          </Link>
         </NavbarItem>
       </NavbarContent>
 
@@ -111,11 +137,11 @@ export default function NavBar() {
         ))}
       </NavbarMenu>
 
-      {/* User Modal */}
-      <UserModel isOpen={isModalOpen} onOpenChange={setIsModalOpen} />
-      {/* Cart Drawer */}
-      <CartDrawer  isOpen={isCartDrawerOpen} onOpenChange={setIsCartDrawerOpen} />
+     
+      <OtpModal isOpen={isModalOpen} onOpenChange={closeModal} />
 
+      {/* Cart Drawer */}
+      <CartDrawer isOpen={isCartDrawerOpen} onOpenChange={setIsCartDrawerOpen} />
     </Navbar>
   );
 }
