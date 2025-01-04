@@ -15,7 +15,7 @@ import { FaUser, FaShoppingCart } from "react-icons/fa";
 import { ApplicationConfig } from "@/config/ApplicationConfig";
 import { fetchCategories } from "./fetchCategories";
 import Image from "next/image";
-import UserModel from "@/components/Login/page"; // Updated to UserModel
+import OtpModal from "@/components/Login/PhoneLoginModel";
 import CartDrawer from "@/components/Cart/page";
 
 interface Category {
@@ -39,7 +39,6 @@ export default function NavBar() {
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false); // Cart drawer state
 
-
   useEffect(() => {
     const loadCategories = async () => {
       try {
@@ -55,8 +54,9 @@ export default function NavBar() {
 
   // Toggle modal visibility
   const openModal = () => setIsModalOpen(true);
-  const openCartDrawer = () => setIsCartDrawerOpen(true);
+  const closeModal = () => setIsModalOpen(false); // Close modal function
 
+  const openCartDrawer = () => setIsCartDrawerOpen(true);
 
   return (
     <Navbar isBordered isMenuOpen={isMenuOpen} onMenuOpenChange={setIsMenuOpen}>
@@ -94,9 +94,9 @@ export default function NavBar() {
           </Link>
         </NavbarItem>
         <NavbarItem>
-        <Link href="#" onClick={openCartDrawer}>
-        <FaShoppingCart className="text-lg" /> {/* Cart Icon */}
-      </Link>
+          <Link href="#" onClick={openCartDrawer}>
+            <FaShoppingCart className="text-lg" /> {/* Cart Icon */}
+          </Link>
         </NavbarItem>
       </NavbarContent>
 
@@ -112,10 +112,10 @@ export default function NavBar() {
       </NavbarMenu>
 
       {/* User Modal */}
-      <UserModel isOpen={isModalOpen} onOpenChange={setIsModalOpen} />
-      {/* Cart Drawer */}
-      <CartDrawer  isOpen={isCartDrawerOpen} onOpenChange={setIsCartDrawerOpen} />
+      <OtpModal isOpen={isModalOpen} onClose={closeModal} />
 
+      {/* Cart Drawer */}
+      <CartDrawer isOpen={isCartDrawerOpen} onOpenChange={setIsCartDrawerOpen} />
     </Navbar>
   );
 }
