@@ -5,6 +5,7 @@ import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from '@/comp
 import { Modal, ModalContent, ModalHeader, ModalBody, Button, Input } from '@nextui-org/react';
 import { message, Typography } from 'antd';
 import { FaWhatsapp } from 'react-icons/fa';
+import { createAccount } from '@/service/createAccount';
 
 interface PheneLoginModalProps {
   isOpen: boolean;
@@ -12,7 +13,7 @@ interface PheneLoginModalProps {
 }
 
 export default function PhoneLoginModel({ isOpen, onOpenChange }: PheneLoginModalProps) {
-  const [phoneNumber, setPhoneNumber] = useState('');  // Initially empty, will add +91 to it
+  const [phoneNumber, setPhoneNumber] = useState('');   
   const [otp, setOtp] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState('');
@@ -76,6 +77,7 @@ export default function PhoneLoginModel({ isOpen, onOpenChange }: PheneLoginModa
 
     try {
       await confirmationResult.confirm(otp);
+      await createAccount();
       message.success("OTP Verfied Successfully")
       onOpenChange(false); // Close the modal on success
       window.location.reload();
