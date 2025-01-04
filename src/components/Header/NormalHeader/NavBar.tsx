@@ -28,13 +28,16 @@ interface Category {
 }
 
 const ApplicationLogo = () => (
-  <Image
+  <Link  href="/">
+    <Image
     src={ApplicationConfig.applicationLogo}
     height={150}
     width={150}
     alt={ApplicationConfig.applicationName}
     className="rounded"
   />
+  </Link>
+
 );
 
 export default function NavBar() {
@@ -105,7 +108,7 @@ export default function NavBar() {
         </NavbarBrand>
         {categories.map((category) => (
           <NavbarItem key={category.slug}>
-            <Link color="foreground" href={`/${category.slug}`}>
+            <Link color="foreground" href={`/collection/${category.slug}`}>
               {category.name}
             </Link>
           </NavbarItem>
