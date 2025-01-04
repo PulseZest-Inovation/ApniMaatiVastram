@@ -1,3 +1,5 @@
+// components/NavBar.tsx
+
 'use client';
 
 import React, { useEffect, useState } from "react";
@@ -17,6 +19,8 @@ import { fetchCategories } from "./fetchCategories";
 import Image from "next/image";
 import OtpModal from "@/components/Login/PhoneLoginModel";
 import CartDrawer from "@/components/Cart/page";
+import { useRouter } from "next/navigation"; // Ensure this is imported correctly
+import { isUserLoggedIn } from "@/service/isUserLogin";
 
 interface Category {
   name: string;
@@ -38,6 +42,8 @@ export default function NavBar() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false); // Cart drawer state
+  const [isUserLoggedInState, setIsUserLoggedInState] = useState(false); // State to store user login status
+  const router = useRouter(); // Next.js Router to navigate to /account
 
   useEffect(() => {
     const loadCategories = async () => {
@@ -50,6 +56,15 @@ export default function NavBar() {
     };
 
     loadCategories();
+
+    // Check if the user is logged in
+    const checkUserStatus = async () => {
+      const userLoggedIn = await isUserLoggedIn();
+      console.log(userLoggedIn, "status of the user")
+      setIsUserLoggedInState(userLoggedIn);
+    };
+
+    checkUserStatus();
   }, []);
 
   // Toggle modal visibility
@@ -57,6 +72,14 @@ export default function NavBar() {
   const closeModal = () => setIsModalOpen(false); // Close modal function
 
   const openCartDrawer = () => setIsCartDrawerOpen(true);
+
+  const handleUserIconClick = async () => {
+    if (isUserLoggedInState) {
+      router.push("/account"); // Navigate to /account if the user is logged in
+    } else {
+      openModal(); // Open modal if the user is not logged in
+    }
+  };
 
   return (
     <Navbar isBordered isMenuOpen={isMenuOpen} onMenuOpenChange={setIsMenuOpen}>
@@ -89,7 +112,7 @@ export default function NavBar() {
       {/* Right Section: Icons */}
       <NavbarContent justify="end">
         <NavbarItem>
-          <Link href="#" onClick={openModal}>
+          <Link href="#" onClick={handleUserIconClick}>
             <FaUser className="text-lg" /> {/* User Icon */}
           </Link>
         </NavbarItem>
