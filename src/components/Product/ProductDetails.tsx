@@ -9,7 +9,7 @@ interface ProductDetailsProps {
 
 const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => (
   <div className="md:w-2/5 space-y-6">
-    <h1 className="text-4xl font-bold text-gray-800">{product.id}</h1>
+    <h1 className="text-4xl font-bold text-gray-800 capitalize">{product.productTitle}</h1>
     <div className="flex items-center space-x-4">
       {product.regularPrice && (
         <span className="text-xl text-gray-500 line-through">₹{product.regularPrice}</span>
