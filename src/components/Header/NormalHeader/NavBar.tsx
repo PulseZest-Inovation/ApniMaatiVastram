@@ -76,8 +76,11 @@ export default function NavBar() {
   const handleUserIconClick = async () => {
     if (isUserLoggedInState) {
       router.push("/account"); // Navigate to /account if the user is logged in
+
     } else {
-      openModal(); // Open modal if the user is not logged in
+      // Open modal if the user is not logged in
+      openModal(); 
+
     }
   };
 

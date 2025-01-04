@@ -9,22 +9,15 @@ import { isUserLoggedIn } from "@/service/isUserLogin";
 const UserProfilePage: React.FC = () => {
   const router = useRouter();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
-  const [isPhoneLoginModalOpen, setIsPhoneLoginModalOpen] = useState(false); // Modal state for phone login
-  const [user, setUser] = useState<any>(null); // Track the user state
+  const [isPhoneLoginModalOpen, setIsPhoneLoginModalOpen] = useState(false);  
+  const [isUserLoggedInState, setIsUserLoggedInState] = useState<boolean | null>(null);
 
   // Check if the user is authenticated
   useEffect(() => {
     const checkUserLogin = async () => {
       const loggedIn = await isUserLoggedIn(); // Use the isUserLoggedIn function
-
-      if (loggedIn) {
-        const auth = getAuth();
-        const currentUser = auth.currentUser;
-        setUser(currentUser);
-      } else {
-        setUser(null);
-        setIsPhoneLoginModalOpen(true); // Open the phone login modal if no user is found
-      }
+      setIsUserLoggedInState(loggedIn); // Update the login status
+      console.log(isPhoneLoginModalOpen);
     };
 
     checkUserLogin();
@@ -52,6 +45,16 @@ const UserProfilePage: React.FC = () => {
 
   const openLogoutModal = () => setIsLogoutModalOpen(true);
   const closeLogoutModal = () => setIsLogoutModalOpen(false);
+
+  // If user is not logged in, show the phone login modal
+  if (isUserLoggedInState === false) {
+    return <PhoneLoginModel isOpen={true} onOpenChange={() => setIsPhoneLoginModalOpen(false)} />;
+  }
+
+  // If login status is unknown (still loading), we can return null or a loading indicator
+  if (isUserLoggedInState === null) {
+    return <div>Loading...</div>; // You can show a loading spinner here if needed
+  }
 
   return (
     <div className="max-w-7xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg mb-5">
@@ -133,9 +136,6 @@ const UserProfilePage: React.FC = () => {
           </div>
         </div>
       )}
-
-      {/* Phone Login Modal */}
-      {isPhoneLoginModalOpen && <PhoneLoginModel isOpen={true} onOpenChange={() => {}} />}
     </div>
   );
 };

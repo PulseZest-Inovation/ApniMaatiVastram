@@ -1,9 +1,8 @@
 import { auth } from '@/config/FirebaseConfig';
 import { ConfirmationResult, RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
-import React, { FormEvent, useEffect, useState, useTransition } from 'react';
-import { useRouter } from 'next/navigation';
+import React, {useEffect, useState, useTransition } from 'react';
 import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from '@/components/ui/input-otp';
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input } from '@nextui-org/react';
+import { Modal, ModalContent, ModalHeader, ModalBody, Button, Input } from '@nextui-org/react';
 import { message, Typography } from 'antd';
 import { FaWhatsapp } from 'react-icons/fa';
 
@@ -21,7 +20,6 @@ export default function PhoneLoginModel({ isOpen, onOpenChange }: PheneLoginModa
   const [recaptchaVerifier, setRecaptchaVerifier] = useState<RecaptchaVerifier | null>(null);
   const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
   const [isPending, startTransition] = useTransition();
-  const Router =useRouter()
 
   useEffect(() => {
     if (!isOpen) return;
@@ -62,7 +60,7 @@ export default function PhoneLoginModel({ isOpen, onOpenChange }: PheneLoginModa
         setConfirmationResult(confirmationResult);
         setSuccess('OTP sent successfully!');
         message.success("OTP send Successfully")
-      } catch (err: any) {
+      } catch (err: unknown) {
         setResendCountdown(0);
         setError('Failed to send OTP. Please try again.');
         console.error(err);
