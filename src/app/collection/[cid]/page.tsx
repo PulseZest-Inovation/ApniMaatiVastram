@@ -55,8 +55,19 @@ export default function CollectionPage() {
                 className="object-cover rounded"
               />
             </div>
-            <h2 className="font-semibold mt-2 text-center">{product.id}</h2>
-            <p className="text-lg font-bold text-green-600 text-center">₹{product.regularPrice}</p>
+            <h2 className="font-light fontfma mt-2 text-center">{product.productTitle}</h2>
+            <div className="text-center mt-2">
+              {product.salePrice ? (
+                <div className='flex'>
+                  <p className="text-sm text-gray-500 line-through">₹{product.regularPrice}</p> <br></br>
+                  <p className="text-sm  text-black pl-2"> ₹{product.salePrice}</p>
+                </div>
+              ) : (
+                <div>
+                  <p className="text-sm text-black font-light">₹{product.regularPrice}</p>
+                </div>
+              )}
+            </div>
           </div>
         ))}
       </div>
