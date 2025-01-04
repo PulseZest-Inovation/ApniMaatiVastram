@@ -44,7 +44,24 @@ export default function CollectionPage() {
     // Add logic for handling the love icon click, e.g., updating the database
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading)
+    return (
+  <div>
+      <h1 className="text-2xl font-bold mb-4 uppercase text-center">{category}</h1>
+      <div className="flex items-center justify-center ">
+       <Image
+         src={ApplicationConfig.applicationLogo}
+         alt={ApplicationConfig.applicationName}
+         height={100}
+         width={100}
+         className="opacity-0 transition-opacity duration-75 ease-in-out"
+         onLoad={(e) => (e.currentTarget.style.opacity = '1')}
+       />
+     </div>
+  </div>
+);
+  
+  
 
   return (
     <div className="p-4">
