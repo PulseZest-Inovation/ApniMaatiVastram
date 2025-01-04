@@ -31,3 +31,4 @@ export const createAccount = async () => {
     console.error('Error creating user account: ', error);
   }
 };
+
