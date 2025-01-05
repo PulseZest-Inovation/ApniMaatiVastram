@@ -17,7 +17,6 @@ interface ProductViewProps {
 const ProductView: React.FC<ProductViewProps> = ({ slug }) => {
   const [product, setProduct] = useState<ProductType | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [selectedImage, setSelectedImage] = useState<string | undefined>(undefined);
   const [combinedImages, setCombinedImages] = useState<string[]>([]); // New state for combined images
 
   useEffect(() => {
@@ -29,8 +28,7 @@ const ProductView: React.FC<ProductViewProps> = ({ slug }) => {
         );
         setProduct(fetchedProduct);
         if (fetchedProduct) {
-          setSelectedImage(fetchedProduct.featuredImage);
-
+          
           // Combine gallery images, featured image, and video URL
           const combined = [
             fetchedProduct.featuredImage, 

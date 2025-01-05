@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { getAllDocsFromCollection } from '@/service/Firebase/getFirestore';
 import { TestimonialsType } from '@/Types/data/TestimonialsType';
+import Image from 'next/image';
 
 const Testimonials = () => {
   const [testimonials, setTestimonials] = useState<TestimonialsType[]>([]);
@@ -61,9 +62,10 @@ const Testimonials = () => {
             key={testimonial.name}
             className="flex-shrink-0 w-64 bg-white border border-gray-200 shadow-md rounded-lg p-4 flex flex-col items-center"
           >
-            <img
+            <Image
               src={testimonial.imageUrl}
               alt={testimonial.name}
+              height={100} width={100}
               className="w-32 h-40 object-cover rounded-lg mb-4"
             />
             <h3 className="font-semibold text-lg text-center">{testimonial.name}</h3>
