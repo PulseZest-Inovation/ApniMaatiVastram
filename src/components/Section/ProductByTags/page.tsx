@@ -45,8 +45,8 @@ export default function DisplayProductByTags() {
                     className="rounded-t-lg"
                   />
                 </div>
-                <h3 className="text-sm sm:text-base text-gray-800 truncate mb-1 sm:mb-2">
-                  {product.id}
+                <h3 className="text-sm sm:text-base text-gray-800 truncate mb-1 sm:mb-2 capitalize">
+                  {product.productTitle}
                 </h3>
                 <div className="flex flex-col sm:flex-row items-center justify-between text-xs sm:text-sm">
                   <div>

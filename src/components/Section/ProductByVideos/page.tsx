@@ -74,7 +74,7 @@ const ProductByVideos = () => {
             )}
             {/* Product Details */}
             <div className="p-4 text-center h-[25%] flex flex-col justify-center">
-              <h2 className="font-semibold text-lg">{product.id}</h2>
+              <h2 className="font-semibold text-lg">{product.productTitle}</h2>
               <p className="text-gray-700 text-sm mt-1">₹{product.price}</p>
             </div>
           </div>
