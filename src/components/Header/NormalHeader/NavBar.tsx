@@ -19,7 +19,7 @@ import { fetchCategories } from "./fetchCategories";
 import Image from "next/image";
 import OtpModal from "@/components/Login/PhoneLoginModel";
 import CartDrawer from "@/components/Cart/page";
-import { useRouter } from "next/navigation"; // Ensure this is imported correctly
+import { useRouter } from "next/navigation";  
 import { isUserLoggedIn } from "@/service/isUserLogin";
 
 interface Category {
@@ -118,14 +118,10 @@ export default function NavBar() {
       {/* Right Section: Icons */}
       <NavbarContent justify="end">
         <NavbarItem>
-          <Link href="#" onClick={handleUserIconClick}>
-            <FaUser className="text-lg" /> {/* User Icon */}
-          </Link>
+            <FaUser className="text-lg cursor-pointer"  onClick={handleUserIconClick}/> {/* User Icon */}
         </NavbarItem>
         <NavbarItem>
-          <Link href="#" onClick={openCartDrawer}>
-            <FaShoppingCart className="text-lg" /> {/* Cart Icon */}
-          </Link>
+            <FaShoppingCart className="text-lg cursor-pointer" onClick={openCartDrawer} /> {/* Cart Icon */}
         </NavbarItem>
       </NavbarContent>
 

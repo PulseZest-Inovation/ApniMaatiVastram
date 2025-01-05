@@ -3,12 +3,11 @@
 import React, { useEffect, useState } from "react";
 import { getDataByDocName } from "@/service/Firebase/getFirestore";
 import { ProductType } from "@/Types/data/ProductType";
-import Gallery from "./Gallery";
-import MainImage from "./MainImage";
 import ProductDetails from "./ProductDetails";
 import ExpandableSection from "./ExpandableSection";
 import CustomerReviews from "./CustomerReviews";
 import { Col, Row } from "antd";
+import ImageGallery from "./ProductImages";
 
 interface ProductViewProps {
   slug: string;
@@ -67,12 +66,8 @@ const ProductView: React.FC<ProductViewProps> = ({ slug }) => {
           {/* Left Section: Gallery and Main Image */}
           <Col xs={24} md={12}>
             <div className="flex gap-4">
-              <Gallery
-                galleryImages={product.galleryImages}
-                selectedImage={selectedImage}
-                setSelectedImage={setSelectedImage}
-              />
-              <MainImage selectedImage={selectedImage} />
+            <ImageGallery galleryImages={product.galleryImages} initialSelectedImage={product.galleryImages[0]} />
+              
             </div>
           </Col>
 
