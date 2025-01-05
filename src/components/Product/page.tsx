@@ -8,6 +8,7 @@ import ExpandableSection from "./ExpandableSection";
 import CustomerReviews from "./CustomerReviews";
 import { Col, Row } from "antd";
 import ImageGallery from "./ProductImages";
+import Head from "next/head"; // Import the Head component for SEO
 
 interface ProductViewProps {
   slug: string;
@@ -66,8 +67,25 @@ const ProductView: React.FC<ProductViewProps> = ({ slug }) => {
     );
   }
 
+  // Set dynamic title and meta description for SEO
+  const title = product.productSubtitle ? `${product.productTitle} - Buy Now` : "Product Details";
+  const description = product.description[0]?.content || "Best product available on our platform.";
+
   return (
     <div className="p-6 bg-white min-h-screen">
+      <Head>
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:image" content={product.featuredImage} />
+        <meta property="og:url" content={window.location.href} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={product.featuredImage} />
+      </Head>
+
       <div className="max-w-7xl mx-auto">
         <Row gutter={16} align="top">
           {/* Left Section: Gallery and Main Image */}
