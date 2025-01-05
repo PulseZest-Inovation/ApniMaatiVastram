@@ -127,14 +127,20 @@ export default function NavBar() {
 
       {/* Mobile Menu */}
       <NavbarMenu>
-        {categories.map((category) => (
-          <NavbarMenuItem key={category.slug}>
-            <Link className="w-full" color="foreground" href={`/${category.slug}`} size="lg">
-              {category.name}
-            </Link>
-          </NavbarMenuItem>
-        ))}
-      </NavbarMenu>
+  {categories.map((category) => (
+    <NavbarMenuItem key={category.slug} className="flex justify-center mt-3">
+      <div className="h-2 mt-2"></div>
+      <Link
+        className="py-2 px-4" // Add padding for better spacing and click area
+        color="foreground"
+        href={`/${category.slug}`}
+        style={{ marginTop: "6px" }} // Adjusting top margin for precise control
+      >
+        {category.name}
+      </Link>
+    </NavbarMenuItem>
+  ))}
+</NavbarMenu>
 
      
       <OtpModal isOpen={isModalOpen} onOpenChange={closeModal} />
