@@ -50,12 +50,12 @@ const ProductByVideos = () => {
 
   return (
     <div className="container mx-auto p-6">
-      {/* Grid with responsive layout */}
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      {/* Grid with responsive layout and reduced gap on larger screens */}
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-2 lg:gap-1 xl:gap-2 cursor-pointer">
         {products.map((product) => (
           <div
             key={product.id}
-            className="bg-white border border-gray-200 shadow-lg rounded-lg overflow-hidden relative h-[600px] w-full"
+            className="bg-white border border-gray-200 shadow-lg rounded-lg overflow-hidden relative h-[450px] w-full md:w-[80%] lg:w-[60%] xl:w-[70%]"
           >
             {/* Video Section */}
             {product.videoUrl && (
@@ -73,9 +73,14 @@ const ProductByVideos = () => {
               </div>
             )}
             {/* Product Details */}
-            <div className="p-4 text-center h-[25%] flex flex-col justify-center">
-              <h2 className="font-semibold text-lg">{product.productTitle}</h2>
-              <p className="text-gray-700 text-sm mt-1">₹{product.price}</p>
+            <div className="p-4 text-center h-[20%] flex flex-col justify-center">
+            <h2 className="font-semibold text-sm">
+              {product.productTitle?.length > 16
+                ? product.productTitle.substring(0, 16) + '...'
+                : product.productTitle || 'Untitled Product'}
+            </h2>
+
+              <p className="text-gray-700 text-sm mt-1 font-serif">₹{product.price}</p>
             </div>
           </div>
         ))}
