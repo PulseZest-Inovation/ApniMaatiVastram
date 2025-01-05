@@ -16,9 +16,8 @@ interface ProductViewProps {
 const ProductView: React.FC<ProductViewProps> = ({ slug }) => {
   const [product, setProduct] = useState<ProductType | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [selectedImage, setSelectedImage] = useState<string | undefined>(
-    undefined
-  );
+  const [selectedImage, setSelectedImage] = useState<string | undefined>(undefined);
+  const [combinedImages, setCombinedImages] = useState<string[]>([]); // New state for combined images
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -30,6 +29,14 @@ const ProductView: React.FC<ProductViewProps> = ({ slug }) => {
         setProduct(fetchedProduct);
         if (fetchedProduct) {
           setSelectedImage(fetchedProduct.featuredImage);
+
+          // Combine gallery images, featured image, and video URL
+          const combined = [
+            fetchedProduct.featuredImage, 
+            ...(fetchedProduct.galleryImages || []),
+            ...(fetchedProduct.videoUrl ? [fetchedProduct.videoUrl] : [])
+          ];
+          setCombinedImages(combined); // Set the combined array
         }
       } catch (error) {
         console.error("Error fetching product:", error);
@@ -66,8 +73,7 @@ const ProductView: React.FC<ProductViewProps> = ({ slug }) => {
           {/* Left Section: Gallery and Main Image */}
           <Col xs={24} md={12}>
             <div className="flex gap-4">
-            <ImageGallery galleryImages={product.galleryImages} initialSelectedImage={product.galleryImages[0]} />
-              
+              <ImageGallery galleryImages={combinedImages} initialSelectedImage={combinedImages[0]} />
             </div>
           </Col>
 

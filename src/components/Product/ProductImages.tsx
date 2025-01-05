@@ -56,27 +56,46 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
     setStartTouch(null); // Reset touch position
   };
 
+  // Helper function to check if a URL is a video URL
+  const isVideoUrl = (url: string) => {
+    return url.match(/\.(mp4|webm|ogg)$/i); // Check if URL ends with a video file extension
+  };
+
   return (
     <div className="w-full flex flex-col md:flex-row gap-4">
       {isMobile ? (
         <div className="relative" ref={galleryRef}>
-          {/* Main Image Section */}
+          {/* Main Image or Video Section */}
           {selectedImage ? (
-            <div
-              className="w-full"
-              onTouchStart={handleTouchStart}
-              onTouchEnd={handleTouchEnd}
-            >
-              <Image
-                className="rounded-lg shadow-lg"
-                src={selectedImage}
-                alt="Selected Product"
-                layout="responsive"
-                width={1000}
-                height={800}
-                objectFit="contain"
-              />
-            </div>
+            isVideoUrl(selectedImage) ? (
+              <div className="w-full">
+                <video
+                  className="rounded-lg shadow-lg"
+                  controls
+                  width="100%"
+                  height="auto"
+                >
+                  <source src={selectedImage} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            ) : (
+              <div
+                className="w-full"
+                onTouchStart={handleTouchStart}
+                onTouchEnd={handleTouchEnd}
+              >
+                <Image
+                  className="rounded-lg shadow-lg"
+                  src={selectedImage}
+                  alt="Selected Product"
+                  layout="responsive"
+                  width={1000}
+                  height={800}
+                  objectFit="contain"
+                />
+              </div>
+            )
           ) : (
             <div className="text-gray-500 text-center">Image not available</div>
           )}
@@ -99,32 +118,61 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
           {/* Gallery Section for Desktop */}
           <div className="flex flex-row md:flex-col md:w-1/5 gap-2">
             {galleryImages.map((img, index) => (
-              <Image
-                key={index}
-                src={img}
-                alt={`Gallery Image ${index + 1}`}
-                height={100}
-                width={100}
-                className={`h-24 w-24 object-cover rounded-lg shadow-md cursor-pointer transition-transform duration-200 ${
-                  selectedImage === img ? "border-2 border-blue-600" : ""
-                }`}
-                onClick={() => setSelectedImage(img)}
-              />
+              <div key={index}>
+                {isVideoUrl(img) ? (
+                  <video
+                    className={`h-24 w-24 object-cover rounded-lg shadow-md cursor-pointer transition-transform duration-200 ${
+                      selectedImage === img ? "border-2 border-blue-600" : ""
+                    }`}
+                    controls
+                    width={100}
+                    height={100}
+                    onClick={() => setSelectedImage(img)}
+                  >
+                    <source src={img} type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                ) : (
+                  <Image
+                    key={index}
+                    src={img}
+                    alt={`Gallery Image ${index + 1}`}
+                    height={100}
+                    width={100}
+                    className={`h-24 w-24 object-cover rounded-lg shadow-md cursor-pointer transition-transform duration-200 ${
+                      selectedImage === img ? "border-2 border-blue-600" : ""
+                    }`}
+                    onClick={() => setSelectedImage(img)}
+                  />
+                )}
+              </div>
             ))}
           </div>
 
-          {/* Main Image Section */}
+          {/* Main Image or Video Section */}
           <div className="flex-1">
             {selectedImage ? (
-              <Image
-                className="rounded-lg shadow-lg"
-                src={selectedImage}
-                alt="Selected Product"
-                layout="responsive"
-                width={1000}
-                height={800}
-                objectFit="contain"
-              />
+              isVideoUrl(selectedImage) ? (
+                <video
+                  className="rounded-lg shadow-lg"
+                  controls
+                  width="100%"
+                  height="auto"
+                >
+                  <source src={selectedImage} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              ) : (
+                <Image
+                  className="rounded-lg shadow-lg"
+                  src={selectedImage}
+                  alt="Selected Product"
+                  layout="responsive"
+                  width={1000}
+                  height={800}
+                  objectFit="contain"
+                />
+              )
             ) : (
               <div className="text-gray-500 text-center">
                 Image not available
