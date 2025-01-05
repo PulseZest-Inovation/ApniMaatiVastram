@@ -108,8 +108,8 @@ export default function NavBar() {
         </NavbarBrand>
         {categories.map((category) => (
           <NavbarItem key={category.slug}>
-            <Link color="foreground" href={`/collection/${category.slug}`}>
-              {category.name}
+            <Link color="foreground" href={`/collection/${category.slug}`} className="font-serif uppercase tracking-wide">
+               {category.name}
             </Link>
           </NavbarItem>
         ))}

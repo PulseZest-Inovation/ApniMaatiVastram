@@ -4,6 +4,7 @@ import ImageCarousle from "@/components/Carousel/page";
 import CategoriesDisplay from "@/components/Categories/page"
 import DisplayProductByTags from "@/components/Section/ProductByTags/page"
 import ProductByVideos from "@/components/Section/ProductByVideos/page"
+import Testimonials from '@/components/Testimonials/page';
 
 export default function Home() {
   return (
@@ -12,7 +13,7 @@ export default function Home() {
       <ImageCarousle/>
       <DisplayProductByTags/>
       <ProductByVideos/>
-      <h1>Hello</h1>
+      <Testimonials/>
    </div>
   );
 }
