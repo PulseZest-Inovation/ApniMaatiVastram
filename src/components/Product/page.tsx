@@ -9,6 +9,8 @@ import CustomerReviews from "./CustomerReviews";
 import { Col, Row } from "antd";
 import ImageGallery from "./ProductImages";
 import Head from "next/head"; // Import the Head component for SEO
+import Image from "next/image";
+import { Spinner } from "@nextui-org/react";
 
 interface ProductViewProps {
   slug: string;
@@ -52,7 +54,7 @@ const ProductView: React.FC<ProductViewProps> = ({ slug }) => {
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        Loading...
+         <Spinner/>
       </div>
     );
   }
@@ -110,6 +112,19 @@ const ProductView: React.FC<ProductViewProps> = ({ slug }) => {
                 />
               )
             )}
+
+            <div className="w-full flex justify-center">
+              <Image
+                src="/trust.avif"
+                alt="Trust image representing security and reliability"
+                height={700}
+                width={700}
+                className="mt-3 object-contain sm:w-full md:w-auto"
+                priority={true}  
+              />
+            </div>
+
+          
 
             <CustomerReviews />
           </Col>

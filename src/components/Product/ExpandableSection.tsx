@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import React, { useState } from 'react';
 import { FaCaretDown, FaCaretUp } from 'react-icons/fa';
 

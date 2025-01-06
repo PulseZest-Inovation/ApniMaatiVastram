@@ -1,14 +1,16 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Button } from "@nextui-org/react";
 import {
   Drawer,
   DrawerContent,
   DrawerHeader,
   DrawerBody,
   DrawerFooter,
-  Button,
 } from "@nextui-org/react";
+import { getAllDocsFromSubCollection } from "@/service/Firebase/getFirestore";
 import CartList from "./CartList";
+import { getAuth } from "firebase/auth";
+
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -27,16 +29,47 @@ export default function CartDrawer({
   isOpen,
   onOpenChange,
 }: CartDrawerProps) {
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [loading, setLoading] = useState<boolean>(true); // Loading state for fetching
 
-    const [cartItems, setCartItems] = useState<CartItem[]>([
-        { id: "1", name: "Product 1", price: 20, quantity: 2, image: "https://via.placeholder.com/150" },
-        { id: "2", name: "Product 2", price: 15, quantity: 1, image: "https://via.placeholder.com/150" },
-        { id: "3", name: "Product 3", price: 30, quantity: 3, image: "https://via.placeholder.com/150" },
-      ]);
+  useEffect(() => {
 
-      const handleRemoveItem = (id: string) => {
-        setCartItems((prevItems) => prevItems.filter(item => item.id !== id));
-      };
+    const fetchCartItems = async () => {
+      try {
+        const auth = getAuth();
+        const docId = auth.currentUser?.uid;
+
+        if (!docId) {
+          throw new Error("User not authenticated");
+        }
+
+        const userDoc = docId.toString(); // Assign the userDoc value from docId
+
+        // Fetch cart items from the 'cart' sub-collection of the 'customers' collection
+        const fetchedCartItems = await getAllDocsFromSubCollection<CartItem>(
+          "customers", // The main collection name
+          userDoc,     // The document ID for the authenticated user
+          "cart"       // The sub-collection name
+        );
+
+        // Update the cartItems state with fetched items
+        setCartItems(fetchedCartItems);
+      } catch (error) {
+        console.error("Error fetching cart items: ", error);
+      } finally {
+        setLoading(false); // Stop loading after the fetch operation
+      }
+    };
+
+    if (isOpen) {
+      fetchCartItems(); // Fetch data only when the drawer is open
+    }
+  }, [isOpen]);
+
+  const handleRemoveItem = (id: string) => {
+    setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
+  };
+ 
 
   return (
     <Drawer
@@ -61,7 +94,11 @@ export default function CartDrawer({
             <DrawerHeader className="flex flex-col gap-1"> 🛒</DrawerHeader>
             <DrawerBody>
               {/* Cart items will be displayed inside CartList */}
-              <CartList onUpdateQuantity={()=>{}} cartItems={cartItems} onRemoveItem={handleRemoveItem} />
+              <CartList
+                onUpdateQuantity={() => {}}
+                cartItems={cartItems}
+                onRemoveItem={handleRemoveItem}
+              />
             </DrawerBody>
             <DrawerFooter>
               <Button color="danger" variant="light" onPress={onClose}>

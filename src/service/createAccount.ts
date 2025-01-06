@@ -14,7 +14,7 @@ export const createAccount = async () => {
     }
 
     // Check if the user document already exists in the 'customer' collection
-    const userDocRef = doc(db, 'app_name', ApplicationConfig.secretKey, 'customer', currentUser.uid); // Use `uid` as the doc ID for the user
+    const userDocRef = doc(db, 'app_name', ApplicationConfig.secretKey, 'customers', currentUser.uid); // Use `uid` as the doc ID for the user
     const userDocSnapshot = await getDoc(userDocRef);
 
     // If the document doesn't exist, create it and set the phone number
