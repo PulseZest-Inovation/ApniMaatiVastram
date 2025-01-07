@@ -1,5 +1,5 @@
 import { ProductType } from "@/Types/data/ProductType";
-import { createDocWithAutoId } from "@/service/Firebase/postFirestore";
+import { createDataWithCustomId } from "@/service/Firebase/postFirestore";
 import { getAuth } from "firebase/auth";
 import { app } from "@/config/FirebaseConfig";
 
@@ -37,13 +37,15 @@ export const handleAddToCart = async (product: ProductType): Promise<boolean> =>
       totalPrice: price * 1, // Total price calculated for quantity (1 in this case)
       addedAt: new Date(), // Timestamp of when the product was added to the cart
       status: "pending", // Could be "pending", "in-process", "purchased", etc.
+      image: product.featuredImage,
     };
 
     // Use the collection name to create a document in the cart subcollection
-    const cartDocId = await createDocWithAutoId(
+    const cartDocId = await createDataWithCustomId(
       "customers", // Collection name for the customers
       userId, // User's UID as the document ID for the customer
-      "cart", // Subcollection name for the cart
+      "cart", 
+      product.id,
       cartData // Data to add to the cart document
     );
 

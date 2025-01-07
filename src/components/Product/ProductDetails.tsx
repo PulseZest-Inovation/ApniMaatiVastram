@@ -8,6 +8,7 @@ import { handleAddToWishlist } from "@/utils/handleAddToWishlist";
 import { getAuth } from "firebase/auth";
 import CartDrawer from "../Cart/page";
 import OtpModal from "@/components/Login/PhoneLoginModel";
+import DiscountCard from "../DiscountCard/page";
 
 
 interface ProductDetailsProps {
@@ -98,6 +99,8 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
           Inclusive of All Taxes
         </p>
       </div>
+
+      <DiscountCard/>
 
       {/* Short Description */}
       <p className="text-gray-700 mt-5">{product.shortDescription}</p>

@@ -8,9 +8,10 @@ import {
   DrawerFooter,
 } from "@nextui-org/react";
 import { getAllDocsFromSubCollection } from "@/service/Firebase/getFirestore";
+import { deleteDocFromSubCollection } from "@/service/Firebase/deleteDocFromSubCollection";
 import CartList from "./CartList";
 import { getAuth } from "firebase/auth";
-
+import { IndianRupee } from "lucide-react";
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -25,15 +26,10 @@ interface CartItem {
   image: string;
 }
 
-export default function CartDrawer({
-  isOpen,
-  onOpenChange,
-}: CartDrawerProps) {
+export default function CartDrawer({ isOpen, onOpenChange }: CartDrawerProps) {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [loading, setLoading] = useState<boolean>(true); // Loading state for fetching
 
   useEffect(() => {
-
     const fetchCartItems = async () => {
       try {
         const auth = getAuth();
@@ -56,8 +52,6 @@ export default function CartDrawer({
         setCartItems(fetchedCartItems);
       } catch (error) {
         console.error("Error fetching cart items: ", error);
-      } finally {
-        setLoading(false); // Stop loading after the fetch operation
       }
     };
 
@@ -66,10 +60,41 @@ export default function CartDrawer({
     }
   }, [isOpen]);
 
-  const handleRemoveItem = (id: string) => {
-    setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
+  const handleRemoveItem = async (id: string) => {
+    try {
+      const auth = getAuth();
+      const docId = auth.currentUser?.uid;
+
+      if (!docId) {
+        throw new Error("User not authenticated");
+      }
+
+      const userDoc = docId.toString();
+
+      // Remove the document from Firestore
+      await deleteDocFromSubCollection("customers", userDoc, "cart", id);
+
+      // Remove the item from state
+      setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
+    } catch (error) {
+      console.error("Error removing item: ", error);
+    }
   };
- 
+
+  const handleUpdateQuantity = async (id: string, quantity: number) => {
+    if (quantity > 0) {
+      setCartItems((prevItems) =>
+        prevItems.map((item) =>
+          item.id === id ? { ...item, quantity } : item
+        )
+      );
+    }
+  };
+
+   
+  const calculateTotal = () => {
+    return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+  };
 
   return (
     <Drawer
@@ -91,21 +116,40 @@ export default function CartDrawer({
       <DrawerContent>
         {(onClose) => (
           <>
-            <DrawerHeader className="flex flex-col gap-1"> 🛒</DrawerHeader>
+            <DrawerHeader className="flex flex-col gap-1 text-orange-400">
+              CART 🛒
+            </DrawerHeader>
             <DrawerBody>
               {/* Cart items will be displayed inside CartList */}
               <CartList
-                onUpdateQuantity={() => {}}
                 cartItems={cartItems}
                 onRemoveItem={handleRemoveItem}
+                onUpdateQuantity={handleUpdateQuantity}
+                userId={getAuth().currentUser?.uid || ""}
               />
             </DrawerBody>
             <DrawerFooter>
-              <Button color="danger" variant="light" onPress={onClose}>
-                Close
-              </Button>
-              <Button color="primary" variant="flat" onPress={onClose}>
-                Action
+              {/* Subtotal text and total */}
+              <div className="flex flex-col gap-2">
+                <div className="flex justify-between text-sm">
+                  <span>Subtotal</span>
+                  <span className="flex">
+                    <IndianRupee size={15} /> {calculateTotal()}
+                  </span>
+                </div>
+                <div className="text-xs text-gray-500">
+                  Shipping, taxes, and discount codes calculated at checkout.
+                </div>
+              </div>
+
+              {/* Place Order Button */}
+              <Button
+                color="warning" // Orange color
+                variant="flat" // White background with border
+                onPress={onClose} // Placeholder action on button click
+                className="w-full mt-4"
+              >
+                Place Order
               </Button>
             </DrawerFooter>
           </>

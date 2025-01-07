@@ -1,5 +1,8 @@
+import { IndianRupee } from "lucide-react";
 import Image from "next/image";
 import React from "react";
+import { handleIncrementQuantity } from "@/utils/handleIncrementQuantity";
+import { handleDecrementQuantity } from "@/utils/handleDecrementQuantity";
 
 interface CartItem {
   id: string;
@@ -11,18 +14,25 @@ interface CartItem {
 
 interface CartListProps {
   cartItems: CartItem[];
+  userId: string; // Pass the userId for Firebase operations
   onRemoveItem: (id: string) => void; // Function to remove an item from the cart
-  onUpdateQuantity: (id: string, quantity: number) => void; // Function to update quantity
+  onUpdateQuantity: (id: string, quantity: number) => void; // Function to update quantity locally
 }
 
-const CartList: React.FC<CartListProps> = ({ cartItems, onRemoveItem, onUpdateQuantity }) => {
-  const handleIncrement = (id: string, currentQuantity: number) => {
-    onUpdateQuantity(id, currentQuantity + 1);
+const CartList: React.FC<CartListProps> = ({ cartItems, userId, onRemoveItem, onUpdateQuantity }) => {
+  const handleIncrement = async (id: string, currentQuantity: number) => {
+    const success = await handleIncrementQuantity(id, userId);
+    if (success) {
+      onUpdateQuantity(id, currentQuantity + 1);
+    }
   };
 
-  const handleDecrement = (id: string, currentQuantity: number) => {
+  const handleDecrement = async (id: string, currentQuantity: number) => {
     if (currentQuantity > 1) {
-      onUpdateQuantity(id, currentQuantity - 1);
+      const success = await handleDecrementQuantity(id, userId);
+      if (success) {
+        onUpdateQuantity(id, currentQuantity - 1);
+      }
     }
   };
 
@@ -38,7 +48,8 @@ const CartList: React.FC<CartListProps> = ({ cartItems, onRemoveItem, onUpdateQu
           >
             {/* Product Image */}
             <Image
-                height={100} width={100}
+              height={100}
+              width={100}
               src={item.image}
               alt={item.name}
               className="w-20 h-20 object-cover rounded-md"
@@ -47,7 +58,9 @@ const CartList: React.FC<CartListProps> = ({ cartItems, onRemoveItem, onUpdateQu
               {/* Product Name */}
               <p className="text-xl font-semibold text-gray-800">{item.name}</p>
               {/* Price */}
-              <p className="text-sm text-gray-600">Price: ${item.price}</p>
+              <p className="text-sm text-gray-600 flex">
+                <IndianRupee size={20} /> {item.price}
+              </p>
               <div className="flex items-center mt-2">
                 {/* Quantity Controls */}
                 <button
