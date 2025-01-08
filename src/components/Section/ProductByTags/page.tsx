@@ -33,33 +33,33 @@ export default function DisplayProductByTags() {
             {products.map(product => (
               <div
                 key={product.slug}
-                className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-2 sm:p-4 w-full max-w-xs mx-auto relative"
+                className="rounded-lg hover:shadow-lg transition-shadow p-2 sm:p-4 w-full max-w-xs mx-auto relative"
               >
                 {/* Image Container with Portrait aspect ratio */}
-                <div className="relative w-full h-80 sm:h-[22rem] lg:h-[24rem]">
+                <div className="relative w-full h-80 sm:h-[22rem] lg:h-[24rem] overflow-hidden">
                   <Image
                     src={product.featuredImage}
                     alt={product.slug}
                     layout="fill"
                     objectFit="cover"
-                    className="rounded-t-lg"
+                    className="rounded-t-lg transition-transform transform hover:scale-110 duration-300"
                   />
                 </div>
-                <h3 className="text-sm sm:text-base text-gray-800 truncate mb-1 sm:mb-2 capitalize">
+                <h3 className="text-sm sm:text-base text-gray-800 truncate mb-1 sm:mb-2 capitalize text-center">
                   {product.productTitle}
                 </h3>
-                <div className="flex flex-col sm:flex-row items-center justify-between text-xs sm:text-sm">
-                  <div>
+                <div className="flex flex-col sm:flex-row items-center justify-center text-xs sm:text-sm">
+                  <div className="flex justify-center">
                     {product.salePrice ? (
                       <div className="flex space-x-1 sm:space-x-2 items-center justify-center">
-                        <div className="font-bold">RS {product.salePrice}</div>
+                        <div className="font-bold">₹ {product.salePrice}</div>
                         <div className="line-through text-gray-500">
-                          RS {product.regularPrice}
+                          ₹ {product.regularPrice}
                         </div>
                       </div>
                     ) : (
                       <div className="text-gray-800 font-bold">
-                        {product.regularPrice || 'N/A'}
+                        ₹ {product.regularPrice || 'N/A'}
                       </div>
                     )}
                   </div>
