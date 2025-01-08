@@ -12,6 +12,7 @@ import { deleteDocFromSubCollection } from "@/service/Firebase/deleteDocFromSubC
 import CartList from "./CartList";
 import { getAuth } from "firebase/auth";
 import { IndianRupee } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -28,6 +29,7 @@ interface CartItem {
 
 export default function CartDrawer({ isOpen, onOpenChange }: CartDrawerProps) {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const Router = useRouter();
 
   useEffect(() => {
     const fetchCartItems = async () => {
@@ -146,8 +148,11 @@ export default function CartDrawer({ isOpen, onOpenChange }: CartDrawerProps) {
               <Button
                 color="warning" // Orange color
                 variant="flat" // White background with border
-                onPress={onClose} // Placeholder action on button click
                 className="w-full mt-4"
+                onPress={()=> {
+                  Router.push('/checkout')
+                  onClose();
+                }}
               >
                 Place Order
               </Button>
