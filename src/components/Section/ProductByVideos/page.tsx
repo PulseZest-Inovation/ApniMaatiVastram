@@ -74,11 +74,11 @@ const ProductByVideos = () => {
 
   return (
     <div className="container mx-auto p-6">
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-2 lg:gap-1 xl:gap-2 cursor-pointer">
+      <div className="flex overflow-x-auto gap-4 pb-4 scrollbar-hide cursor-pointer">
         {products.map((product, index) => (
           <div
             key={product.id}
-            className="bg-white border border-gray-200 shadow-lg rounded-lg overflow-hidden relative h-[450px] w-full md:w-[80%] lg:w-[60%] xl:w-[70%]"
+            className="bg-white border border-gray-200 shadow-lg rounded-lg overflow-hidden relative h-[450px] w-[250px] flex-shrink-0"
             onClick={() => openModal(index)}
           >
             {product.videoUrl && (

@@ -21,7 +21,7 @@ export default function Home() {
         <ImageCarousle />
       </motion.div>
 
-      
+
       {/* Categories Display */}
       <motion.div
         initial={{ opacity: 0, y: -50 }} // Start slightly above
@@ -31,7 +31,14 @@ export default function Home() {
         <CategoriesDisplay />
       </motion.div>
 
- 
+     {/* Products by Videos */}
+     <motion.div
+        initial={{ opacity: 0, y: 50 }}  // Start slightly below
+        animate={{ opacity: 1, y: 0 }}    // Slide to original position
+        transition={{ duration: 0.5, delay: 0.6 }}
+      >
+        <ProductByVideos />
+      </motion.div>
 
       {/* Products by Tags */}
       <motion.div
@@ -42,14 +49,7 @@ export default function Home() {
         <DisplayProductByTags />
       </motion.div>
 
-      {/* Products by Videos */}
-      <motion.div
-        initial={{ opacity: 0, y: 50 }}  // Start slightly below
-        animate={{ opacity: 1, y: 0 }}    // Slide to original position
-        transition={{ duration: 0.5, delay: 0.6 }}
-      >
-        <ProductByVideos />
-      </motion.div>
+  
 
       {/* Testimonials */}
       <motion.div
