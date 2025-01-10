@@ -64,6 +64,7 @@ const UserProfilePage: React.FC = () => {
 
   // If user is not logged in, show the phone login modal
   if (isUserLoggedInState === false) {
+    console.log(isPhoneLoginModalOpen)
     return <PhoneLoginModel isOpen={true} onOpenChange={() => setIsPhoneLoginModalOpen(false)} />;
   }
 
