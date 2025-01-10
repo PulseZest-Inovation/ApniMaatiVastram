@@ -1,5 +1,5 @@
-import Image from "next/image";
 import React, { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 
 interface ImageGalleryProps {
   galleryImages: string[];
@@ -15,6 +15,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
   );
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [startTouch, setStartTouch] = useState<number | null>(null);
+  const [loadedVideos, setLoadedVideos] = useState<Set<string>>(new Set());
   const galleryRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -28,7 +29,32 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Handle touch swipe for mobile
+  useEffect(() => {
+    // Lazy load videos when they come into the viewport
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const videoElement = entry.target as HTMLVideoElement;
+            if (!loadedVideos.has(videoElement.src)) {
+              setLoadedVideos((prev) => new Set(prev).add(videoElement.src));
+            }
+          }
+        });
+      },
+      {
+        rootMargin: "0px 0px 200px 0px", // Start loading when it's close to the viewport
+      }
+    );
+
+    const videoElements = galleryRef.current?.querySelectorAll("video");
+    videoElements?.forEach((video) => observer.observe(video));
+
+    return () => {
+      videoElements?.forEach((video) => observer.unobserve(video));
+    };
+  }, [loadedVideos]);
+
   const handleTouchStart = (e: React.TouchEvent) => {
     const touchStart = e.touches[0].clientX;
     setStartTouch(touchStart);
@@ -41,12 +67,10 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
     const swipeThreshold = 50;
 
     if (startTouch - touchEnd > swipeThreshold) {
-      // Swipe left (next image)
       const currentIndex = galleryImages.indexOf(selectedImage || "");
       const nextIndex = (currentIndex + 1) % galleryImages.length;
       setSelectedImage(galleryImages[nextIndex]);
     } else if (touchEnd - startTouch > swipeThreshold) {
-      // Swipe right (previous image)
       const currentIndex = galleryImages.indexOf(selectedImage || "");
       const prevIndex =
         (currentIndex - 1 + galleryImages.length) % galleryImages.length;
@@ -56,16 +80,14 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
     setStartTouch(null); // Reset touch position
   };
 
-  // Helper function to check if a URL is a video URL
   const isVideoUrl = (url: string) => {
-    return url.match(/\.(mp4|webm|ogg)$/i); // Check if URL ends with a video file extension
+    return url.match(/\.(mp4|webm|ogg)$/i);
   };
 
   return (
     <div className="w-full flex flex-col md:flex-row gap-4">
       {isMobile ? (
         <div className="relative" ref={galleryRef}>
-          {/* Main Image or Video Section */}
           {selectedImage ? (
             isVideoUrl(selectedImage) ? (
               <div className="w-full">
@@ -74,8 +96,11 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
                   controls
                   width="100%"
                   height="auto"
+                  src={selectedImage}
+                  autoPlay
+                  muted
+                  preload="none"
                 >
-                  <source src={selectedImage} type="video/mp4" />
                   Your browser does not support the video tag.
                 </video>
               </div>
@@ -100,7 +125,6 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
             <div className="text-gray-500 text-center">Image not available</div>
           )}
 
-          {/* Bullets for Navigation */}
           <div className="flex justify-center mt-4 space-x-2">
             {galleryImages.map((img, index) => (
               <div
@@ -115,7 +139,6 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
         </div>
       ) : (
         <>
-          {/* Gallery Section for Desktop */}
           <div className="flex flex-row md:flex-col md:w-1/5 gap-2">
             {galleryImages.map((img, index) => (
               <div key={index}>
@@ -128,8 +151,9 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
                     width={100}
                     height={100}
                     onClick={() => setSelectedImage(img)}
+                    preload="none"
+                    src={loadedVideos.has(img) ? img : ""}
                   >
-                    <source src={img} type="video/mp4" />
                     Your browser does not support the video tag.
                   </video>
                 ) : (
@@ -149,7 +173,6 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
             ))}
           </div>
 
-          {/* Main Image or Video Section */}
           <div className="flex-1">
             {selectedImage ? (
               isVideoUrl(selectedImage) ? (
@@ -158,8 +181,9 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
                   controls
                   width="100%"
                   height="auto"
+                  preload="none"
+                  src={loadedVideos.has(selectedImage) ? selectedImage : ""}
                 >
-                  <source src={selectedImage} type="video/mp4" />
                   Your browser does not support the video tag.
                 </video>
               ) : (

@@ -1,20 +1,24 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import Slider from 'react-slick';
 import Image from 'next/image';
 
 const BasicCarousel = ({ images, onImageClick }) => {
-  const settings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    arrows: true,
-    autoplay: true,
-    autoplaySpeed: 3000,
-  };
+  // Memoize the settings object
+  const settings = useMemo(
+    () => ({
+      dots: true,
+      infinite: true,
+      speed: 500,
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      arrows: true,
+      autoplay: true,
+      autoplaySpeed: 3000,
+    }),
+    [] // Empty dependency array since settings don't change
+  );
 
   return (
     <div className="basic-carousel w-full relative overflow-hidden">

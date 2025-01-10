@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { fetchProductsGroupedByTags, ProductsByTag } from './fetchProductByCategory';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -12,6 +12,7 @@ export default function DisplayProductByTags() {
 
   useEffect(() => {
     const fetchProducts = async () => {
+      setLoading(true);
       const data = await fetchProductsGroupedByTags();
       setProductsByTags(data);
       setLoading(false);
@@ -20,13 +21,16 @@ export default function DisplayProductByTags() {
     fetchProducts();
   }, []);
 
+  // Memoize the productsByTags to avoid recalculating it on every render
+  const memoizedProductsByTags = useMemo(() => productsByTags, [productsByTags]);
+
   if (loading) {
     return <div className="text-center mt-10 text-lg text-gray-700">Loading...</div>;
   }
 
   return (
     <div className="p-4 sm:p-6">
-      {productsByTags.map(({ tagName, products }) => (
+      {memoizedProductsByTags.map(({ tagName, products }) => (
         <div key={tagName} className="mb-12">
           <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-gray-800 uppercase text-center">
             {tagName}
@@ -36,7 +40,7 @@ export default function DisplayProductByTags() {
               <div
                 key={product.slug}
                 className="rounded-lg hover:shadow-lg transition-shadow p-2 sm:p-4 w-full max-w-xs mx-auto relative cursor-pointer"
-                onClick={()=>Router.push(`/collection/${product.categories[0]}/product/${product.slug}`)}
+                onClick={() => Router.push(`/collection/${product.categories[0]}/product/${product.slug}`)}
               >
                 {/* Image Container with Portrait aspect ratio */}
                 <div className="relative w-full h-80 sm:h-[22rem] lg:h-[24rem] overflow-hidden">

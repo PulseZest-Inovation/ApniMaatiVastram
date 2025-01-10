@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 import { fetchCategories } from "./getCategories";
 import { CategoryType } from "@/Types/data/CategoryType";
 import Image from "next/image";
@@ -20,6 +20,8 @@ export default function CategoriesDisplay() {
 
     loadCategories();
   }, []);
+
+  const memoizedCategories = useMemo(() => categories, [categories]);
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
@@ -47,15 +49,15 @@ export default function CategoriesDisplay() {
         {/* Scrollable Content */}
         <div
           ref={scrollContainerRef}
-          className="flex sm:gap-4 lg:gap-8 items-center overflow-x-auto scrollbar-hidden px-8  lg:pl-16 "
+          className="flex sm:gap-4 lg:gap-8 items-center overflow-x-auto scrollbar-hidden px-8 lg:pl-16"
         >
-          {categories.map((category) => (
+          {memoizedCategories.map((category) => (
             <div
               key={category.cid}
               className="flex-shrink-0 flex flex-col items-center w-32 sm:w-36"
             >
               <div
-                className="w-32 h-32 sm:w-32 sm:h-32 lg:w-64 lg:h-64  bg-gray-200 rounded-full overflow-hidden cursor-pointer transform transition-transform duration-300 hover:scale-110"
+                className="w-32 h-32 sm:w-32 sm:h-32 lg:w-64 lg:h-64 bg-gray-200 rounded-full overflow-hidden cursor-pointer transform transition-transform duration-300 hover:scale-110"
               >
                 <Image
                   height={200}

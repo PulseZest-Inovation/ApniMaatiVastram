@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { getAllDocsFromCollection } from '@/service/Firebase/getFirestore';
 import { ProductType } from '@/Types/data/ProductType';
 import ProductViewModal from './VideoModal';
@@ -18,10 +18,7 @@ const ProductByVideos = () => {
       setError(null);
       try {
         const data = await getAllDocsFromCollection<ProductType>('products');
-        const filteredProducts = data.filter(
-          (product) => product.videoUrl && product.videoUrl.trim() !== ''
-        );
-        setProducts(filteredProducts);
+        setProducts(data);  // Store all products without filtering
       } catch (error) {
         console.error('Error fetching products:', error);
         setError('Failed to fetch products. Please try again later.');
@@ -33,13 +30,21 @@ const ProductByVideos = () => {
     fetchProducts();
   }, []);
 
+  // Memoize the filtered products to avoid recalculating on every render
+  const filteredProducts = useMemo(() => {
+    return products.filter((product) => product.videoUrl && product.videoUrl.trim() !== '');
+  }, [products]);
+
+  // Memoize the current product to avoid recalculating on every render
+  const currentProduct = useMemo(() => filteredProducts[currentIndex], [filteredProducts, currentIndex]);
+
   const handleNext = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % products.length);
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % filteredProducts.length);
   };
 
   const handlePrevious = () => {
     setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? products.length - 1 : prevIndex - 1
+      prevIndex === 0 ? filteredProducts.length - 1 : prevIndex - 1
     );
   };
 
@@ -66,16 +71,14 @@ const ProductByVideos = () => {
     return <div className="text-red-500 text-center">{error}</div>;
   }
 
-  if (products.length === 0) {
+  if (filteredProducts.length === 0) {
     return <div className="text-center text-gray-500">No products available with videos.</div>;
   }
-
-  const currentProduct = products[currentIndex];
 
   return (
     <div className="container mx-auto p-6">
       <div className="flex overflow-x-auto gap-4 pb-4 scrollbar-hide cursor-pointer">
-        {products.map((product, index) => (
+        {filteredProducts.map((product, index) => (
           <div
             key={product.id}
             className="bg-white border border-gray-200 shadow-lg rounded-lg overflow-hidden relative h-[450px] w-[250px] flex-shrink-0"
