@@ -1,5 +1,5 @@
 import { getCurrentQuantity } from "./getCurrentQuantity";
-import { updateDocField } from "@/service/Firebase/postFirestore";
+import { updateDocField } from "@/service/Firebase/updateDocField";
 
 export const handleDecrementQuantity = async (productId: string, userId: string): Promise<boolean> => {
   console.log(`Processing Decrement Quantity for: ${productId}`);

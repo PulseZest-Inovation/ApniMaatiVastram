@@ -1,24 +1,39 @@
 'use client';
 import React, { useState, useEffect } from "react";
-import { signOut, getAuth } from "firebase/auth";
+import { signOut, getAuth, onAuthStateChanged } from "firebase/auth";
+import { getDataByDocName } from "@/service/Firebase/getFirestore";
 import { useRouter } from "next/navigation";
 import { message } from "antd";
 import PhoneLoginModel from "@/components/Login/PhoneLoginModel";
 import { isUserLoggedIn } from "@/service/isUserLogin";
 import { Spinner } from "@nextui-org/react";
+import { userProfileType } from "@/Types/data/userProfileType";
 
 const UserProfilePage: React.FC = () => {
   const router = useRouter();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isPhoneLoginModalOpen, setIsPhoneLoginModalOpen] = useState(false);  
   const [isUserLoggedInState, setIsUserLoggedInState] = useState<boolean | null>(null);
+  const [user, setUser] = useState<userProfileType | null>(null); // Define the type properly
 
   // Check if the user is authenticated
   useEffect(() => {
     const checkUserLogin = async () => {
       const loggedIn = await isUserLoggedIn(); // Use the isUserLoggedIn function
       setIsUserLoggedInState(loggedIn); // Update the login status
-      console.log(isPhoneLoginModalOpen);
+
+      // Get user data from Firebase Auth
+      const auth = getAuth();
+      onAuthStateChanged(auth, async (currentUser) => {
+        if (currentUser) {
+          const uid = currentUser.uid; // Get the UID of the logged-in user
+          const userDoc = await getDataByDocName<userProfileType>('customers', uid); // Fetch user data using UID
+          
+          setUser(userDoc); // Set the user state
+        } else {
+          setUser(null); // Clear user state if no user is logged in
+        }
+      });
     };
 
     checkUserLogin();
@@ -54,7 +69,7 @@ const UserProfilePage: React.FC = () => {
 
   // If login status is unknown (still loading), we can return null or a loading indicator
   if (isUserLoggedInState === null) {
-    return <div>
+    return <div className="text-center">
       <Spinner color="warning"/>
     </div>; // You can show a loading spinner here if needed
   }
@@ -64,14 +79,13 @@ const UserProfilePage: React.FC = () => {
       {/* User Info Section */}
       <div className="flex flex-col lg:flex-row justify-between items-center mb-10 p-6 bg-gray-50 shadow rounded-lg">
         <div className="flex flex-col lg:flex-row items-center lg:items-start">
-          <div className="mr-8 mb-4 lg:mb-0">
-            <div className="w-24 h-24 rounded-full bg-gray-300 flex items-center justify-center">
-              <span className="text-xl font-bold text-white">JD</span> {/* Placeholder for user avatar */}
-            </div>
-          </div>
           <div>
-            <h2 className="text-2xl font-semibold text-gray-800 text-center">John Doe</h2>
-            <p className="text-lg text-gray-600">johndoe@example.com</p>
+            <h2 className="text-2xl font-semibold text-gray-800 text-center">
+              {user?.name || "User Name"} {/* Display user name or fallback */}
+            </h2>
+            <p className="text-lg text-gray-600">
+              {user?.email || "User Email"} {/* Display user email or fallback */}
+            </p>
           </div>
         </div>
         <button
