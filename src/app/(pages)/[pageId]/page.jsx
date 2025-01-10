@@ -4,6 +4,7 @@ import Head from 'next/head';
 import { useParams } from 'next/navigation';
 import ReactHtmlParser from 'html-react-parser';
 import { getDataByDocName } from '@/service/Firebase/getFirestore';
+import { Spinner } from '@nextui-org/react';
 
 const PageViewPage = () => {
   const { pageId } = useParams();
@@ -29,7 +30,9 @@ const PageViewPage = () => {
   }, [pageId]);
 
   if (loading) {
-    return <div className="p-4 text-center text-gray-500">Loading...</div>;
+    return <div className="p-4 text-center text-gray-500">
+      <Spinner color='warning'/>
+    </div>;
   }
 
   if (!pageData) {
@@ -69,7 +72,7 @@ const PageViewPage = () => {
           }
         `}</style>
       </Head>
-      <div className="container mx-auto px-4 py-6">
+      <div className="mx-auto px-2 sm:px-4 py-2"> {/* Reduced padding on left and right */}
         <h1 className="text-2xl font-bold mb-4 text-center">{pageData.title}</h1>
         <div
           className="prose prose-sm sm:prose lg:prose-lg xl:prose-xl mx-auto"

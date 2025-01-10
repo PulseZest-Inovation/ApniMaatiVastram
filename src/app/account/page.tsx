@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { message } from "antd";
 import PhoneLoginModel from "@/components/Login/PhoneLoginModel";
 import { isUserLoggedIn } from "@/service/isUserLogin";
+import { Spinner } from "@nextui-org/react";
 
 const UserProfilePage: React.FC = () => {
   const router = useRouter();
@@ -53,7 +54,9 @@ const UserProfilePage: React.FC = () => {
 
   // If login status is unknown (still loading), we can return null or a loading indicator
   if (isUserLoggedInState === null) {
-    return <div>Loading...</div>; // You can show a loading spinner here if needed
+    return <div>
+      <Spinner color="warning"/>
+    </div>; // You can show a loading spinner here if needed
   }
 
   return (

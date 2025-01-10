@@ -84,7 +84,7 @@ const ImageCarousle: React.FC = () => {
     }
   };
 
-  return <div className="image-carousel cursor-pointer py-3">{renderCarousel()}</div>;
+  return <div className="image-carousel cursor-pointer ">{renderCarousel()}</div>;
 };
 
 export default ImageCarousle;

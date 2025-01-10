@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { ProductType } from '@/Types/data/ProductType';
 import { getAllDocsFromCollection } from '@/service/Firebase/getFirestore'; // Assume this is the helper function for fetching data
 import { CategoryType } from '@/Types/data/CategoryType'; 
+import { Spinner } from '@nextui-org/react';
 
 export interface ProductsByCategory {
   categoryName: string;
@@ -71,7 +72,9 @@ export default function DisplayProductByCategories() {
   const memoizedProductsByCategories = useMemo(() => productsByCategories, [productsByCategories]);
 
   if (loading) {
-    return <div className="text-center mt-10 text-lg text-gray-700">Loading...</div>;
+    return <div className="text-center mt-10 text-lg text-gray-700"> 
+    <Spinner color='warning'/>
+    </div>;
   }
 
   return (

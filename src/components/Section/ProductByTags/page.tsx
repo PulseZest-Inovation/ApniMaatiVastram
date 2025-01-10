@@ -4,6 +4,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { fetchProductsGroupedByTags, ProductsByTag } from './fetchProductByTags';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { Spinner } from '@nextui-org/react';
 
 export default function DisplayProductByTags() {
   const [productsByTags, setProductsByTags] = useState<ProductsByTag[]>([]);
@@ -40,7 +41,9 @@ export default function DisplayProductByTags() {
   const memoizedProductsByTags = useMemo(() => productsByTags, [productsByTags]);
 
   if (loading) {
-    return <div className="text-center mt-10 text-lg text-gray-700">Loading...</div>;
+    return <div className="text-center mt-10 text-lg text-gray-700"> 
+    <Spinner color='warning'/>
+    </div>;
   }
 
   return (
