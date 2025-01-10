@@ -5,4 +5,5 @@ export interface CategoryType {
     isPosition:string;
     name: string;
     slug: string;
+    isVisible: boolean
 }

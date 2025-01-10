@@ -7,6 +7,7 @@ import CategoriesDisplay from "@/components/Categories/page";
 import DisplayProductByTags from "@/components/Section/ProductByTags/page";
 import ProductByVideos from "@/components/Section/ProductByVideos/page";
 import Testimonials from '@/components/Testimonials/page';
+import DisplayProductByCategories from '@/components/Section/ProductByCategoires/DisplayProductByCategories';
 
 export default function Home() {
   return (
@@ -38,6 +39,15 @@ export default function Home() {
         transition={{ duration: 0.5, delay: 0.6 }}
       >
         <ProductByVideos />
+      </motion.div>
+
+{/* DispalyProductByCategories */}
+      <motion.div
+        initial={{ opacity: 0, y: -50 }} // Start slightly above
+        animate={{ opacity: 1, y: 0 }}   // Slide to original position
+        transition={{ duration: 0.5 }}
+      >
+        <DisplayProductByCategories/>
       </motion.div>
 
       {/* Products by Tags */}
