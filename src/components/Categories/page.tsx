@@ -34,11 +34,11 @@ export default function CategoriesDisplay() {
   };
 
   return (
-    <div className="relative">
-      <div className="relative">
+    <div className="relative flex justify-center items-center py-6 bg-gray-50">
+      <div className="relative w-full max-w-screen-lg">
         {/* Left Arrow */}
         <button
-          className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white shadow rounded-full p-3 z-10"
+          className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white shadow-lg rounded-full p-3 z-10 hover:scale-105"
           onClick={scrollLeft}
         >
           <FaChevronLeft className="text-gray-700 text-lg" />
@@ -47,19 +47,19 @@ export default function CategoriesDisplay() {
         {/* Scrollable Content */}
         <div
           ref={scrollContainerRef}
-          className="flex overflow-hidden gap-4 py-4"
+          className="flex sm:gap-4 lg:gap-8 items-center overflow-x-auto scrollbar-hidden px-8  lg:pl-16 "
         >
           {categories.map((category) => (
             <div
               key={category.cid}
-              className="flex-shrink-0 flex flex-col items-center w-20 sm:w-32"
+              className="flex-shrink-0 flex flex-col items-center w-32 sm:w-36"
             >
               <div
-                className="w-16 h-16 sm:w-28 sm:h-28 bg-gray-200 rounded-full overflow-hidden cursor-pointer transform transition-transform duration-300 hover:scale-110"
+                className="w-32 h-32 sm:w-32 sm:h-32 lg:w-64 lg:h-64  bg-gray-200 rounded-full overflow-hidden cursor-pointer transform transition-transform duration-300 hover:scale-110"
               >
                 <Image
-                  height={120}
-                  width={120}
+                  height={200}
+                  width={200}
                   src={category.image}
                   alt={category.name}
                   className="w-full h-full object-cover"
@@ -69,7 +69,7 @@ export default function CategoriesDisplay() {
                 />
               </div>
               <h2
-                className="text-xs sm:text-md font-semibold mt-2 sm:mt-3 text-center cursor-pointer"
+                className="text-xs sm:text-sm font-semibold mt-2 text-center cursor-pointer"
                 onClick={() => {
                   Router.push(`collection/${category.cid}`);
                 }}
@@ -82,7 +82,7 @@ export default function CategoriesDisplay() {
 
         {/* Right Arrow */}
         <button
-          className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white shadow rounded-full p-3 z-10"
+          className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white shadow-lg rounded-full p-3 z-10 hover:scale-105"
           onClick={scrollRight}
         >
           <FaChevronRight className="text-gray-700 text-lg" />

@@ -1,5 +1,5 @@
 export interface TestimonialsType{
-    imageUrl: string;
+    imageUrls: string[];
     name: string;
     text: string;
 }

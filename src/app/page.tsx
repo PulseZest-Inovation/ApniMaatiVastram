@@ -11,6 +11,17 @@ import Testimonials from '@/components/Testimonials/page';
 export default function Home() {
   return (
     <div>
+
+           {/* Image Carousel */}
+           <motion.div
+        initial={{ opacity: 0, x: -50 }} // Start slightly left
+        animate={{ opacity: 1, x: 0 }}    // Slide to original position
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
+        <ImageCarousle />
+      </motion.div>
+
+      
       {/* Categories Display */}
       <motion.div
         initial={{ opacity: 0, y: -50 }} // Start slightly above
@@ -20,14 +31,7 @@ export default function Home() {
         <CategoriesDisplay />
       </motion.div>
 
-      {/* Image Carousel */}
-      <motion.div
-        initial={{ opacity: 0, x: -50 }} // Start slightly left
-        animate={{ opacity: 1, x: 0 }}    // Slide to original position
-        transition={{ duration: 0.5, delay: 0.2 }}
-      >
-        <ImageCarousle />
-      </motion.div>
+ 
 
       {/* Products by Tags */}
       <motion.div

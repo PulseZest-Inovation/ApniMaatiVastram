@@ -3,10 +3,12 @@
 import React, { useEffect, useState } from 'react';
 import { fetchProductsGroupedByTags, ProductsByTag } from './fetchProductByCategory';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 export default function DisplayProductByTags() {
   const [productsByTags, setProductsByTags] = useState<ProductsByTag[]>([]);
   const [loading, setLoading] = useState(true);
+  const Router = useRouter();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -33,7 +35,8 @@ export default function DisplayProductByTags() {
             {products.map(product => (
               <div
                 key={product.slug}
-                className="rounded-lg hover:shadow-lg transition-shadow p-2 sm:p-4 w-full max-w-xs mx-auto relative"
+                className="rounded-lg hover:shadow-lg transition-shadow p-2 sm:p-4 w-full max-w-xs mx-auto relative cursor-pointer"
+                onClick={()=>Router.push(`/collection/${product.categories[0]}/product/${product.slug}`)}
               >
                 {/* Image Container with Portrait aspect ratio */}
                 <div className="relative w-full h-80 sm:h-[22rem] lg:h-[24rem] overflow-hidden">

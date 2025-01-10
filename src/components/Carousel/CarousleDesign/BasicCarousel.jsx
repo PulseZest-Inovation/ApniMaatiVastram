@@ -17,18 +17,20 @@ const BasicCarousel = ({ images, onImageClick }) => {
   };
 
   return (
-    <div className="basic-carousel w-full relative overflow-hidden"> {/* Added overflow-hidden */}
+    <div className="basic-carousel w-full relative overflow-hidden">
       <Slider {...settings}>
         {images.map((image, index) => (
           <div key={index} className="carousel-item flex justify-center items-center w-full">
-            <Image
-              src={image.imageURL}
-              alt={`Slide ${index + 1}`}
-              width={600} // Set a fixed width
-              height={400} // Set a fixed height
-              className="w-full h-auto object-cover cursor-pointer"
-              onClick={() => onImageClick(image.pageURL)}
-            />
+            <div className="relative w-full h-64 sm:h-80 md:h-96">
+              <Image
+                src={image.imageURL}
+                alt={`Slide ${index + 1}`}
+                layout="fill" // Makes the image fill the container while preserving its aspect ratio
+                objectFit="cover" // Ensures the image covers the space without stretching
+                className="cursor-pointer"
+                onClick={() => onImageClick(image.pageURL)}
+              />
+            </div>
           </div>
         ))}
       </Slider>
