@@ -1,3 +1,4 @@
+'use client'
 import React, { useState } from "react";
 import { Button, Spinner } from "@nextui-org/react";
 import { ShoppingCartOutlined } from "@ant-design/icons";
@@ -9,7 +10,6 @@ import { getAuth } from "firebase/auth";
 import CartDrawer from "../Cart/page";
 import OtpModal from "@/components/Login/PhoneLoginModel";
 import DiscountCard from "../DiscountCard/page";
-
 
 interface ProductDetailsProps {
   product: ProductType;
@@ -100,7 +100,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
         </p>
       </div>
 
-      <DiscountCard/>
+      <DiscountCard />
 
       {/* Short Description */}
       <p className="text-gray-700 mt-5">{product.shortDescription}</p>
@@ -131,7 +131,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
             e.currentTarget.style.backgroundColor = "#FF6A00";
             e.currentTarget.style.transform = "scale(1)";
           }}
-          onClick={handleCartClick}
+          onPress={handleCartClick}
           disabled={loading.cart} // Disable button while loading
         >
           <p className="capitalize" style={{ letterSpacing: "0.2em" }}>
@@ -154,7 +154,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
             borderRadius: "4px",
             border: "none",
           }}
-          onClick={handleWishlistClick}
+          onPress={handleWishlistClick}
           disabled={loading.wishlist} // Disable button while loading
         >
           {loading.wishlist ? "Processing..." : "W h i s h l i s t"}

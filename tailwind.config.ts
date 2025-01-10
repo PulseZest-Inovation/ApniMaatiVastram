@@ -20,6 +20,7 @@ export default {
     },
   },
   plugins: [
+    require('@tailwindcss/typography'), // Add the Tailwind Typography plugin
     nextui(), // Add the NextUI plugin for seamless integration
   ],
 } satisfies Config;

@@ -133,7 +133,7 @@ export default function NavBar() {
       <Link
         className="py-2 px-4" // Add padding for better spacing and click area
         color="foreground"
-        href={`/${category.slug}`}
+        href={`/collection/${category.slug}`}
         style={{ marginTop: "6px" }} // Adjusting top margin for precise control
       >
         {category.name}
