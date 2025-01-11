@@ -10,6 +10,7 @@ import { getAuth } from "firebase/auth";
 import CartDrawer from "../Cart/page";
 import OtpModal from "@/components/Login/PhoneLoginModel";
 import DiscountCard from "../DiscountCard/page";
+import ReadyToWear from "./ReadyToWear";
 
 interface ProductDetailsProps {
   product: ProductType;
@@ -19,8 +20,17 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
   const [loading, setLoading] = useState({ cart: false, wishlist: false });
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [readyToWear, setReadyToWear] = useState<{ wrist: number; length: number; hip: number }>({
+    wrist: 0,
+    length: 0,
+    hip: 0,
+  });
 
   const auth = getAuth(); // Get Firebase authentication instance
+
+  const handleFieldsChange = (fields: { wrist: number; length: number; hip: number }) => {
+    setReadyToWear(fields);
+  };
 
   const handleCartClick = async () => {
     // Check if the user is logged in
@@ -30,7 +40,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
     }
 
     setLoading((prev) => ({ ...prev, cart: true }));
-    const success = await handleAddToCart(product);
+    const success = await handleAddToCart({...product , readyToWear});
     setLoading((prev) => ({ ...prev, cart: false }));
     if (success) {
       console.log("Product added to cart successfully");
@@ -99,6 +109,8 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
           Inclusive of All Taxes
         </p>
       </div>
+
+      <ReadyToWear product={product} onFieldsChange={handleFieldsChange}/>
 
       <DiscountCard />
 

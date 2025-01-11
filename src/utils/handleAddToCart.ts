@@ -3,8 +3,10 @@ import { createDataWithCustomId } from "@/service/Firebase/postFirestore";
 import { getAuth } from "firebase/auth";
 import { app } from "@/config/FirebaseConfig";
 
-// Function to handle Add to Cart
-export const handleAddToCart = async (product: ProductType): Promise<boolean> => {
+// Updated Function to handle Add to Cart
+export const handleAddToCart = async (
+  product: ProductType & { readyToWear?: { wrist: number; length: number; hip: number } }
+): Promise<boolean> => {
   console.log(`Processing Add to Cart for: ${product.productTitle}`);
   try {
     // Simulate API call with delay
@@ -38,13 +40,14 @@ export const handleAddToCart = async (product: ProductType): Promise<boolean> =>
       addedAt: new Date(), // Timestamp of when the product was added to the cart
       status: "pending", // Could be "pending", "in-process", "purchased", etc.
       image: product.featuredImage,
+      readyToWear: product.readyToWear || null, // Include custom fields if available
     };
 
     // Use the collection name to create a document in the cart subcollection
     const cartDocId = await createDataWithCustomId(
       "customers", // Collection name for the customers
       userId, // User's UID as the document ID for the customer
-      "cart", 
+      "cart",
       product.id,
       cartData // Data to add to the cart document
     );
