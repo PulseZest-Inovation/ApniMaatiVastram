@@ -1,10 +1,13 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState, useMemo } from 'react';
-import { fetchProductsGroupedByTags, ProductsByTag } from './fetchProductByTags';
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { Spinner } from '@nextui-org/react';
+import React, { useEffect, useState, useMemo } from "react";
+import {
+  fetchProductsGroupedByTags,
+  ProductsByTag,
+} from "./fetchProductByTags";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { Spinner } from "@nextui-org/react";
 
 export default function DisplayProductByTags() {
   const [productsByTags, setProductsByTags] = useState<ProductsByTag[]>([]);
@@ -16,7 +19,7 @@ export default function DisplayProductByTags() {
     const fetchProducts = async () => {
       setLoading(true);
       const data = await fetchProductsGroupedByTags();
-      
+
       // Only include tags with 4 or more products and slice to show up to 4 products
       const filteredData = data
         .map(({ tagName, products }) => {
@@ -38,12 +41,17 @@ export default function DisplayProductByTags() {
   }, []);
 
   // Memoize the productsByTags to avoid recalculating it on every render
-  const memoizedProductsByTags = useMemo(() => productsByTags, [productsByTags]);
+  const memoizedProductsByTags = useMemo(
+    () => productsByTags,
+    [productsByTags]
+  );
 
   if (loading) {
-    return <div className="text-center mt-10 text-lg text-gray-700"> 
-    <Spinner color='warning'/>
-    </div>;
+    return (
+      <div className="text-center mt-10 text-lg text-gray-700">
+        <Spinner color="warning" />
+      </div>
+    );
   }
 
   return (
@@ -54,18 +62,24 @@ export default function DisplayProductByTags() {
             {tagName}
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6">
-            {products.map(product => (
+            {products.map((product) => (
               <div
                 key={product.slug}
                 className="rounded-lg hover:shadow-lg transition-shadow p-2 sm:p-4 w-full max-w-xs mx-auto relative cursor-pointer"
-                onClick={() => Router.push(`/collection/${product.categories[0]}/product/${product.slug}`)}
+                onClick={() =>
+                  Router.push(
+                    `/collection/${product.categories[0]}/product/${product.slug}`
+                  )
+                }
               >
                 {/* Image Container with Portrait aspect ratio */}
-                <div className="relative w-full h-80 sm:h-[22rem] lg:h-[24rem] overflow-hidden">
+                <div className="relative w-full overflow-hidden">
                   <Image
                     src={product.featuredImage}
                     alt={product.slug}
-                    layout="fill"
+                    layout="responsive"
+                    width={400} // Example width
+                    height={600} // Example height to maintain portrait aspect ratio
                     objectFit="cover"
                     className="rounded-t-lg transition-transform transform hover:scale-110 duration-300"
                   />
@@ -84,7 +98,7 @@ export default function DisplayProductByTags() {
                       </div>
                     ) : (
                       <div className="text-gray-800 font-bold">
-                        ₹ {product.regularPrice || 'N/A'}
+                        ₹ {product.regularPrice || "N/A"}
                       </div>
                     )}
                   </div>

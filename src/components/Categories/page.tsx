@@ -36,8 +36,8 @@ export default function CategoriesDisplay() {
   };
 
   return (
-    <div className="relative flex justify-center items-center py-6 bg-gray-50">
-      <div className="relative w-full max-w-screen-lg">
+    <div className="relative flex justify-center items-center py-6 bg-gray-50 w-full">
+      <div className="relative w-full">
         {/* Left Arrow */}
         <button
           className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white shadow-lg rounded-full p-3 z-10 hover:scale-105"
@@ -49,12 +49,12 @@ export default function CategoriesDisplay() {
         {/* Scrollable Content */}
         <div
           ref={scrollContainerRef}
-          className="flex sm:gap-4 lg:gap-8 items-center overflow-x-auto scrollbar-hidden px-8 lg:pl-16"
+          className="flex sm:gap-4 lg:gap-8 items-center overflow-x-auto scrollbar-hidden py-3 pl-2 px-8 lg:px-0 w-full"
         >
           {memoizedCategories.map((category) => (
             <div
               key={category.cid}
-              className="flex-shrink-0 flex flex-col items-center w-32 sm:w-36"
+              className="flex-shrink-0 flex flex-col items-center w-32 sm:w-36 lg:w-44 xl:w-56 2xl:w-64"
             >
               <div
                 className="w-32 h-32 sm:w-32 sm:h-32 lg:w-64 lg:h-64 bg-gray-200 rounded-full overflow-hidden cursor-pointer transform transition-transform duration-300 hover:scale-110"

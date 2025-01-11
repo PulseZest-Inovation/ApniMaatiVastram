@@ -72,20 +72,21 @@ const ProductViewModal: React.FC<ProductModalProps> = ({
         <div className="hidden md:flex w-1/2 h-full p-6 flex-col">
           {/* Product Features */}
           <div className="mt-6">
-            <h4 className="text-lg font-semibold mt-2"></h4>
-            <div className="flex gap-2 mt-2">
-              {product.galleryImages.map((galleryImage, index) => (
-                <Image
-                  key={index}
-                  src={galleryImage}
-                  alt={product.productTitle}
-                  height={200}
-                  width={200}
-                  className="rounded"
-                />
-              ))}
-            </div>
+          <h4 className="text-lg font-semibold mt-2"></h4>
+          <div className="flex gap-2 mt-2 mb-0 overflow-x-auto scrollbar-hidden">
+            {product.galleryImages.map((galleryImage, index) => (
+              <Image
+                key={index}
+                src={galleryImage}
+                alt={product.productTitle}
+                height={150}
+                width={150}
+                className="rounded"
+              />
+            ))}
           </div>
+        </div>
+
 
           <Divider className="mt-2" />
 

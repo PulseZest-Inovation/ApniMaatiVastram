@@ -1,29 +1,33 @@
-# Use Node.js base image
-FROM node:18-slim
+# Base image
+FROM node:18
 
-# Set the working directory inside the container
+# Install necessary system dependencies for building native modules
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    python3 \
+    python3-dev \
+    unixodbc-dev
+
+# Set working directory
 WORKDIR /app
 
 # Copy package.json and package-lock.json
 COPY package.json package-lock.json ./
 
-# Install dependencies (including dev dependencies like tailwind and postcss)
-RUN npm install
+# Install project dependencies
+RUN npm install --legacy-peer-deps
 
-# Copy the rest of the application files
+# Copy the rest of your application
 COPY . .
 
 # Ensure that necessary files are available for Next.js build
 COPY tailwind.config.ts postcss.config.mjs ./  
 
-# Build the Next.js application for production
+# Build the Next.js app
 RUN npm run build
 
-# Expose port 3000 (default port for Next.js apps)
+# Expose the app port
 EXPOSE 3000
 
-# Set the environment to production
-ENV NODE_ENV=production
-
-# Start the Next.js application
+# Start the application
 CMD ["npm", "start"]
