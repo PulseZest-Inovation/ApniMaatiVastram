@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import React, { useState } from "react";
 import { Button, Spinner } from "@nextui-org/react";
 import { ShoppingCartOutlined } from "@ant-design/icons";
@@ -25,11 +25,16 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
     length: 0,
     hip: 0,
   });
+  const [isReadyToWear, setIsReadyToWear] = useState(false); // Track the ReadyToWear state
 
   const auth = getAuth(); // Get Firebase authentication instance
 
   const handleFieldsChange = (fields: { wrist: number; length: number; hip: number }) => {
     setReadyToWear(fields);
+  };
+
+  const handleReadyToWearChange = (isReadyToWear: boolean) => {
+    setIsReadyToWear(isReadyToWear);
   };
 
   const handleCartClick = async () => {
@@ -40,8 +45,16 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
     }
 
     setLoading((prev) => ({ ...prev, cart: true }));
-    const success = await handleAddToCart({...product , readyToWear});
+
+    // Pass isReadyToWear state along with the product and readyToWear fields
+    const success = await handleAddToCart({
+      ...product,
+      readyToWear,
+      isReadyToWear,
+    });
+
     setLoading((prev) => ({ ...prev, cart: false }));
+
     if (success) {
       console.log("Product added to cart successfully");
       setIsCartDrawerOpen(true); // Open CartDrawer if the product is added
@@ -110,11 +123,12 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
         </p>
       </div>
 
-      <ReadyToWear product={product} onFieldsChange={handleFieldsChange}/>
+      <ReadyToWear product={product} onFieldsChange={handleFieldsChange} onReadyToWearChange={handleReadyToWearChange} />
 
       <DiscountCard />
 
-
+      {/* Short Description */}
+      <p className="text-gray-700 mt-5">{product.shortDescription}</p>
 
       {/* Sticky Footer for Action Buttons (Mobile Only) */}
       <div className="p-4 bg-white flex flex-col md:flex-row md:space-x-2 space-y-4 md:space-y-0 md:items-center md:static fixed bottom-0 left-0 right-0 z-10">
@@ -171,9 +185,6 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
           {loading.wishlist ? "Processing..." : "W h i s h l i s t"}
         </Button>
       </div>
-
-            {/* Short Description */}
-            <p className="text-gray-700 mt-5">{product.shortDescription}</p>
 
       {/* Conditionally render CartDrawer or OtpModal */}
       {isCartDrawerOpen && (

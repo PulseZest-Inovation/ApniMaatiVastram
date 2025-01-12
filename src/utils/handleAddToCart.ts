@@ -41,6 +41,8 @@ export const handleAddToCart = async (
       status: "pending", // Could be "pending", "in-process", "purchased", etc.
       image: product.featuredImage,
       readyToWear: product.readyToWear || null, // Include custom fields if available
+      readyToWearCharges: product.readyToWearCharges,
+      isReadyToWear: product.isReadyToWear
     };
 
     // Use the collection name to create a document in the cart subcollection

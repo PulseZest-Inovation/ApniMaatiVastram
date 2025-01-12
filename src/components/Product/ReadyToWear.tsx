@@ -12,15 +12,18 @@ interface Product {
 interface CustomFieldsProps {
   product: Product;
   onFieldsChange: (fields: { wrist: number; length: number; hip: number }) => void;
+  onReadyToWearChange: (isReadyToWear: boolean) => void; 
 }
 
-const ReadyToWear: React.FC<CustomFieldsProps> = ({ product, onFieldsChange }) => {
+const ReadyToWear: React.FC<CustomFieldsProps> = ({ product, onFieldsChange, onReadyToWearChange }) => {
   const [showFields, setShowFields] = useState(false);
   const [fields, setFields] = useState({ wrist: 0, length: 0, hip: 0 });
 
   // Handle checkbox toggle
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setShowFields(e.target.checked);
+    const checked = e.target.checked;
+    setShowFields(checked);
+    onReadyToWearChange(checked); // Update isReadyToWear based on checkbox state
   };
 
   // Handle individual field changes
@@ -33,78 +36,77 @@ const ReadyToWear: React.FC<CustomFieldsProps> = ({ product, onFieldsChange }) =
 
   return (
     <div className="mt-4">
-    {product.isReadyToWear && (
-      <div>
-        <label className="flex items-center space-x-2 w-full">
-          <input
-            type="checkbox"
-            className="form-checkbox h-4 w-4 text-blue-600"
-            checked={showFields}
-            onChange={handleCheckboxChange}
-          />
-          <div className="flex items-center space-x-2">
-            <SparklesText
-              text="Make this Saree Ready-to-Wear only in ₹"
-              className="text-base sm:text-xl font-light"
+      {product.isReadyToWear && (
+        <div>
+          <label className="flex items-center space-x-2 w-full">
+            <input
+              type="checkbox"
+              className="form-checkbox h-4 w-4 text-blue-600"
+              checked={showFields} // Use showFields to control the checkbox state
+              onChange={handleCheckboxChange}
             />
-            <span className="font-bold text-base sm:text-xl">
-              {product.readyToWearCharges}
-            </span>
-          </div>
-        </label>
-  
-        {showFields && (
-          <div className="mt-4 space-y-4">
-            {/* Wrist Field */}
-            <div>
-              <label className="block text-gray-700 font-medium mb-1" htmlFor="wrist">
-                Wrist
-              </label>
-              <input
-                type="number"
-                id="wrist"
-                value={fields.wrist}
-                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter wrist size"
-                onChange={handleFieldChange}
+            <div className="flex items-center space-x-2">
+              <SparklesText
+                text="Make this Saree Ready-to-Wear only in ₹"
+                className="text-base sm:text-xl font-light"
               />
+              <span className="font-bold text-base sm:text-xl">
+                {product.readyToWearCharges}
+              </span>
             </div>
-  
-            {/* Length Field */}
-            <div>
-              <label className="block text-gray-700 font-medium mb-1" htmlFor="length">
-                Length
-              </label>
-              <input
-                type="number"
-                id="length"
-                value={fields.length}
-                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter length"
-                onChange={handleFieldChange}
-              />
+          </label>
+
+          {showFields && (
+            <div className="mt-4 space-y-4">
+              {/* Wrist Field */}
+              <div>
+                <label className="block text-gray-700 font-medium mb-1" htmlFor="wrist">
+                  Wrist
+                </label>
+                <input
+                  type="number"
+                  id="wrist"
+                  value={fields.wrist}
+                  className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter wrist size"
+                  onChange={handleFieldChange}
+                />
+              </div>
+
+              {/* Length Field */}
+              <div>
+                <label className="block text-gray-700 font-medium mb-1" htmlFor="length">
+                  Length
+                </label>
+                <input
+                  type="number"
+                  id="length"
+                  value={fields.length}
+                  className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter length"
+                  onChange={handleFieldChange}
+                />
+              </div>
+
+              {/* Hip Field */}
+              <div>
+                <label className="block text-gray-700 font-medium mb-1" htmlFor="hip">
+                  Hip
+                </label>
+                <input
+                  type="number"
+                  id="hip"
+                  value={fields.hip}
+                  className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter hip size"
+                  onChange={handleFieldChange}
+                />
+              </div>
             </div>
-  
-            {/* Hip Field */}
-            <div>
-              <label className="block text-gray-700 font-medium mb-1" htmlFor="hip">
-                Hip
-              </label>
-              <input
-                type="number"
-                id="hip"
-                value={fields.hip}
-                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter hip size"
-                onChange={handleFieldChange}
-              />
-            </div>
-          </div>
-        )}
-      </div>
-    )}
-  </div>
-  
+          )}
+        </div>
+      )}
+    </div>
   );
 };
 

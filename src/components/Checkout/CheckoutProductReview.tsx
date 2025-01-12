@@ -1,3 +1,4 @@
+'use client'
 import React, { useEffect, useState } from "react";
 import { Card } from "@nextui-org/react";
 import { getAllDocsFromSubCollection } from "@/service/Firebase/getFirestore";
@@ -11,6 +12,8 @@ interface CartItem {
   quantity: number;
   image: string;
   productTitle: string;
+  isReadyToWear: boolean;
+  readyToWearCharges: number;
 }
 
 export default function CheckoutProductReview() {
@@ -53,8 +56,15 @@ export default function CheckoutProductReview() {
   }, []);
 
   const calculateTotal = () => {
-    return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+    return cartItems.reduce((total, item) => {
+      const readyToWearCharges = item.isReadyToWear ? Number(item.readyToWearCharges) : 0;
+      const price = Number(item.price);
+      const quantity = Number(item.quantity);
+  
+      return total + (price + readyToWearCharges) * quantity;
+    }, 0);
   };
+  
 
   return (
     <div className="hidden md:block md:w-1/3 p-4 md:sticky top-4">
@@ -80,9 +90,16 @@ export default function CheckoutProductReview() {
               />
             </div>
             <div>
-              <p className="font-semibold  ">{item.productTitle}</p>
+              <p className="font-semibold">{item.productTitle}</p>
+              {item.isReadyToWear && (
+                <p className="text-sm text-gray-500">
+                  Ready to Wear Charges: ₹{item.readyToWearCharges}
+                </p>
+              )}
             </div>
-            <p className="font-semibold">₹{item.price}</p>
+            <p className="font-semibold">
+              ₹{Number(item.price) + Number((item.isReadyToWear ? item.readyToWearCharges : 0))}
+            </p>
           </div>
         ))}
         <div className="flex justify-between items-center mt-4">
