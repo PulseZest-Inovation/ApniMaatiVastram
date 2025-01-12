@@ -24,9 +24,9 @@ export default function TopHeader() {
   if (!isVisible || !topHeader || !topHeader.isEnable) return null; // Hide component if not visible
 
   return (
-    <div className="top-header bg-orange-300 text-white flex items-center justify-center relative p-2">
+    <div className="top-header bg-black text-white flex items-center justify-center relative p-2">
       <div className="text-center">
-        {topHeader.description && <p className="text-sm">{topHeader.description}</p>}
+        {topHeader.description && <p className="text-sm font-bold">{topHeader.description}</p>}
         {topHeader.text && (
           <a
             href={topHeader.link}
