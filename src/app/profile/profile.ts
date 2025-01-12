@@ -19,7 +19,7 @@ export const fetchUserData = async (
     } else {
       setUserData(null);
       setFormData({
-        name: '',
+        fullName: '',
         email: '',
         phoneNumber: '',
         address: '',
