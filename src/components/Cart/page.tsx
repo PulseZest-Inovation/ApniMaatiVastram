@@ -25,6 +25,8 @@ interface CartItem {
   price: number;
   quantity: number;
   image: string;
+  isReadyToWear: boolean;
+  readyToWearCharges: number;
 }
 
 export default function CartDrawer({ isOpen, onOpenChange }: CartDrawerProps) {
@@ -41,16 +43,14 @@ export default function CartDrawer({ isOpen, onOpenChange }: CartDrawerProps) {
           throw new Error("User not authenticated");
         }
 
-        const userDoc = docId.toString(); // Assign the userDoc value from docId
+        const userDoc = docId.toString();
 
-        // Fetch cart items from the 'cart' sub-collection of the 'customers' collection
         const fetchedCartItems = await getAllDocsFromSubCollection<CartItem>(
-          "customers", // The main collection name
-          userDoc,     // The document ID for the authenticated user
-          "cart"       // The sub-collection name
+          "customers",
+          userDoc,
+          "cart"
         );
 
-        // Update the cartItems state with fetched items
         setCartItems(fetchedCartItems);
       } catch (error) {
         console.error("Error fetching cart items: ", error);
@@ -58,7 +58,7 @@ export default function CartDrawer({ isOpen, onOpenChange }: CartDrawerProps) {
     };
 
     if (isOpen) {
-      fetchCartItems(); // Fetch data only when the drawer is open
+      fetchCartItems();
     }
   }, [isOpen]);
 
@@ -73,10 +73,8 @@ export default function CartDrawer({ isOpen, onOpenChange }: CartDrawerProps) {
 
       const userDoc = docId.toString();
 
-      // Remove the document from Firestore
       await deleteDocFromSubCollection("customers", userDoc, "cart", id);
 
-      // Remove the item from state
       setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
     } catch (error) {
       console.error("Error removing item: ", error);
@@ -93,10 +91,18 @@ export default function CartDrawer({ isOpen, onOpenChange }: CartDrawerProps) {
     }
   };
 
-   
   const calculateTotal = () => {
-    return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+    return cartItems.reduce((total, item) => {
+      const price = Number(item.price);
+      const readyToWearCharges = item.isReadyToWear ? Number(item.readyToWearCharges) : 0;
+      const quantity = Number(item.quantity);
+  
+      const itemTotal = (price + readyToWearCharges) * quantity;
+      console.log(typeof itemTotal, itemTotal); // Debugging the type and value
+      return total + itemTotal;
+    }, 0);
   };
+  
 
   return (
     <Drawer
@@ -122,7 +128,6 @@ export default function CartDrawer({ isOpen, onOpenChange }: CartDrawerProps) {
               CART 🛒
             </DrawerHeader>
             <DrawerBody>
-              {/* Cart items will be displayed inside CartList */}
               <CartList
                 cartItems={cartItems}
                 onRemoveItem={handleRemoveItem}
@@ -131,7 +136,6 @@ export default function CartDrawer({ isOpen, onOpenChange }: CartDrawerProps) {
               />
             </DrawerBody>
             <DrawerFooter>
-              {/* Subtotal text and total */}
               <div className="flex flex-col gap-2">
                 <div className="flex justify-between text-sm">
                   <span>Subtotal</span>
@@ -143,14 +147,12 @@ export default function CartDrawer({ isOpen, onOpenChange }: CartDrawerProps) {
                   Shipping, taxes, and discount codes calculated at checkout.
                 </div>
               </div>
-
-              {/* Place Order Button */}
               <Button
-                color="warning" // Orange color
-                variant="flat" // White background with border
+                color="warning"
+                variant="flat"
                 className="w-full mt-4"
-                onPress={()=> {
-                  Router.push('/checkout')
+                onPress={() => {
+                  Router.push("/checkout");
                   onClose();
                 }}
               >

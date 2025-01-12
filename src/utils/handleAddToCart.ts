@@ -2,6 +2,7 @@ import { ProductType } from "@/Types/data/ProductType";
 import { createDataWithCustomId } from "@/service/Firebase/postFirestore";
 import { getAuth } from "firebase/auth";
 import { app } from "@/config/FirebaseConfig";
+import ReadyToWear from "@/components/Product/ReadyToWear";
 
 // Updated Function to handle Add to Cart
 export const handleAddToCart = async (
@@ -41,6 +42,8 @@ export const handleAddToCart = async (
       status: "pending", // Could be "pending", "in-process", "purchased", etc.
       image: product.featuredImage,
       readyToWear: product.readyToWear || null, // Include custom fields if available
+      readyToWearCharges: product.readyToWearCharges,
+      isReadyToWear: product.isReadyToWear
     };
 
     // Use the collection name to create a document in the cart subcollection

@@ -3,23 +3,31 @@ import Image from "next/image";
 import React from "react";
 import { handleIncrementQuantity } from "@/utils/handleIncrementQuantity";
 import { handleDecrementQuantity } from "@/utils/handleDecrementQuantity";
+import SparklesText from "../ui/sparkles-text";
 
 interface CartItem {
   id: string;
   name: string;
   price: number;
   quantity: number;
-  image: string; // Add image URL to CartItem
+  image: string;
+  isReadyToWear: boolean;
+  readyToWearCharges: number;
 }
 
 interface CartListProps {
   cartItems: CartItem[];
-  userId: string; // Pass the userId for Firebase operations
-  onRemoveItem: (id: string) => void; // Function to remove an item from the cart
-  onUpdateQuantity: (id: string, quantity: number) => void; // Function to update quantity locally
+  userId: string;
+  onRemoveItem: (id: string) => void;
+  onUpdateQuantity: (id: string, quantity: number) => void;
 }
 
-const CartList: React.FC<CartListProps> = ({ cartItems, userId, onRemoveItem, onUpdateQuantity }) => {
+const CartList: React.FC<CartListProps> = ({
+  cartItems,
+  userId,
+  onRemoveItem,
+  onUpdateQuantity,
+}) => {
   const handleIncrement = async (id: string, currentQuantity: number) => {
     const success = await handleIncrementQuantity(id, userId);
     if (success) {
@@ -39,7 +47,9 @@ const CartList: React.FC<CartListProps> = ({ cartItems, userId, onRemoveItem, on
   return (
     <div className="space-y-6">
       {cartItems.length === 0 ? (
-        <p className="text-xl font-semibold text-center text-gray-600">No items in the cart.</p>
+        <p className="text-xl font-semibold text-center text-gray-600">
+          No items in the cart.
+        </p>
       ) : (
         cartItems.map((item) => (
           <div
@@ -58,7 +68,7 @@ const CartList: React.FC<CartListProps> = ({ cartItems, userId, onRemoveItem, on
               {/* Product Name */}
               <p className="text-xl font-semibold text-gray-800">{item.name}</p>
               {/* Price */}
-              <p className="text-sm text-gray-600 flex">
+              <p className="text-sm text-gray-600 flex items-center">
                 <IndianRupee size={20} /> {item.price}
               </p>
               <div className="flex items-center mt-2">
@@ -77,6 +87,12 @@ const CartList: React.FC<CartListProps> = ({ cartItems, userId, onRemoveItem, on
                   +
                 </button>
               </div>
+              {/* Ready-to-Wear Charges */}
+              {item.isReadyToWear && (
+                <div className="flex">
+               <SparklesText text="Ready to Wear " sparklesCount={3} className="text-sm font-light text-orange-400 fill-content4-foreground"></SparklesText> <span className=" pl-2 text-sm"> ₹{item.readyToWearCharges}</span>
+                </div>
+              )}
             </div>
             <div>
               {/* Remove Button */}
