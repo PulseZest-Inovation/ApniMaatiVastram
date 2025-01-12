@@ -2,7 +2,7 @@
 
 // Define the type for user profile data
 export interface userProfileType {
-    name: string;
+    fullName: string;
     email: string;
     phoneNumber: string; // Updated field name
     address: string;

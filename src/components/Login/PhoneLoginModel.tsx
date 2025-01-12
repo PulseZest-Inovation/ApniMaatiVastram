@@ -1,6 +1,6 @@
 import { auth } from '@/config/FirebaseConfig';
 import { ConfirmationResult, RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
-import React, {useEffect, useState, useTransition } from 'react';
+import React, { useEffect, useState, useTransition } from 'react';
 import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from '@/components/ui/input-otp';
 import { Modal, ModalContent, ModalHeader, ModalBody, Button, Input } from '@nextui-org/react';
 import { message, Typography } from 'antd';
@@ -13,7 +13,7 @@ interface PheneLoginModalProps {
 }
 
 export default function PhoneLoginModel({ isOpen, onOpenChange }: PheneLoginModalProps) {
-  const [phoneNumber, setPhoneNumber] = useState('');   
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [otp, setOtp] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState('');
@@ -21,6 +21,7 @@ export default function PhoneLoginModel({ isOpen, onOpenChange }: PheneLoginModa
   const [recaptchaVerifier, setRecaptchaVerifier] = useState<RecaptchaVerifier | null>(null);
   const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
   const [isPending, startTransition] = useTransition();
+  const [userName, setUserName] = useState(''); // State to hold the user's name
 
   useEffect(() => {
     if (!isOpen) return;
@@ -60,7 +61,7 @@ export default function PhoneLoginModel({ isOpen, onOpenChange }: PheneLoginModa
         const confirmationResult = await signInWithPhoneNumber(auth, `+91${phoneNumber}`, recaptchaVerifier);  // Prefixing with +91
         setConfirmationResult(confirmationResult);
         setSuccess('OTP sent successfully!');
-        message.success("OTP send Successfully")
+        message.success("OTP sent successfully");
       } catch (err: unknown) {
         setResendCountdown(0);
         setError('Failed to send OTP. Please try again.');
@@ -77,50 +78,69 @@ export default function PhoneLoginModel({ isOpen, onOpenChange }: PheneLoginModa
 
     try {
       await confirmationResult.confirm(otp);
-      await createAccount();
-      message.success("OTP Verfied Successfully")
+      // Pass the user's name as an argument to createAccount
+      await createAccount(userName);
+      message.success("OTP Verified Successfully");
       onOpenChange(false); // Close the modal on success
       window.location.reload();
     } catch (error) {
       console.error(error);
-      setError('Failed to verify OTP. Please check the OTP');
+      setError('Failed to verify OTP. Please check the OTP.');
     }
   };
 
   return (
     <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
       <ModalContent>
-        <ModalHeader className="text-center">Welcome Back</ModalHeader>
+        <ModalHeader className="text-center justify-center">Welcome Back</ModalHeader>
         <ModalBody className="flex justify-center">
-          <div className="bg-white p-6 rounded-lg relative">
-
+          <div className="bg-white p-2rounded-lg relative">
             {!confirmationResult ? (
               <form onSubmit={requestOtp}>
                 <Typography className="text-center mb-2 text-1xl font-bold flex items-center justify-center">
-                Enter your 10 Digit <FaWhatsapp className="text-green-500 ml-1 mr-1" />  Number
-              </Typography>
-                <Input
-                  className="w-full mb-4"
-                  type="tel"  
-                  value={phoneNumber}
-                  onChange={(e) => setPhoneNumber(e.target.value)}
-                  placeholder="Enter phone number"
-                  prefix="+91 "  // Pre-fills the input with +91
-                  maxLength={10}  // Restricting input length after +91
-                />
-             
+                  Enter your 10 Digit <FaWhatsapp className="text-green-500 ml-1 mr-1" /> Number
+                </Typography>
+
+                {/* User Name Input */}
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="userName">Enter Name</label>
+                  <Input
+                    id="userName"
+                    className="w-full"
+                    value={userName}
+                    onChange={(e) => setUserName(e.target.value)}
+                    placeholder="Enter your name"
+                  />
+                </div>
+
+                {/* Phone Number Input */}
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="phoneNumber">Enter Phone Number</label>
+                  <Input
+                    id="phoneNumber"
+                    className="w-full"
+                    type="tel"
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    placeholder="Enter phone number"
+                    prefix="+91 "
+                    maxLength={10}
+                  />
+                </div>
+
                 <Button
-                  disabled={!phoneNumber || isPending || resendCountdown > 0}
-                  onClick={requestOtp}
-                  className="w-full"
-                  variant="ghost"
-                >
-                  {resendCountdown > 0
-                    ? `Resend OTP in ${resendCountdown}`
-                    : isPending
-                    ? 'Sending OTP'
-                    : 'Send OTP'}
-                </Button>
+                disabled={!phoneNumber || !userName || isPending || resendCountdown > 0}
+                onClick={requestOtp}
+                className={`w-full ${!phoneNumber || !userName || isPending || resendCountdown > 0 ? 'bg-gray-300 cursor-not-allowed' : 'bg-orange-400 hover:bg-orange-300 cursor-pointer'} font-bold`}
+                variant="ghost"
+              >
+                {resendCountdown > 0
+                  ? `Resend OTP in ${resendCountdown}`
+                  : isPending
+                  ? 'Sending OTP'
+                  : 'Send OTP'}
+              </Button>
+
               </form>
             ) : (
               <>
@@ -137,7 +157,7 @@ export default function PhoneLoginModel({ isOpen, onOpenChange }: PheneLoginModa
                     <InputOTPSlot index={5} />
                   </InputOTPGroup>
                 </InputOTP>
-                <Button onClick={verifyOtp} className="w-full mt-5" variant="light">
+                <Button onPress={verifyOtp} className="w-full mt-5 bg-green-400 text-white font-bold cursor-pointer">
                   Verify OTP
                 </Button>
               </>

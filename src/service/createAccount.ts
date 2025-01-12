@@ -4,7 +4,7 @@ import { getAuth } from 'firebase/auth';
 import { ApplicationConfig } from '@/config/ApplicationConfig';
 
 // Function to create the user in Firestore
-export const createAccount = async () => {
+export const createAccount = async (userName: string) => {
   try {
         const auth = getAuth();
         const currentUser = auth.currentUser
@@ -20,6 +20,7 @@ export const createAccount = async () => {
     // If the document doesn't exist, create it and set the phone number
     if (!userDocSnapshot.exists()) {
       await setDoc(userDocRef, {
+        fullName: userName,
         phoneNumber: currentUser.phoneNumber, // Set the phone number as part of the user's document
       });
 
