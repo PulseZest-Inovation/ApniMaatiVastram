@@ -2,7 +2,6 @@ import { ProductType } from "@/Types/data/ProductType";
 import { createDataWithCustomId } from "@/service/Firebase/postFirestore";
 import { getAuth } from "firebase/auth";
 import { app } from "@/config/FirebaseConfig";
-import ReadyToWear from "@/components/Product/ReadyToWear";
 
 // Updated Function to handle Add to Cart
 export const handleAddToCart = async (
