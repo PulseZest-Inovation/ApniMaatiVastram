@@ -37,7 +37,7 @@ yarn-error.log*
 .vercel
 
 # Stop updateing the ApplicationConfig.
-/src/app/config/ApplicationConfig.ts
+/src/config/ApplicationConfig.ts
 
 # typescript
 *.tsbuildinfo
