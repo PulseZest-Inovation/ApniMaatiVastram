@@ -82,10 +82,10 @@ const UserProfilePage: React.FC = () => {
         <div className="flex flex-col lg:flex-row items-center lg:items-start">
           <div>
             <h2 className="text-2xl font-semibold text-gray-800 text-center">
-              {user?.name || "User Name"} {/* Display user name or fallback */}
+              {user?.fullName || "User Name"} {/* Display user name or fallback */}
             </h2>
             <p className="text-lg text-gray-600">
-              {user?.email || "User Email"} {/* Display user email or fallback */}
+              {user?.email || "Add your Email"} {/* Display user email or fallback */}
             </p>
           </div>
         </div>

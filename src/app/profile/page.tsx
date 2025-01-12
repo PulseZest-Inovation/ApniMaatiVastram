@@ -3,23 +3,14 @@ import React, { useEffect, useState } from 'react';
 import { getAuth } from 'firebase/auth';
 import { Spinner } from '@nextui-org/react';
 import { fetchUserData, updateUserProfile } from './profile'; // Assuming you put the functions here
-
-// Define the type for user profile data
-export interface UserProfile {
-  name: string;
-  email: string;
-  phoneNumber: string;
-  address: string;
-  city: string;
-  pinCode: string;
-}
+import { userProfileType } from '@/Types/data/userProfileType';
 
 export default function UserProfilePage() {
-  const [userData, setUserData] = useState<UserProfile | null>(null);
+  const [userData, setUserData] = useState<userProfileType | null>(null);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState<UserProfile>({
-    name: '',
+  const [formData, setFormData] = useState<userProfileType>({
+    fullName: '',
     email: '',
     phoneNumber: '',
     address: '',
@@ -40,11 +31,11 @@ export default function UserProfilePage() {
   // Function to save the form data
   const saveChanges = async () => {
     if (currentUser) {
-      const { name, email, phoneNumber, address, city, pinCode } = formData;
+      const { fullName, email, phoneNumber, address, city, pinCode } = formData;
       try {
         // Update fields if they are different
-        if (name !== userData?.name) {
-          await updateUserProfile(currentUser.uid, 'name', name);
+        if (name !== userData?.fullName) {
+          await updateUserProfile(currentUser.uid, 'name', fullName);
         }
         if (email !== userData?.email) {
           await updateUserProfile(currentUser.uid, 'email', email);
@@ -64,7 +55,7 @@ export default function UserProfilePage() {
 
         // Update user data state immediately after changes
         setUserData({
-          name,
+          fullName,
           email,
           phoneNumber,
           address,
@@ -112,7 +103,7 @@ export default function UserProfilePage() {
         <div className="space-y-4">
           <div className="flex justify-between">
             <span className="font-medium">Name:</span>
-            <span>{userData.name || 'Enter your Name'}</span>
+            <span>{userData.fullName || 'Enter your Name'}</span>
           </div>
           <div className="flex justify-between">
             <span className="font-medium">Email:</span>
@@ -151,7 +142,7 @@ export default function UserProfilePage() {
             <input
               type="text"
               name="name"
-              value={formData.name}
+              value={formData.fullName}
               onChange={handleChange}
               className="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />

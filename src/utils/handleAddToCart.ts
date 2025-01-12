@@ -5,7 +5,7 @@ import { app } from "@/config/FirebaseConfig";
 
 // Updated Function to handle Add to Cart
 export const handleAddToCart = async (
-  product: ProductType & { readyToWear?: { wrist: number; length: number; hip: number } }
+  product: ProductType & { readyToWear?: { wrist: number; length: number; hip: number }; readyToWearCharges?: number; isReadyToWear?: boolean }
 ): Promise<boolean> => {
   console.log(`Processing Add to Cart for: ${product.productTitle}`);
   try {
@@ -29,6 +29,9 @@ export const handleAddToCart = async (
       return false;
     }
 
+    // Ensure readyToWearCharges is defined (set to 0 if undefined)
+    const readyToWearCharges = product.readyToWearCharges ?? 0;
+
     // Data to store in the cart
     const cartData = {
       productId: product.id,
@@ -41,7 +44,7 @@ export const handleAddToCart = async (
       status: "pending", // Could be "pending", "in-process", "purchased", etc.
       image: product.featuredImage,
       readyToWear: product.readyToWear || null, // Include custom fields if available
-      readyToWearCharges: product.readyToWearCharges,
+      readyToWearCharges: readyToWearCharges, // Make sure this is defined
       isReadyToWear: product.isReadyToWear
     };
 
@@ -66,3 +69,4 @@ export const handleAddToCart = async (
     return false; // Indicate failure
   }
 };
+
