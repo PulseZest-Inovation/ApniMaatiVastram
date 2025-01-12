@@ -1,6 +1,8 @@
-import { getAllDocsFromCollection } from "@/service/Firebase/getFirestore";
+import { getAllDocsFromCollection, getDataByDocName } from "@/service/Firebase/getFirestore";
+import { FooterType } from "@/Types/Theme/footerType";
+import { SocialMediaType } from "@/Types/Theme/SocialMediaType";
 
-export const fetchFooterData = async () => {
+export const fetchFooterCategories = async () => {
   try {
     // Fetch data from 'categories' collection
     const categories = await getAllDocsFromCollection<{ name: string; slug: string }>(
@@ -28,3 +30,23 @@ export const fetchFooterData = async () => {
     return { categories: [], pages: [] };
   }
 };
+
+
+export const fetchFooterSocialMedia = async ()=>{
+  try {
+    const socialMedia = await getDataByDocName<SocialMediaType>('theme-settings', 'social-media')
+    return socialMedia;
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+
+export const fetchFooterData = async ()=>{
+  try {
+    const footerData = await getDataByDocName<FooterType>('theme-settings', 'footer')
+    return footerData
+  } catch (error) {
+    console.log(error)
+  }
+}
