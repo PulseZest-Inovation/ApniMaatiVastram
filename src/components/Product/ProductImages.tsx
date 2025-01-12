@@ -1,4 +1,6 @@
+"use client";
 import React, { useState, useEffect, useRef } from "react";
+import { ScrollShadow } from "@nextui-org/react";
 import Image from "next/image";
 
 interface ImageGalleryProps {
@@ -15,7 +17,6 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
   );
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [startTouch, setStartTouch] = useState<number | null>(null);
-  const [loadedVideos, setLoadedVideos] = useState<Set<string>>(new Set());
   const galleryRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -28,32 +29,6 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
 
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
-  useEffect(() => {
-    // Lazy load videos when they come into the viewport
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const videoElement = entry.target as HTMLVideoElement;
-            if (!loadedVideos.has(videoElement.src)) {
-              setLoadedVideos((prev) => new Set(prev).add(videoElement.src));
-            }
-          }
-        });
-      },
-      {
-        rootMargin: "0px 0px 200px 0px", // Start loading when it's close to the viewport
-      }
-    );
-
-    const videoElements = galleryRef.current?.querySelectorAll("video");
-    videoElements?.forEach((video) => observer.observe(video));
-
-    return () => {
-      videoElements?.forEach((video) => observer.unobserve(video));
-    };
-  }, [loadedVideos]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     const touchStart = e.touches[0].clientX;
@@ -80,47 +55,26 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
     setStartTouch(null); // Reset touch position
   };
 
-  const isVideoUrl = (url: string) => {
-    return url.match(/\.(mp4|webm|ogg)$/i);
-  };
-
   return (
     <div className="w-full flex flex-col md:flex-row gap-4">
       {isMobile ? (
         <div className="relative" ref={galleryRef}>
           {selectedImage ? (
-            isVideoUrl(selectedImage) ? (
-              <div className="w-full">
-                <video
-                  className="rounded-lg shadow-lg"
-                  controls
-                  width="100%"
-                  height="auto"
-                  src={selectedImage}
-                  autoPlay
-                  muted
-                  preload="none"
-                >
-                  Your browser does not support the video tag.
-                </video>
-              </div>
-            ) : (
-              <div
-                className="w-full"
-                onTouchStart={handleTouchStart}
-                onTouchEnd={handleTouchEnd}
-              >
-                <Image
-                  className="rounded-lg shadow-lg"
-                  src={selectedImage}
-                  alt="Selected Product"
-                  layout="responsive"
-                  width={1000}
-                  height={800}
-                  objectFit="contain"
-                />
-              </div>
-            )
+            <div
+              className="w-full"
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+            >
+              <Image
+                className="rounded-lg shadow-lg"
+                src={selectedImage}
+                alt="Selected Product"
+                layout="responsive"
+                width={1000}
+                height={800}
+                objectFit="contain"
+              />
+            </div>
           ) : (
             <div className="text-gray-500 text-center">Image not available</div>
           )}
@@ -139,64 +93,37 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
         </div>
       ) : (
         <>
-          <div className="flex flex-row md:flex-col md:w-1/5 gap-2">
+        <ScrollShadow className="max-h-[450px] flex flex-row md:flex-col md:w-1/5 gap-2 overflow-y-auto  scrollbar-hide">
+      
             {galleryImages.map((img, index) => (
               <div key={index}>
-                {isVideoUrl(img) ? (
-                  <video
-                    className={`h-24 w-24 object-cover rounded-lg shadow-md cursor-pointer transition-transform duration-200 ${
-                      selectedImage === img ? "border-2 border-blue-600" : ""
-                    }`}
-                    controls
-                    width={100}
-                    height={100}
-                    onClick={() => setSelectedImage(img)}
-                    preload="none"
-                    src={loadedVideos.has(img) ? img : ""}
-                  >
-                    Your browser does not support the video tag.
-                  </video>
-                ) : (
-                  <Image
-                    key={index}
-                    src={img}
-                    alt={`Gallery Image ${index + 1}`}
-                    height={100}
-                    width={100}
-                    className={`h-24 w-24 object-cover rounded-lg shadow-md cursor-pointer transition-transform duration-200 ${
-                      selectedImage === img ? "border-2 border-blue-600" : ""
-                    }`}
-                    onClick={() => setSelectedImage(img)}
-                  />
-                )}
+                <Image
+                  src={img}
+                  alt={`Gallery Image ${index + 1}`}
+                  height={100}
+                  width={100}
+                  className={`h-24 w-24 object-cover rounded-lg shadow-md cursor-pointer transition-transform duration-200 ${
+                    selectedImage === img ? "border-2 border-blue-600" : ""
+                  }`}
+                  onClick={() => setSelectedImage(img)}
+                />
               </div>
             ))}
-          </div>
+        
+        </ScrollShadow>
+          
 
           <div className="flex-1">
             {selectedImage ? (
-              isVideoUrl(selectedImage) ? (
-                <video
-                  className="rounded-lg shadow-lg"
-                  controls
-                  width="100%"
-                  height="auto"
-                  preload="none"
-                  src={loadedVideos.has(selectedImage) ? selectedImage : ""}
-                >
-                  Your browser does not support the video tag.
-                </video>
-              ) : (
-                <Image
-                  className="rounded-lg shadow-lg"
-                  src={selectedImage}
-                  alt="Selected Product"
-                  layout="responsive"
-                  width={1000}
-                  height={800}
-                  objectFit="contain"
-                />
-              )
+              <Image
+                className="rounded-lg shadow-lg"
+                src={selectedImage}
+                alt="Selected Product"
+                layout="responsive"
+                width={1000}
+                height={800}
+                objectFit="contain"
+              />
             ) : (
               <div className="text-gray-500 text-center">
                 Image not available

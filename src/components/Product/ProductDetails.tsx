@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import React, { useState } from "react";
 import { Button, Spinner } from "@nextui-org/react";
 import { ShoppingCartOutlined } from "@ant-design/icons";
@@ -11,6 +11,8 @@ import CartDrawer from "../Cart/page";
 import OtpModal from "@/components/Login/PhoneLoginModel";
 import DiscountCard from "../DiscountCard/page";
 import ReadyToWear from "./ReadyToWear";
+import ProductShortDescription from "./ProductShortDescription";
+import ExpandableSection from "./ExpandableSection";
 
 interface ProductDetailsProps {
   product: ProductType;
@@ -20,7 +22,11 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
   const [loading, setLoading] = useState({ cart: false, wishlist: false });
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [readyToWear, setReadyToWear] = useState<{ wrist: number; length: number; hip: number }>({
+  const [readyToWear, setReadyToWear] = useState<{
+    wrist: number;
+    length: number;
+    hip: number;
+  }>({
     wrist: 0,
     length: 0,
     hip: 0,
@@ -29,7 +35,11 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
 
   const auth = getAuth(); // Get Firebase authentication instance
 
-  const handleFieldsChange = (fields: { wrist: number; length: number; hip: number }) => {
+  const handleFieldsChange = (fields: {
+    wrist: number;
+    length: number;
+    hip: number;
+  }) => {
     setReadyToWear(fields);
   };
 
@@ -123,12 +133,13 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
         </p>
       </div>
 
-      <ReadyToWear product={product} onFieldsChange={handleFieldsChange} onReadyToWearChange={handleReadyToWearChange} />
+      <ReadyToWear
+        product={product}
+        onFieldsChange={handleFieldsChange}
+        onReadyToWearChange={handleReadyToWearChange}
+      />
 
       <DiscountCard />
-
-      {/* Short Description */}
-      <p className="text-gray-700 mt-5">{product.shortDescription}</p>
 
       {/* Sticky Footer for Action Buttons (Mobile Only) */}
       <div className="p-4 bg-white flex flex-col md:flex-row md:space-x-2 space-y-4 md:space-y-0 md:items-center md:static fixed bottom-0 left-0 right-0 z-10">
@@ -186,12 +197,38 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
         </Button>
       </div>
 
+      {[
+        "PRODUCT SPECIFICATION",
+        "SHIPPING INFORMATION",
+        "MORE INFORMATION",
+        "NEED HELP",
+      ].map((section) => (
+        <ExpandableSection
+          key={section}
+          title={section}
+          content={
+            product.description.find((d) => d.heading.toUpperCase() === section)
+              ?.content || ""
+          }
+        />
+      ))}
+
+      {/* Short Description */}
+      <ProductShortDescription
+        description={product.shortDescription}
+      ></ProductShortDescription>
+
       {/* Conditionally render CartDrawer or OtpModal */}
       {isCartDrawerOpen && (
-        <CartDrawer isOpen={isCartDrawerOpen} onOpenChange={setIsCartDrawerOpen} />
+        <CartDrawer
+          isOpen={isCartDrawerOpen}
+          onOpenChange={setIsCartDrawerOpen}
+        />
       )}
 
-      {isModalOpen && <OtpModal isOpen={isModalOpen} onOpenChange={setIsModalOpen} />}
+      {isModalOpen && (
+        <OtpModal isOpen={isModalOpen} onOpenChange={setIsModalOpen} />
+      )}
     </div>
   );
 };

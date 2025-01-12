@@ -89,7 +89,7 @@ const ProductView: React.FC<ProductViewProps> = ({ slug }) => {
       <div className="max-w-7xl mx-auto">
         <Row gutter={16} align="top">
           {/* Left Section: Gallery and Main Image */}
-          <Col xs={24} md={12}>
+          <Col xs={24} md={12} className="sticky top-20">
             <div className="flex gap-4">
               <ImageGallery galleryImages={combinedImages} initialSelectedImage={combinedImages[0]} />
             </div>
@@ -97,21 +97,9 @@ const ProductView: React.FC<ProductViewProps> = ({ slug }) => {
 
           {/* Right Section: Product Details */}
           <Col xs={24} md={12}>
+          
             <ProductDetails product={product} />
 
-            {["specifications", "shipping", "moreInfo", "needHelp"].map(
-              (section) => (
-                <ExpandableSection
-                  key={section}
-                  title={section.replace(/([A-Z])/g, " $1")}
-                  content={
-                    product.description.find(
-                      (d) => d.heading.toLowerCase() === section
-                    )?.content || ""
-                  }
-                />
-              )
-            )}
 
             <div className="w-full flex justify-center">
               <Image
