@@ -3,11 +3,11 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { getCarousle } from '@/service/theme/getCarousle';
 import { ImageCarousleType } from '@/Types/Theme/ImageCarouselType';
-// Different carousel components
-import BasicCarousel from './CarousleDesign/BasicCarousel';
-import ThumbnailCarousel from './CarousleDesign/ThumbnailCarousel';
-import HorizontalCarousel from './CarousleDesign/HorizontalCarousel';
-import { useRouter } from 'next/navigation';  // To handle navigation
+import { useRouter } from 'next/navigation'; // To handle navigation
+
+// Import the new mobile and desktop carousel components
+import MobileBasicCarousel from './CarousleDesign/BasicCarousel/MobileBasicCarousel';
+import DesktopBasicCarousel from './CarousleDesign/BasicCarousel/DesktopBasicCarousel';
 
 const ImageCarousle: React.FC = () => {
   const [carouselData, setCarouselData] = useState<ImageCarousleType | null>(null);
@@ -32,9 +32,7 @@ const ImageCarousle: React.FC = () => {
   }, [fetchCarouselData]);
 
   if (isLoading) {
-    return <div className="justify-center">
-     {/* <LinearProgress  /> */}
-  </div>;
+    return <div className="justify-center"> {/* Loading spinner or other loading indicator */} </div>;
   }
 
   if (!carouselData || !carouselData.isEnable) {
@@ -51,40 +49,37 @@ const ImageCarousle: React.FC = () => {
     switch (carouselData.selectedType) {
       case 'Basic Image Slider':
         return (
-          <BasicCarousel
-            images={carouselData.images.map((image) => ({
-              imageURL: image.imageURL,
-              pageURL: image.pageURL,
-            }))}
-            onImageClick={handleImageClick} // Pass the onImageClick function to the BasicCarousel
-          />
+          <>
+            {/* Mobile Carousel (visible on small screens) */}
+            <div className="block sm:hidden">
+              <MobileBasicCarousel
+                images={carouselData.mobileImages.map((image) => ({
+                  imageURL: image.imageURL,
+                  pageURL: image.pageURL,
+                }))}
+                onImageClick={handleImageClick} // Pass the onImageClick function to the MobileCarousel
+              />
+            </div>
+
+            {/* Desktop Carousel (visible on large screens) */}
+            <div className="hidden sm:block">
+              <DesktopBasicCarousel
+                images={carouselData.desktopImages.map((image) => ({
+                  imageURL: image.imageURL,
+                  pageURL: image.pageURL,
+                }))}
+                onImageClick={handleImageClick} // Pass the onImageClick function to the DesktopCarousel
+              />
+            </div>
+          </>
         );
-      case 'Thumbnail Image Carousel':
-        return (
-          <ThumbnailCarousel
-            images={carouselData.images.map((image) => ({
-              imageURL: image.imageURL,
-              pageURL: image.pageURL,
-            }))}
-            // onImageClick={handleImageClick}
-          />
-        );
-      case 'Horizontal Image Carousel':
-        return (
-          <HorizontalCarousel
-            images={carouselData.images.map((image) => ({
-              imageURL: image.imageURL,
-              pageURL: image.pageURL,
-            }))}
-            onImageClick={handleImageClick}
-          />
-        );
+
       default:
         return <div> </div>;
     }
   };
 
-  return <div className="image-carousel cursor-pointer ">{renderCarousel()}</div>;
+  return <div className="image-carousel cursor-pointer">{renderCarousel()}</div>;
 };
 
 export default ImageCarousle;

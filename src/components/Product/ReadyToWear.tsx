@@ -11,13 +11,13 @@ interface Product {
 // Define the props for the component
 interface CustomFieldsProps {
   product: Product;
-  onFieldsChange: (fields: { wrist: number; length: number; hip: number }) => void;
+  onFieldsChange: (fields: { waist: number; length: number; hip: number }) => void;
   onReadyToWearChange: (isReadyToWear: boolean) => void; 
 }
 
 const ReadyToWear: React.FC<CustomFieldsProps> = ({ product, onFieldsChange, onReadyToWearChange }) => {
   const [showFields, setShowFields] = useState(false);
-  const [fields, setFields] = useState({ wrist: 0, length: 0, hip: 0 });
+  const [fields, setFields] = useState({ waist: 0, length: 0, hip: 0 });
 
   // Handle checkbox toggle
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,7 +47,7 @@ const ReadyToWear: React.FC<CustomFieldsProps> = ({ product, onFieldsChange, onR
             />
             <div className="flex items-center space-x-2">
               <SparklesText
-                text="Make this Saree Ready-to-Wear only in ₹"
+                text="Make this Pre Plated Saree only in ₹"
                 className="text-base sm:text-xl font-light"
               />
               <span className="font-bold text-base sm:text-xl">
@@ -61,12 +61,12 @@ const ReadyToWear: React.FC<CustomFieldsProps> = ({ product, onFieldsChange, onR
               {/* Wrist Field */}
               <div>
                 <label className="block text-gray-700 font-medium mb-1" htmlFor="wrist">
-                  Wrist
+                  Waist
                 </label>
                 <input
                   type="number"
-                  id="wrist"
-                  value={fields.wrist}
+                  id="waist"
+                  value={fields.waist}
                   className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Enter wrist size"
                   onChange={handleFieldChange}

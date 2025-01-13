@@ -23,11 +23,11 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [readyToWear, setReadyToWear] = useState<{
-    wrist: number;
     length: number;
+    waist: number;
     hip: number;
   }>({
-    wrist: 0,
+    waist: 0,
     length: 0,
     hip: 0,
   });
@@ -36,7 +36,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
   const auth = getAuth(); // Get Firebase authentication instance
 
   const handleFieldsChange = (fields: {
-    wrist: number;
+    waist: number;
     length: number;
     hip: number;
   }) => {

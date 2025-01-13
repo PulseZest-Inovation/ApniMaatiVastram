@@ -5,7 +5,7 @@ import { app } from "@/config/FirebaseConfig";
 
 // Updated Function to handle Add to Cart
 export const handleAddToCart = async (
-  product: ProductType & { readyToWear?: { wrist: number; length: number; hip: number }; readyToWearCharges?: number; isReadyToWear?: boolean }
+  product: ProductType
 ): Promise<boolean> => {
   console.log(`Processing Add to Cart for: ${product.productTitle}`);
   try {

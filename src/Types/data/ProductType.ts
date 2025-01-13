@@ -1,4 +1,5 @@
 import { Timestamp } from "firebase/firestore";
+import { ReadyToWear } from "./ReadyToWear";
 
 export interface ProductType {
   id: string;
@@ -11,11 +12,7 @@ export interface ProductType {
 
   isReadyToWear: boolean;
   readyToWearCharges: number;
-  readyToWear?: {
-    wrist: number;
-    length: number;
-    hip: number;
-  };
+  readyToWear?:  ReadyToWear;
 
   type: string;
   status: string;
