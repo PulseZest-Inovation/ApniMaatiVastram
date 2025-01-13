@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import { getDataByDocName } from "@/service/Firebase/getFirestore";
 import { ProductType } from "@/Types/data/ProductType";
 import ProductDetails from "./ProductDetails";
-import ExpandableSection from "./ExpandableSection";
 import CustomerReviews from "./CustomerReviews";
 import { Col, Row } from "antd";
 import ImageGallery from "./ProductImages";

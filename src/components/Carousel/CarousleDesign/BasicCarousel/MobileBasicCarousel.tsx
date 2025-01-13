@@ -1,4 +1,5 @@
 // MobileBasicCarousel.tsx
+import Image from 'next/image';
 import React from 'react';
 import { Carousel } from 'react-responsive-carousel';
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // Import carousel styles
@@ -22,7 +23,7 @@ const MobileBasicCarousel: React.FC<MobileBasicCarouselProps> = ({ images, onIma
       >
         {images.map((image, index) => (
           <div key={index} onClick={() => onImageClick(image.pageURL)}>
-            <img
+            <Image
               src={image.imageURL}
               alt={`Carousel Image ${index}`}
               width={400}  // Mobile image size
