@@ -88,14 +88,14 @@ const ProductView: React.FC<ProductViewProps> = ({ slug }) => {
       <div className="max-w-7xl mx-auto">
         <Row gutter={16} align="top">
           {/* Left Section: Gallery and Main Image */}
-          <Col xs={24} md={12} className=" lg:sticky lg:top-20">
+          <Col xs={24} md={12} lg={14} className=" lg:sticky lg:top-20">
             <div className="flex gap-4">
               <ImageGallery galleryImages={combinedImages} initialSelectedImage={combinedImages[0]} />
             </div>
           </Col>
 
           {/* Right Section: Product Details */}
-          <Col xs={24} md={12}>
+          <Col xs={24} md={12} lg={10}>
           
             <ProductDetails product={product} />
 

@@ -131,7 +131,7 @@ export function Footer() {
         <Divider className="my-6" />
 
         {/* Email Subscription and Social Media */}
-        <div className="flex flex-wrap justify-between items-center">
+        <div className="flex flex-wrap justify-between items-center z-0">
           <div className="w-full sm:w-1/2 mb-5 sm:mb-0">
             <h3 className="text-lg font-semibold mb-4">Subscribe to Newsletter</h3>
             <div className="flex items-center space-x-4">

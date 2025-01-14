@@ -30,14 +30,14 @@ export default function ProductCard({ product }: ProductCardProps) {
       {product.isReturn && (
         <div className="flex items-center gap-3 mb-4">
           <FaRedoAlt className=" text-xl" />
-          <p className="text-gray-600">Return period: {product.returnPeriod}</p>
+          <p className="text-gray-600"> {product.returnPeriod}</p>
         </div>
       )}
 
       {/* Delivery Time */}
       <div className="flex items-center gap-3 mb-4">
         <FaRegClock className=" text-xl" />
-        <p className="text-gray-600">Delivery time: {product.deliveryTimePeriod}</p>
+        <p className="text-gray-600">{product.deliveryTimePeriod}</p>
       </div>
 
       {/* Cash on Delivery */}
