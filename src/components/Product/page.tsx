@@ -68,7 +68,7 @@ const ProductView: React.FC<ProductViewProps> = ({ slug }) => {
 
   // Set dynamic title and meta description for SEO
   const title = product.productSubtitle ? `${product.productTitle} - Buy Now` : "Product Details";
-  const description = product.description[0]?.content || "Best product available on our platform.";
+  const description = product.shortDescription || "Best product available on our platform.";
 
   return (
     <div className="p-6 bg-white min-h-screen">

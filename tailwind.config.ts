@@ -53,6 +53,11 @@ export default {
   				'5': 'hsl(var(--chart-5))'
   			}
   		},
+		  fontFamily: {
+			sans: ['Yrsa', 'sans-serif'],  // Add Yrsa font to sans family
+			mono: ['Yrsa', 'monospace']    // Add Yrsa to mono family if needed
+		  },
+
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',

@@ -3,6 +3,7 @@ import { ConfirmationResult, RecaptchaVerifier, signInWithPhoneNumber } from 'fi
 import React, { useEffect, useState, useTransition } from 'react';
 import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from '@/components/ui/input-otp';
 import { Modal, ModalContent, ModalHeader, ModalBody, Button, Input } from '@nextui-org/react';
+import {Button as AntdButton} from 'antd';
 import { message, Typography } from 'antd';
 import { FaWhatsapp } from 'react-icons/fa';
 import { createAccount } from '@/service/createAccount';
@@ -46,22 +47,30 @@ export default function PhoneLoginModel({ isOpen, onOpenChange }: PheneLoginModa
     return () => clearTimeout(timer);
   }, [resendCountdown]);
 
-  const requestOtp = async (e: React.MouseEvent<HTMLButtonElement> | React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
+  const requestOtp = async (
+    e?: React.MouseEvent<HTMLButtonElement> | React.FormEvent<HTMLFormElement>
+  ) => {
+    if (e) {
+      e.preventDefault();
+    }
+  
     setResendCountdown(60);
-
+  
     startTransition(async () => {
       setError('');
       if (!recaptchaVerifier) {
         return setError('RecaptchaVerifier is not initialized.');
       }
-
+  
       try {
-        const confirmationResult = await signInWithPhoneNumber(auth, `+91${phoneNumber}`, recaptchaVerifier);  // Prefixing with +91
+        const confirmationResult = await signInWithPhoneNumber(
+          auth,
+          `+91${phoneNumber}`,
+          recaptchaVerifier
+        );
         setConfirmationResult(confirmationResult);
         setSuccess('OTP sent successfully!');
-        message.success("OTP sent successfully");
+        message.success('OTP sent successfully');
       } catch (err: unknown) {
         setResendCountdown(0);
         setError('Failed to send OTP. Please try again.');
@@ -69,6 +78,7 @@ export default function PhoneLoginModel({ isOpen, onOpenChange }: PheneLoginModa
       }
     });
   };
+  
 
   const verifyOtp = async () => {
     if (!confirmationResult) {
@@ -130,7 +140,9 @@ export default function PhoneLoginModel({ isOpen, onOpenChange }: PheneLoginModa
 
                 <Button
                 disabled={!phoneNumber || !userName || isPending || resendCountdown > 0}
-                onClick={requestOtp}
+                onPress={()=>{
+                  requestOtp();
+                }}
                 className={`w-full ${!phoneNumber || !userName || isPending || resendCountdown > 0 ? 'bg-gray-300 cursor-not-allowed' : 'bg-orange-400 hover:bg-orange-300 cursor-pointer'} font-bold`}
                 variant="ghost"
               >

@@ -13,6 +13,7 @@ import DiscountCard from "../DiscountCard/page";
 import ReadyToWear from "./ReadyToWear";
 import ProductShortDescription from "./ProductShortDescription";
 import ExpandableSection from "./ExpandableSection";
+import ProductCard from "./ProductCard";
 
 interface ProductDetailsProps {
   product: ProductType;
@@ -88,11 +89,10 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
     <div className="relative flex flex-col md:space-y-2">
       {/* Product title */}
       <h1
-        className="text-2xl font-normal text-gray-500 capitalize break-words"
+        className="text-4xl font-bold capitalize break-words font-sans"
         style={{
           wordBreak: "break-word",
           whiteSpace: "normal",
-          lineHeight: "1.2",
         }}
       >
         {product.productTitle}
@@ -100,7 +100,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
 
       {/* Product subtitle */}
       <h2
-        className="text-1xl text-gray-500 capitalize break-words font-thin mt-2"
+        className="text-2xl  capitalize break-words font-medium mt-2 font-sans"
         style={{
           wordBreak: "break-word",
           whiteSpace: "normal",
@@ -118,7 +118,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
               ₹{product.regularPrice}
             </span>
           )}
-          <span className="text-3xl font-bold text-gray-700">
+          <span className="text-3xl font-bold ">
             ₹{product.price}
           </span>
         </div>
@@ -138,6 +138,8 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
         onFieldsChange={handleFieldsChange}
         onReadyToWearChange={handleReadyToWearChange}
       />
+
+      <ProductCard product={product}/>
 
       <DiscountCard />
 
@@ -198,10 +200,12 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
       </div>
 
       {[
-        "PRODUCT SPECIFICATION",
-        "SHIPPING INFORMATION",
-        "MORE INFORMATION",
-        "NEED HELP",
+        "Details",
+        "Description ",
+        "Shipping",
+        "Return & Exchange",
+        "Manufacturing Information ",
+        "Support"
       ].map((section) => (
         <ExpandableSection
           key={section}

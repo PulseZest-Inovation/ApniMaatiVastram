@@ -14,6 +14,16 @@ export interface ProductType {
   readyToWearCharges: number;
   readyToWear?:  ReadyToWear;
 
+  isReturn: boolean; //done
+  returnPeriod: string; //done
+
+  isCashOnDelivery: boolean;
+  
+  isShippingCharge: boolean;
+  shipping_taxable: string;
+  deliveryTimePeriod: string; //done
+
+
   type: string;
   status: string;
   featured: boolean;
@@ -36,7 +46,6 @@ export interface ProductType {
   stockStatus: string;
   backorders: boolean;
   backordersAllowed: boolean;
-  shipping_taxable: string;
   reviewsAllowed: boolean;
   averageRating: string;
   ratingCount: number;
