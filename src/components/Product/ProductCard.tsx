@@ -3,7 +3,7 @@ import { ProductType } from '@/Types/data/ProductType';
 import React from 'react';
 import { IoIosCash } from "react-icons/io";
 import { FaVanShuttle } from "react-icons/fa6";
-import { FaShippingFast, FaRedoAlt, FaRegClock, FaCashRegister, FaGift } from 'react-icons/fa';
+import { FaRedoAlt, FaRegClock,  FaGift } from 'react-icons/fa';
 
 interface ProductCardProps {
   product: ProductType;

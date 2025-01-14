@@ -3,7 +3,6 @@ import { ConfirmationResult, RecaptchaVerifier, signInWithPhoneNumber } from 'fi
 import React, { useEffect, useState, useTransition } from 'react';
 import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from '@/components/ui/input-otp';
 import { Modal, ModalContent, ModalHeader, ModalBody, Button, Input } from '@nextui-org/react';
-import {Button as AntdButton} from 'antd';
 import { message, Typography } from 'antd';
 import { FaWhatsapp } from 'react-icons/fa';
 import { createAccount } from '@/service/createAccount';
