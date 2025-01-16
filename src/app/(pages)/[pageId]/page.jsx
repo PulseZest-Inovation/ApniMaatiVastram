@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { useParams } from 'next/navigation';
+import DOMPurify from 'dompurify';
 import ReactHtmlParser from 'html-react-parser';
 import { getDataByDocName } from '@/service/Firebase/getFirestore';
 import { Spinner } from '@nextui-org/react';
@@ -30,20 +31,24 @@ const PageViewPage = () => {
   }, [pageId]);
 
   if (loading) {
-    return <div className="p-4 text-center text-gray-500">
-      <Spinner color='warning'/>
-    </div>;
+    return (
+      <div className="p-4 text-center text-gray-500">
+        <Spinner color="warning" />
+      </div>
+    );
   }
 
   if (!pageData) {
-    return <div className="p-4 text-center text-gray-500">Page not found</div>;
+    return (
+      <div className="p-4 text-center text-gray-500">Page not found</div>
+    );
   }
 
-  // Render HTML content dynamically
-  const renderHtmlContent = (content) => {
-    const parsedElements = ReactHtmlParser(content);
-    return parsedElements;
-  };
+  // Sanitize the HTML content
+  const sanitizedContent = DOMPurify.sanitize(pageData.content, {
+    ALLOWED_TAGS: ['h1', 'h2', 'h3', 'p', 'ul', 'ol', 'li', 'strong', 'em', 'u', 'span', 'br', 'b', 'i', 'a'],
+    ALLOWED_ATTR: ['style', 'href', 'target'],
+  });
 
   return (
     <>
@@ -51,17 +56,17 @@ const PageViewPage = () => {
         <title>{pageData.title}</title>
         <style>{`
           .prose h1 {
-            font-size: 2.25rem;
+            font-size: 3rem; /* Increased from 2.25rem to 3rem */
             font-weight: bold;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
           }
           .prose h2 {
-            font-size: 1.875rem;
+            font-size: 2rem; /* Increased from 1.875rem */
             font-weight: semi-bold;
-            margin-bottom: 1rem;
+            margin-bottom: 1.25rem;
           }
           .prose h3 {
-            font-size: 1.5rem;
+            font-size: 1.75rem; /* Increased from 1.5rem */
             font-weight: medium;
             margin-bottom: 1rem;
           }
@@ -72,12 +77,12 @@ const PageViewPage = () => {
           }
         `}</style>
       </Head>
-      <div className="mx-auto px-2 sm:px-4 py-2"> {/* Reduced padding on left and right */}
+      <div className="px-6 py-6 lg:px-12 xl:px-20">
         <h1 className="text-2xl font-bold mb-4 text-center">{pageData.title}</h1>
         <div
-          className="prose prose-sm sm:prose lg:prose-lg xl:prose-xl mx-auto"
+          className="  prose-indigo w-full"
           dangerouslySetInnerHTML={{
-            __html: pageData.content, // Dynamically injected content
+            __html: sanitizedContent,
           }}
         />
       </div>

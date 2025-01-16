@@ -200,22 +200,25 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
       </div>
 
       {[
-        "Details",
-        "Description ",
-        "Shipping",
-        "Return & Exchange",
-        "Manufacturing Information ",
-        "Support"
-      ].map((section) => (
-        <ExpandableSection
-          key={section}
-          title={section}
-          content={
-            product.description.find((d) => d.heading.toUpperCase() === section)
-              ?.content || ""
-          }
-        />
-      ))}
+  "Details",
+  "Description ",
+  "Shipping",
+  "Return & Exchange",
+  "Manufacturing Information ",
+  "Support"
+].map((section) => (
+  <ExpandableSection
+    key={section}
+    title={section}
+    content={
+      product.description.find(
+        (d) => d.heading.toLowerCase() === section.toLowerCase()
+      )?.content || "<p>Content not available.</p>"
+    }
+  />
+))}
+
+
 
       {/* Short Description */}
       <ProductShortDescription
