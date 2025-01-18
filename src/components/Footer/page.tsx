@@ -56,8 +56,7 @@ export function Footer() {
   }, []);
 
   return (
-   <footer className="bg-gray-100 py-8">
-  <Divider />
+   <footer className="bg-gray-100 py-8 ml-5 mr-5 mb-5">
   <div className="container mx-auto px-4">
     {/* Top Section */}
     <div className="flex flex-wrap justify-between items-start gap-8 mt-6">
@@ -66,13 +65,11 @@ export function Footer() {
         <Link href={ApplicationConfig.baseUrl} className="flex items-center">
           <Image
             src={ApplicationConfig.applicationLogo}
-            height={100}
-            width={100}
+            height={200}
+            width={200}
             alt={ApplicationConfig.applicationName}
           />
-          <span className="text-xl font-semibold ml-3">
-            {ApplicationConfig.applicationName}
-          </span>
+        
         </Link>
         <p className="mt-4 text-gray-600 text-justify leading-relaxed tracking-wide font-bold">
         Apni Maati Vastram was born from a dream to revolutionize how you wear sarees!
@@ -125,15 +122,31 @@ export function Footer() {
 
     {/* Email Subscription and Social Media */}
     <div className="flex flex-wrap justify-between items-center gap-6 mt-8">
-      <div className="w-full sm:w-1/2">
-        <h3 className="text-lg font-semibold mb-4">Subscribe to Newsletter</h3>
-        <div className="flex items-center space-x-4">
-          <Input label="Email" placeholder="Enter your email" type="email" />
-          <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-            Send
-          </button>
-        </div>
-      </div>
+      
+    <div className="w-full sm:w-1/2">
+  <h3 className="text-lg font-semibold mb-4">Subscribe to Newsletter</h3>
+  <div>
+    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+      Email
+    </label>
+    <div className="flex items-center space-x-4">
+      <Input
+        id="email"
+        placeholder="Enter your email"
+        type="email"
+        className="w-3/4 sm:w-2/3 flex-grow shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+      />
+      <button
+        type="submit"
+        className="bg-black text-white px-4 py-2 rounded-md shadow hover:bg-blue-700 transition-all duration-300"
+      >
+        Send
+      </button>
+    </div>
+  </div>
+</div>
+
+
 
           {/* Payment Methods */}
           <div className="w-full md:w-1/4">
