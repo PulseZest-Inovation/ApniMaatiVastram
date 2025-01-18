@@ -9,7 +9,8 @@ import { Col, Row } from "antd";
 import ImageGallery from "./ProductImages";
 import Head from "next/head"; // Import the Head component for SEO
 import Image from "next/image";
-import { Spinner } from "@nextui-org/react";
+import { Divider, Spinner } from "@nextui-org/react";
+import RelatedProduct from "../Section/RelatedProduct/page";
 
 interface ProductViewProps {
   slug: string;
@@ -117,6 +118,8 @@ const ProductView: React.FC<ProductViewProps> = ({ slug }) => {
           </Col>
         </Row>
       </div>
+      <Divider className="mt-3"/>
+      <RelatedProduct category={product.categories}/>
     </div>
   );
 };
