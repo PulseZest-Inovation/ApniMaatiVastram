@@ -9,7 +9,7 @@ import {
 import { ApplicationConfig } from "@/config/ApplicationConfig";
 import Image from "next/image";
 import Link from "next/link";
-import { Divider, Input } from "@nextui-org/react";
+import {  Input } from "@nextui-org/react";
 import { MdEmail } from "react-icons/md";
 import {
   FaFacebookF,

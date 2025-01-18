@@ -7,7 +7,7 @@ import {
 } from "./fetchProductByTags";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Divider, Spinner } from "@nextui-org/react";
+import {  Spinner } from "@nextui-org/react";
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
