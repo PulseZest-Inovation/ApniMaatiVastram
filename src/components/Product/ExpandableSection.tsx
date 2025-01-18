@@ -17,7 +17,7 @@ const ExpandableSection: React.FC<ExpandableSectionProps> = ({ title, content })
   return (
     <div className="mt-4">
       <div
-        className="cursor-pointer border-b py-2 flex justify-between items-center"
+        className="cursor-pointer border-b py-1 flex justify-between items-center"
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <h2 className="text-xl font-bold uppercase">{title}</h2>

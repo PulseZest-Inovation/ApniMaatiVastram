@@ -7,9 +7,7 @@ interface ProductShortDescriptionProps {
 export default function ProductShortDescription({ description }: ProductShortDescriptionProps) {
   return (
     <div>
-      {description && ( 
-      <h4 className="font-bold text-2xl text-center">Product Description</h4>
-      )}
+     
       {/* Render the description as HTML */}
       <div
         className="prose max-w-none "

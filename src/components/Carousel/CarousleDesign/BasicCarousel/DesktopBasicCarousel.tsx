@@ -1,4 +1,3 @@
-// DesktopBasicCarousel.tsx
 import Image from 'next/image';
 import React from 'react';
 import { Carousel } from 'react-responsive-carousel';
@@ -22,13 +21,15 @@ const DesktopBasicCarousel: React.FC<DesktopBasicCarouselProps> = ({ images, onI
         interval={3000}
       >
         {images.map((image, index) => (
-          <div key={index} onClick={() => onImageClick(image.pageURL)}>
+          <div key={index} onClick={() => onImageClick(image.pageURL)} className="cursor-pointer">
             <Image
               src={image.imageURL}
               alt={`Carousel Image ${index}`}
-              width={800}  // Desktop image size
-              height={450} // Desktop image size
-              className="w-full h-auto object-cover" // Ensures images are responsive
+              width={1920}  // High-resolution width
+              height={1080} // High-resolution height
+              quality={85}  // Improve image quality
+              className="w-full h-auto object-cover"
+              priority={true} // Ensures the first image is preloaded
             />
           </div>
         ))}

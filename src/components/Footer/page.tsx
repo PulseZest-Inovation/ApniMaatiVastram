@@ -102,7 +102,7 @@ export function Footer() {
               {footerCategories.categories.slice(0, 5).map((category) => (
                 <li key={category.slug}>
                   <Link
-                    href={`/categories/${category.slug}`}
+                    href={`/collection/${category.slug}`}
                     className="hover:text-blue-400"
                   >
                     {category.name}

@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { useParams } from 'next/navigation';
 import DOMPurify from 'dompurify';
-import ReactHtmlParser from 'html-react-parser';
 import { getDataByDocName } from '@/service/Firebase/getFirestore';
 import { Spinner } from '@nextui-org/react';
 

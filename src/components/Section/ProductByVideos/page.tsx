@@ -77,11 +77,11 @@ const ProductByVideos = () => {
 
   return (
     <div className="container mx-auto p-6">
-      <div className="flex overflow-x-auto gap-4 pb-4 scrollbar-hide cursor-pointer">
+      <div className="flex overflow-x-auto gap-3 pb-4 scrollbar-hide cursor-pointer">
         {filteredProducts.map((product, index) => (
           <div
             key={product.id}
-            className="bg-white border border-gray-200 shadow-lg rounded-lg overflow-hidden relative h-[450px] w-[250px] flex-shrink-0"
+            className="bg-white border border-gray-200 shadow-lg rounded-lg overflow-hidden relative h-[400px] w-[200px] flex-shrink-0"
             onClick={() => openModal(index)}
           >
             {product.videoUrl && (
