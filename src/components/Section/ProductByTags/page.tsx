@@ -1,13 +1,15 @@
 "use client";
 
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState,  useRef } from "react";
 import {
   fetchProductsGroupedByTags,
   ProductsByTag,
 } from "./fetchProductByTags";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Spinner } from "@nextui-org/react";
+import { Divider, Spinner } from "@nextui-org/react";
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
 export default function DisplayProductByTags() {
   const [productsByTags, setProductsByTags] = useState<ProductsByTag[]>([]);
@@ -26,12 +28,12 @@ export default function DisplayProductByTags() {
           if (products.length >= 4) {
             return {
               tagName,
-              products: products.slice(0, 4), // Only show up to 4 products per tag
+              products: products.slice(0, 10), // Fetch more for scrolling
             };
           }
-          return null; // Exclude tags with fewer than 4 products
+          return null;
         })
-        .filter((tag): tag is ProductsByTag => tag !== null); // Filter out null values
+        .filter((tag): tag is ProductsByTag => tag !== null);
 
       setProductsByTags(filteredData);
       setLoading(false);
@@ -40,11 +42,15 @@ export default function DisplayProductByTags() {
     fetchProducts();
   }, []);
 
-  // Memoize the productsByTags to avoid recalculating it on every render
-  const memoizedProductsByTags = useMemo(
-    () => productsByTags,
-    [productsByTags]
-  );
+  const scrollContainerRef = useRef<Record<string, HTMLDivElement | null>>({});
+
+  const handleScroll = (tagName: string, direction: "left" | "right") => {
+    const container = scrollContainerRef.current[tagName];
+    if (container) {
+      const scrollAmount = direction === "left" ? -300 : 300; // Adjust scroll amount
+      container.scrollBy({ left: scrollAmount, behavior: "smooth" });
+    }
+  };
 
   if (loading) {
     return (
@@ -56,56 +62,84 @@ export default function DisplayProductByTags() {
 
   return (
     <div className="p-4 sm:p-6">
-      {memoizedProductsByTags.map(({ tagName, products }) => (
-        <div key={tagName} className="mb-12">
-          <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-gray-800 uppercase text-center">
+      {productsByTags.map(({ tagName, products }) => (
+        <div key={tagName} className="mb-12 ">
+  
+          <div className="flex justify-center mb-6">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 uppercase relative inline-block px-4 py-2 bg-gray-200 rounded-md shadow-md">
             {tagName}
           </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6">
-            {products.map((product) => (
-              <div
-                key={product.slug}
-                className="rounded-lg hover:shadow-lg transition-shadow p-2 sm:p-4 w-full max-w-xs mx-auto relative cursor-pointer"
-                onClick={() =>
-                  Router.push(
-                    `/collection/${product.categories[0]}/product/${product.slug}`
-                  )
-                }
-              >
-                {/* Image Container with Portrait aspect ratio */}
-                <div className="relative w-full overflow-hidden">
-                  <Image
-                    src={product.featuredImage}
-                    alt={product.slug}
-                    layout="responsive"
-                    width={400} // Example width
-                    height={600} // Example height to maintain portrait aspect ratio
-                    objectFit="cover"
-                    className="rounded-t-lg transition-transform transform hover:scale-110 duration-300"
-                  />
-                </div>
-                <h3 className="text-sm sm:text-base text-gray-800 truncate mb-1 sm:mb-2 capitalize text-center">
-                  {product.productTitle}
-                </h3>
-                <div className="flex flex-col sm:flex-row items-center justify-center text-xs sm:text-sm">
-                  <div className="flex justify-center">
-                    {product.salePrice ? (
-                      <div className="flex space-x-1 sm:space-x-2 items-center justify-center">
-                        <div className="font-bold">₹ {product.salePrice}</div>
-                        <div className="line-through text-gray-500">
-                          ₹ {product.regularPrice}
+        </div>
+
+
+          <div className="relative">
+            {/* Scrollable Container */}
+            <div
+              ref={(el) => {
+                (scrollContainerRef.current[tagName] = el)
+              }}
+              className="flex space-x-4 overflow-x-auto scrollbar-hide p-2"
+            >
+              {products.map((product) => (
+                <div
+                  key={product.slug}
+                  className="flex-shrink-0 w-48 rounded-lg hover:shadow-lg transition-shadow p-2 sm:p-4 relative cursor-pointer"
+                  onClick={() =>
+                    Router.push(
+                      `/collection/${product.categories[0]}`
+                    )
+                  }
+                >
+                  {/* Image Container */}
+                  <div className="relative w-full overflow-hidden rounded-md">
+                    <Image
+                      src={product.featuredImage}
+                      alt={product.slug}
+                      layout="responsive"
+                      width={500}
+                      height={800}
+                      objectFit="cover"
+                      className="rounded-t-lg transition-transform transform hover:scale-110 duration-300"
+                    />
+                  </div>
+                  <h3 className="text-sm sm:text-base text-gray-800 truncate mb-1 sm:mb-2 capitalize text-center">
+                    {product.productTitle}
+                  </h3>
+                  <div className="flex flex-col sm:flex-row items-center justify-center text-xs sm:text-sm">
+                    <div className="flex justify-center">
+                      {product.salePrice ? (
+                        <div className="flex space-x-1 sm:space-x-2 items-center justify-center">
+                          <div className="font-bold">₹ {product.salePrice}</div>
+                          <div className="line-through text-gray-500">
+                            ₹ {product.regularPrice}
+                          </div>
                         </div>
-                      </div>
-                    ) : (
-                      <div className="text-gray-800 font-bold">
-                        ₹ {product.regularPrice || "N/A"}
-                      </div>
-                    )}
+                      ) : (
+                        <div className="text-gray-800 font-bold">
+                          ₹ {product.regularPrice || "N/A"}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
+
+            {/* Scroll Buttons */}
+            <button
+              onClick={() => handleScroll(tagName, "left")}
+              className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-100 p-2 rounded-full shadow-md hover:bg-gray-200"
+            >
+              <ChevronLeftIcon className="h-6 w-6 text-gray-700" />
+            </button>
+            <button
+              onClick={() => handleScroll(tagName, "right")}
+              className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-100 p-2 rounded-full shadow-md hover:bg-gray-200"
+            >
+              <ChevronRightIcon className="h-6 w-6 text-gray-700" />
+            </button>
           </div>
+
         </div>
       ))}
     </div>
