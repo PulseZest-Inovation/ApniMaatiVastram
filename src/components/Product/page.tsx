@@ -54,7 +54,7 @@ const ProductView: React.FC<ProductViewProps> = ({ slug }) => {
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-         <Spinner/>
+         <Spinner color="warning"/>
       </div>
     );
   }

@@ -112,11 +112,11 @@ const ProductViewModal: React.FC<ProductModalProps> = ({
     {/* Short Description */}
     {[
       "Details",
-      "Description",
+      "Description ",
       "Shipping",
       "Return & Exchange",
-      "Manufacturing Information",
-      "Support",
+      "Manufacturing Information ",
+      "Support"
     ].map((section) => (
       <ExpandableSection
         key={section}
