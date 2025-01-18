@@ -49,7 +49,7 @@ export default function CategoriesDisplay() {
         {/* Scrollable Content */}
         <div
           ref={scrollContainerRef}
-          className="flex justify-center items-center gap-4 overflow-x-auto py-4 w-full max-w-full scrollbar-hide"
+          className="flex justify-center items-center gap-0 overflow-x-auto py-4 w-full max-w-full scrollbar-hide"
         >
           {memoizedCategories.map((category) => (
             <div
