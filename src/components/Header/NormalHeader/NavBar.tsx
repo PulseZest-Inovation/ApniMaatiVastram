@@ -1,52 +1,40 @@
-// components/NavBar.tsx
-
 'use client';
 
 import React, { useEffect, useState } from "react";
-import {
-  Navbar,
-  NavbarBrand,
-  NavbarMenuToggle,
-  NavbarMenuItem,
-  NavbarMenu,
-  NavbarContent,
-  NavbarItem,
-  Link,
-} from "@nextui-org/react";
-import { FaUser, FaShoppingCart } from "react-icons/fa";
-import { ApplicationConfig } from "@/config/ApplicationConfig";
-import { fetchCategories } from "./fetchCategories";
+import { FaUser, FaShoppingCart, FaBars } from "react-icons/fa";
 import Image from "next/image";
 import OtpModal from "@/components/Login/PhoneLoginModel";
 import CartDrawer from "@/components/Cart/page";
-import { useRouter } from "next/navigation";  
+import { useRouter } from "next/navigation";
+import { ApplicationConfig } from "@/config/ApplicationConfig";
+import { fetchCategories } from "./fetchCategories";
 import { isUserLoggedIn } from "@/service/isUserLogin";
+import MobileDrawer from "./MobileDrawer";
 
 interface Category {
   name: string;
   slug: string;
 }
 
-const ApplicationLogo = () => (
-  <Link  href="/">
+export const ApplicationLogo = () => (
+  <a href="/">
     <Image
-    src={ApplicationConfig.applicationLogo}
-    height={150}
-    width={150}
-    alt={ApplicationConfig.applicationName}
-    className="rounded"
-  />
-  </Link>
-
+      src={ApplicationConfig.applicationLogo}
+      height={150}
+      width={150}
+      alt={ApplicationConfig.applicationName}
+      className="rounded"
+    />
+  </a>
 );
 
 export default function NavBar() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
-  const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false); // Cart drawer state
-  const [isUserLoggedInState, setIsUserLoggedInState] = useState(false); // State to store user login status
-  const router = useRouter(); // Next.js Router to navigate to /account
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
+  const [isUserLoggedInState, setIsUserLoggedInState] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const loadCategories = async () => {
@@ -60,93 +48,105 @@ export default function NavBar() {
 
     loadCategories();
 
-    // Check if the user is logged in
     const checkUserStatus = async () => {
       const userLoggedIn = await isUserLoggedIn();
-      console.log(userLoggedIn, "status of the user")
       setIsUserLoggedInState(userLoggedIn);
     };
 
     checkUserStatus();
   }, []);
 
-  // Toggle modal visibility
   const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false); // Close modal function
-
+  const closeModal = () => setIsModalOpen(false);
   const openCartDrawer = () => setIsCartDrawerOpen(true);
 
   const handleUserIconClick = async () => {
     if (isUserLoggedInState) {
-      router.push("/account"); // Navigate to /account if the user is logged in
-
+      router.push("/account");
     } else {
-      // Open modal if the user is not logged in
-      openModal(); 
-
+      openModal();
     }
   };
 
+  const toggleDrawer = () => setIsDrawerOpen(!isDrawerOpen);
+
   return (
-    <Navbar isBordered isMenuOpen={isMenuOpen} onMenuOpenChange={setIsMenuOpen}>
-      {/* Mobile Menu Toggle */}
-      <NavbarContent className="sm:hidden" justify="start">
-        <NavbarMenuToggle aria-label={isMenuOpen ? "Close menu" : "Open menu"} />
-      </NavbarContent>
+    <nav className="bg-white border-b border-gray-200">
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Top Row */}
+        <div className="flex items-center justify-between py-4">
+          {/* Logo */}
+          <div className="flex items-center">
+            <ApplicationLogo />
+          </div>
 
-      {/* Center Content */}
-      <NavbarContent className="sm:hidden pr-3" justify="center">
-        <NavbarBrand>
-          <ApplicationLogo />
-        </NavbarBrand>
-      </NavbarContent>
+          {/* Desktop Navigation */}
+          <div className="hidden sm:flex items-center space-x-6 flex-1">
+            {categories.map((category) => (
+              <a
+                key={category.slug}
+                href={`/collection/${category.slug}`}
+                className="text-gray-700 hover:text-black font-medium uppercase tracking-wide"
+              >
+                {category.name}
+              </a>
+            ))}
 
-      {/* Desktop Navbar */}
-      <NavbarContent className="hidden sm:flex gap-4" justify="center">
-        <NavbarBrand>
-          <ApplicationLogo />
-        </NavbarBrand>
-        {categories.map((category) => (
-          <NavbarItem key={category.slug}>
-            <Link color="foreground" href={`/collection/${category.slug}`} className="font-serif uppercase tracking-wide">
-               {category.name}
-            </Link>
-          </NavbarItem>
-        ))}
-      </NavbarContent>
+            {/* Search Field */}
+            <div className="relative w-full max-w-md">
+  <input
+    type="text"
+    placeholder="Search..."
+    className="w-full border border-gray-300 rounded-md pl-10 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600"
+  />
+  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className="h-5 w-5"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M11 4a7 7 0 100 14 7 7 0 000-14zm10 10l-4.35-4.35"
+      />
+    </svg>
+  </span>
+</div>
 
-      {/* Right Section: Icons */}
-      <NavbarContent justify="end">
-        <NavbarItem>
-            <FaUser className="text-lg cursor-pointer"  onClick={handleUserIconClick}/> {/* User Icon */}
-        </NavbarItem>
-        <NavbarItem>
-            <FaShoppingCart className="text-lg cursor-pointer" onClick={openCartDrawer} /> {/* Cart Icon */}
-        </NavbarItem>
-      </NavbarContent>
+          </div>
 
-      {/* Mobile Menu */}
-      <NavbarMenu>
-  {categories.map((category) => (
-    <NavbarMenuItem key={category.slug} className="flex justify-center mt-3">
-      <div className="h-2 mt-2"></div>
-      <Link
-        className="py-2 px-4" // Add padding for better spacing and click area
-        color="foreground"
-        href={`/collection/${category.slug}`}
-        style={{ marginTop: "6px" }} // Adjusting top margin for precise control
-      >
-        {category.name}
-      </Link>
-    </NavbarMenuItem>
-  ))}
-</NavbarMenu>
+          {/* Right Icons */}
+          <div className="flex items-center space-x-4">
+            <FaUser className="text-lg cursor-pointer" onClick={handleUserIconClick} />
+            <FaShoppingCart className="text-lg cursor-pointer" onClick={openCartDrawer} />
+            {/* Mobile Menu Toggle */}
+            <FaBars className="text-lg cursor-pointer sm:hidden" onClick={toggleDrawer} />
+          </div>
+        </div>
 
-     
+        {/* Search for Mobile */}
+        <div className=" sm:hidden mb-2">
+          <input
+            type="text"
+            placeholder="Search..."
+            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-offset-black"
+          />
+        </div>
+      </div>
+
+      {/* Mobile Drawer */}
+      <MobileDrawer
+        isOpen={isDrawerOpen}
+        onClose={toggleDrawer}
+        categories={categories}
+      />
+
       <OtpModal isOpen={isModalOpen} onOpenChange={closeModal} />
-
-      {/* Cart Drawer */}
       <CartDrawer isOpen={isCartDrawerOpen} onOpenChange={setIsCartDrawerOpen} />
-    </Navbar>
+    </nav>
   );
 }

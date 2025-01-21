@@ -152,14 +152,14 @@ export function Footer() {
           <div className="w-full md:w-1/4">
         <h3 className="text-lg font-semibold mb-4">Safe & Secure Payment</h3>
         <div className="flex flex-wrap gap-4">
-          <Image src="/icons/phonepe.png" alt="PhonePe" height={40} width={40} />
-          <Image src="/icons/google-pay.png" alt="Google Pay" height={40} width={40} />
-          <Image src="/icons/paytm.png" alt="Paytm" height={40} width={40} />
-          <Image src="/icons/bank.png" alt="Bank" height={40} width={40} />
-          <Image src="/icons/upi.png" alt="UPI" height={40} width={80} />
-          <Image src="/icons/visa.png" alt="Visa" height={40} width={40} />
-          <Image src="/icons/card.png" alt="Credit/Debit Card" height={40} width={40} />
-          <Image src="/icons/atm-card.png" alt="ATM Card" height={40} width={40} />
+          <Image src="https://firebasestorage.googleapis.com/v0/b/ecommerce-with-pulsezest.firebasestorage.app/o/pulsezest-assets%2Fphonepe.png?alt=media&token=b162c09c-86b4-41b8-8afa-b97bed7f13fb" alt="PhonePe" height={40} width={40} />
+          <Image src="https://firebasestorage.googleapis.com/v0/b/ecommerce-with-pulsezest.firebasestorage.app/o/pulsezest-assets%2Fgoogle-pay.png?alt=media&token=20b78cef-cf9d-4496-978a-1785680f5a3e" alt="Google Pay" height={40} width={40} />
+          <Image src="https://firebasestorage.googleapis.com/v0/b/ecommerce-with-pulsezest.firebasestorage.app/o/pulsezest-assets%2Fpaytm.png?alt=media&token=11ae36c6-4b14-4770-8599-33397bb922cc" alt="Paytm" height={40} width={40} />
+          <Image src="https://firebasestorage.googleapis.com/v0/b/ecommerce-with-pulsezest.firebasestorage.app/o/pulsezest-assets%2Fbank.png?alt=media&token=296c8d55-a705-4e00-b576-a08442178e6a" alt="Bank" height={40} width={40} />
+          <Image src="https://firebasestorage.googleapis.com/v0/b/ecommerce-with-pulsezest.firebasestorage.app/o/pulsezest-assets%2Fupi.png?alt=media&token=2eaec1ac-69c2-4d71-85cd-dc4c002b94a0" alt="UPI" height={40} width={80} />
+          <Image src="https://firebasestorage.googleapis.com/v0/b/ecommerce-with-pulsezest.firebasestorage.app/o/pulsezest-assets%2Fvisa.png?alt=media&token=65bce304-d12a-49a8-b2a2-ea2dafdce58c" alt="Visa" height={40} width={40} />
+          <Image src="https://firebasestorage.googleapis.com/v0/b/ecommerce-with-pulsezest.firebasestorage.app/o/pulsezest-assets%2Fcard.png?alt=media&token=413dd589-566d-4f47-baa9-6e4f56e34605" alt="Credit/Debit Card" height={40} width={40} />
+          <Image src="https://firebasestorage.googleapis.com/v0/b/ecommerce-with-pulsezest.firebasestorage.app/o/pulsezest-assets%2Fatm-card.png?alt=media&token=af9d880b-d452-4e20-8a98-5268ce35b0cd" alt="ATM Card" height={40} width={40} />
         </div>
       </div>
 
