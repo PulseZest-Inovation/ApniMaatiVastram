@@ -10,6 +10,7 @@ import { ApplicationConfig } from "@/config/ApplicationConfig";
 import { fetchCategories } from "./fetchCategories";
 import { isUserLoggedIn } from "@/service/isUserLogin";
 import MobileDrawer from "./MobileDrawer";
+import Link from "next/link";
 
 interface Category {
   name: string;
@@ -17,7 +18,7 @@ interface Category {
 }
 
 export const ApplicationLogo = () => (
-  <a href="/">
+  <Link href="/">
     <Image
       src={ApplicationConfig.applicationLogo}
       height={150}
@@ -25,7 +26,7 @@ export const ApplicationLogo = () => (
       alt={ApplicationConfig.applicationName}
       className="rounded"
     />
-  </a>
+  </Link>
 );
 
 export default function NavBar() {
@@ -83,13 +84,13 @@ export default function NavBar() {
           {/* Desktop Navigation */}
           <div className="hidden sm:flex items-center space-x-6 flex-1">
             {categories.map((category) => (
-              <a
+              <Link
                 key={category.slug}
                 href={`/collection/${category.slug}`}
                 className="text-gray-700 hover:text-black font-medium uppercase tracking-wide"
               >
                 {category.name}
-              </a>
+              </Link>
             ))}
 
             {/* Search Field */}
