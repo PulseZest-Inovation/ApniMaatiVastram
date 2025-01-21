@@ -1,0 +1,9 @@
+User-agent: Googlebot
+Disallow: /private/
+Disallow: /admin/
+Allow: /public/
+
+User-agent: *
+Disallow: /private/
+Allow: /
+Sitemap: https://apnimaativastram.com/sitemap.xml

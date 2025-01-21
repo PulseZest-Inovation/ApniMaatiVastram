@@ -3,14 +3,13 @@ import "./globals.css";
 import TopHeader from "@/components/Header/TopHeader/page";
 import Header from "@/components/Header/NormalHeader/page";
 import { Footer } from "@/components/Footer/page";
-import { ApplicationConfig } from "@/config/ApplicationConfig";
 
  
  
 
 export const metadata: Metadata = {
-  title: ApplicationConfig.applicationName,
-  description:  ApplicationConfig.applicationName,
+  title:  "Apni Maati Vastram - Modern Comfort in Traditional Sarees & Accessories",
+  description:   "Buy Online Ready-to-wear sarees | 1 min saree | Pre-pleated sarees | Traditional sarees | Blouses & earrings | Quality sarees at genuine pricing | COD available | All India shipping",
 };
 
 export default function RootLayout({

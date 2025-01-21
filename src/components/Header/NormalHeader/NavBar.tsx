@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { FaUser, FaShoppingCart, FaBars } from "react-icons/fa";
 import Image from "next/image";
 import OtpModal from "@/components/Login/PhoneLoginModel";
@@ -11,13 +11,14 @@ import { fetchCategories } from "./fetchCategories";
 import { isUserLoggedIn } from "@/service/isUserLogin";
 import MobileDrawer from "./MobileDrawer";
 import Link from "next/link";
+import { SearchIcon } from "lucide-react";
 
 interface Category {
   name: string;
   slug: string;
 }
 
-export const ApplicationLogo = () => (
+export const ApplicationLogo = React.memo(() => (
   <Link href="/">
     <Image
       src={ApplicationConfig.applicationLogo}
@@ -27,7 +28,7 @@ export const ApplicationLogo = () => (
       className="rounded"
     />
   </Link>
-);
+));
 
 export default function NavBar() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -37,6 +38,7 @@ export default function NavBar() {
   const [isUserLoggedInState, setIsUserLoggedInState] = useState(false);
   const router = useRouter();
 
+  // Fetch categories and user status on component mount
   useEffect(() => {
     const loadCategories = async () => {
       try {
@@ -47,15 +49,17 @@ export default function NavBar() {
       }
     };
 
-    loadCategories();
-
     const checkUserStatus = async () => {
       const userLoggedIn = await isUserLoggedIn();
       setIsUserLoggedInState(userLoggedIn);
     };
 
+    loadCategories();
     checkUserStatus();
   }, []);
+
+  // Memoize categories
+  const memoizedCategories = useMemo(() => categories, [categories]);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -83,7 +87,7 @@ export default function NavBar() {
 
           {/* Desktop Navigation */}
           <div className="hidden sm:flex items-center space-x-6 flex-1">
-            {categories.map((category) => (
+            {memoizedCategories.map((category) => (
               <Link
                 key={category.slug}
                 href={`/collection/${category.slug}`}
@@ -94,48 +98,48 @@ export default function NavBar() {
             ))}
 
             {/* Search Field */}
-            <div className="relative w-full max-w-md">
-  <input
-    type="text"
-    placeholder="Search..."
-    className="w-full border border-gray-300 rounded-md pl-10 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600"
-  />
-  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      className="h-5 w-5"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      strokeWidth={2}
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M11 4a7 7 0 100 14 7 7 0 000-14zm10 10l-4.35-4.35"
-      />
-    </svg>
-  </span>
-</div>
-
+            <div className="relative w-full max-w-sm">
+              <input
+                type="text"
+                placeholder="Search..."
+                className="w-full border border-gray-300 rounded-md pl-10 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600"
+              />
+              {/* Search Icon */}
+              <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+                <SearchIcon size={15} />
+              </span>
+            </div>
           </div>
 
           {/* Right Icons */}
           <div className="flex items-center space-x-4">
-            <FaUser className="text-lg cursor-pointer" onClick={handleUserIconClick} />
-            <FaShoppingCart className="text-lg cursor-pointer" onClick={openCartDrawer} />
+            <FaUser
+              className="text-lg cursor-pointer"
+              onClick={handleUserIconClick}
+            />
+            <FaShoppingCart
+              className="text-lg cursor-pointer"
+              onClick={openCartDrawer}
+            />
             {/* Mobile Menu Toggle */}
-            <FaBars className="text-lg cursor-pointer sm:hidden" onClick={toggleDrawer} />
+            <FaBars
+              className="text-lg cursor-pointer sm:hidden"
+              onClick={toggleDrawer}
+            />
           </div>
         </div>
 
-        {/* Search for Mobile */}
-        <div className=" sm:hidden mb-2">
+        {/* Search Input */}
+        <div className="relative sm:hidden mb-2">
           <input
             type="text"
             placeholder="Search..."
-            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-offset-black"
+            className="w-full border border-gray-300 rounded-md pl-10 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600"
           />
+          {/* Search Icon */}
+          <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+            <SearchIcon size={18} />
+          </span>
         </div>
       </div>
 
@@ -143,11 +147,14 @@ export default function NavBar() {
       <MobileDrawer
         isOpen={isDrawerOpen}
         onClose={toggleDrawer}
-        categories={categories}
+        categories={memoizedCategories}
       />
 
       <OtpModal isOpen={isModalOpen} onOpenChange={closeModal} />
-      <CartDrawer isOpen={isCartDrawerOpen} onOpenChange={setIsCartDrawerOpen} />
+      <CartDrawer
+        isOpen={isCartDrawerOpen}
+        onOpenChange={setIsCartDrawerOpen}
+      />
     </nav>
   );
 }
