@@ -124,10 +124,10 @@ export default function CheckoutOrderDetails() {
          
             <div className="flex items-center">
                 <Typography className='font-bold'>Online </Typography>
-               <Image src='/icons/phonepe.png' alt='phonepe' height={20} width={20} className='ml-2 mr-2'/>
-               <Image src='/icons/google-pay.png' alt='google-pay' height={20} width={20} className='mr-2'/>
-               <Image src='/icons/card.png' alt='card' height={20} width={20} className='mr-2'/>
-               <Image src='/icons/atm-card.png' alt='atm-card' height={20} width={20} className='mr-2'/>
+               <Image src='https://firebasestorage.googleapis.com/v0/b/ecommerce-with-pulsezest.firebasestorage.app/o/pulsezest-assets%2Fphonepe.png?alt=media&token=b162c09c-86b4-41b8-8afa-b97bed7f13fb' alt='phonepe' height={20} width={20} className='ml-2 mr-2'/>
+               <Image src='https://firebasestorage.googleapis.com/v0/b/ecommerce-with-pulsezest.firebasestorage.app/o/pulsezest-assets%2Fgoogle-pay.png?alt=media&token=20b78cef-cf9d-4496-978a-1785680f5a3e' alt='google-pay' height={20} width={20} className='mr-2'/>
+               <Image src='https://firebasestorage.googleapis.com/v0/b/ecommerce-with-pulsezest.firebasestorage.app/o/pulsezest-assets%2Fcard.png?alt=media&token=413dd589-566d-4f47-baa9-6e4f56e34605' alt='card' height={20} width={20} className='mr-2'/>
+               <Image src='https://firebasestorage.googleapis.com/v0/b/ecommerce-with-pulsezest.firebasestorage.app/o/pulsezest-assets%2Fatm-card.png?alt=media&token=af9d880b-d452-4e20-8a98-5268ce35b0cd' alt='atm-card' height={20} width={20} className='mr-2'/>
             </div>
           </Radio>
           <Radio value="cod" onChange={() => setPaymentMethod('cod')}>
