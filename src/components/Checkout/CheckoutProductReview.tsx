@@ -53,7 +53,7 @@ export default function CheckoutProductReview() {
     return () => {
       isMounted = false;
     };
-  }, []);
+  });
 
   const calculateTotal = () => {
     return cartItems.reduce((total, item) => {

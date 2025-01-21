@@ -13,6 +13,8 @@ interface CartItem {
   image: string;
   isReadyToWear: boolean;
   readyToWearCharges: number;
+  isPrePlated: boolean;
+  prePlatedCharges: number; 
 }
 
 interface CartListProps {
@@ -91,6 +93,11 @@ const CartList: React.FC<CartListProps> = ({
               {item.isReadyToWear && (
                 <div className="flex">
                <SparklesText text="Ready to Wear " sparklesCount={3} className="text-sm font-light text-orange-400 fill-content4-foreground"></SparklesText> <span className=" pl-2 text-sm"> ₹{item.readyToWearCharges}</span>
+                </div>
+              )}
+                 {item.isPrePlated && (
+                <div className="flex">
+               <SparklesText text="Pre-Plated " sparklesCount={3} className="text-sm font-light text-orange-400 fill-content4-foreground"></SparklesText> <span className=" pl-2 text-sm"> ₹{item.prePlatedCharges}</span>
                 </div>
               )}
             </div>

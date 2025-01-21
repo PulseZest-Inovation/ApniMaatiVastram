@@ -3,14 +3,13 @@ import "./globals.css";
 import TopHeader from "@/components/Header/TopHeader/page";
 import Header from "@/components/Header/NormalHeader/page";
 import { Footer } from "@/components/Footer/page";
-import { ApplicationConfig } from "@/config/ApplicationConfig";
-
- 
- 
+import 'react-toastify/dist/ReactToastify.css';  // Add this line to include the Toastify styles globally
+import { ToastContainer } from "react-toastify";
 
 export const metadata: Metadata = {
-  title: ApplicationConfig.applicationName,
-  description:  ApplicationConfig.applicationName,
+  title: "Apni Maati Vastram - Modern Comfort in Traditional Sarees & Accessories",
+  description:
+    "Buy Online Ready-to-wear sarees | 1 min saree | Pre-pleated sarees | Traditional sarees | Blouses & earrings | Quality sarees at genuine pricing | COD available | All India shipping",
 };
 
 export default function RootLayout({
@@ -21,18 +20,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-      <link
+        <link
           href="https://fonts.googleapis.com/css2?family=Yrsa:ital,wght@0,300..700;1,300..700&display=swap"
           rel="stylesheet"
         />
       </head>
-      <body
-        className={`font-sans`}
-      >
-        <TopHeader/>
-        <Header/>
+      <body className={`font-sans`}>
+        <ToastContainer/>
+        <TopHeader />
+        <Header />
         {children}
-        <Footer/>
+        <Footer />
       </body>
     </html>
   );

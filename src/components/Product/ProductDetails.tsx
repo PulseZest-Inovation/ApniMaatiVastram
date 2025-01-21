@@ -14,6 +14,8 @@ import ReadyToWear from "./ReadyToWear";
 import ProductShortDescription from "./ProductShortDescription";
 import ExpandableSection from "./ExpandableSection";
 import ProductCard from "./ProductCard";
+import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
+import ReadyToPrePlated from "./ReadyToPreplated";
 
 interface ProductDetailsProps {
   product: ProductType;
@@ -27,25 +29,41 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
     length: number;
     waist: number;
     hip: number;
-  }>({
+  }>( {
     waist: 0,
     length: 0,
     hip: 0,
   });
   const [isReadyToWear, setIsReadyToWear] = useState(false); // Track the ReadyToWear state
+  const [isPrePlated, setIsPrePlated] = useState(false);
 
   const auth = getAuth(); // Get Firebase authentication instance
 
-  const handleFieldsChange = (fields: {
-    waist: number;
-    length: number;
-    hip: number;
-  }) => {
-    setReadyToWear(fields);
+  const handleCustomizationChange = (
+    fields: { waist: number } | { waist: number; length: number; hip: number }
+  ) => {
+    if ('length' in fields && 'hip' in fields) {
+      // Handle full customization (ReadyToWear)
+      setReadyToWear((prevState) => ({
+        ...prevState,
+        ...fields, // Spread the fields object to update the state
+      }));
+    } else {
+      // Handle only waist change (ReadyToPrePlated)
+      setReadyToWear((prevState) => ({
+        ...prevState,
+        waist: fields.waist, // Update only the waist value
+      }));
+    }
   };
+  
 
   const handleReadyToWearChange = (isReadyToWear: boolean) => {
     setIsReadyToWear(isReadyToWear);
+  };
+
+  const handlePrePlateToChange = (isPrePlated: boolean) => {
+    setIsPrePlated(isPrePlated);
   };
 
   const handleCartClick = async () => {
@@ -62,6 +80,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
       ...product,
       readyToWear,
       isReadyToWear,
+      isPrePlated,
     });
 
     setLoading((prev) => ({ ...prev, cart: false }));
@@ -84,6 +103,11 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
       console.error("Failed to add product to wishlist");
     }
   };
+
+  const rating = parseFloat(product.averageRating);
+
+  // Only render rating if it's a valid number and not 0
+  const shouldShowRating = !isNaN(rating) && rating > 0;
 
   return (
     <div className="relative flex flex-col md:space-y-2">
@@ -110,6 +134,24 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
         {product.productSubtitle}
       </h2>
 
+      {/* Display rating section only if the rating is valid */}
+      {shouldShowRating && (
+        <div className="flex items-center">
+          {/* Full stars */}
+          {Array.from({ length: Math.floor(rating) }).map((_, index) => (
+            <FaStar key={`full-${index}`} className="text-yellow-400" />
+          ))}
+
+          {/* Half star */}
+          {rating % 1 >= 0.5 && <FaStarHalfAlt className="text-yellow-400" />}
+
+          {/* Empty stars */}
+          {Array.from({ length: 5 - Math.floor(rating) - (rating % 1 >= 0.5 ? 1 : 0) }).map((_, index) => (
+            <FaRegStar key={`empty-${index}`} className="text-yellow-400" />
+          ))}
+        </div>
+      )}
+
       {/* Price Section */}
       <div className="mt-2 mb-2">
         <div className="flex items-center space-x-4">
@@ -135,11 +177,16 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
 
       <ReadyToWear
         product={product}
-        onFieldsChange={handleFieldsChange}
+        onFieldsChange={handleCustomizationChange}
         onReadyToWearChange={handleReadyToWearChange}
       />
+       <ReadyToPrePlated
+        product={product}
+        onFieldsChange={handleCustomizationChange}
+        onPrePlatedChange={handlePrePlateToChange}
+      />
 
-      <ProductCard product={product}/>
+      <ProductCard product={product} />
 
       <DiscountCard />
 
@@ -200,25 +247,23 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
       </div>
 
       {[
-  "Details",
-  "Description ",
-  "Shipping",
-  "Return & Exchange",
-  "Manufacturing Information ",
-  "Support"
-].map((section) => (
-  <ExpandableSection
-    key={section}
-    title={section}
-    content={
-      product.description.find(
-        (d) => d.heading.toLowerCase() === section.toLowerCase()
-      )?.content || "<p>Content not available.</p>"
-    }
-  />
-))}
-
-
+        "Details",
+        "Description ",
+        "Shipping",
+        "Return & Exchange",
+        "Manufacturing Information ",
+        "Support"
+      ].map((section) => (
+        <ExpandableSection
+          key={section}
+          title={section}
+          content={
+            product.description.find(
+              (d) => d.heading.toLowerCase() === section.toLowerCase()
+            )?.content || "<p>Content not available.</p>"
+          }
+        />
+      ))}
 
       {/* Short Description */}
       <ProductShortDescription
