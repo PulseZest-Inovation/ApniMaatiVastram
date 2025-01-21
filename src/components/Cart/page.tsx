@@ -27,6 +27,8 @@ interface CartItem {
   image: string;
   isReadyToWear: boolean;
   readyToWearCharges: number;
+  isPrePlated: boolean;
+  prePlatedCharges: number; 
 }
 
 export default function CartDrawer({ isOpen, onOpenChange }: CartDrawerProps) {
