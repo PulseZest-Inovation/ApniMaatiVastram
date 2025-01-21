@@ -72,7 +72,9 @@ export function Footer() {
         
         </Link>
         <p className="mt-4 text-gray-600 text-justify leading-relaxed tracking-wide font-bold">
-        Apni Maati Vastram was born from a dream to revolutionize how you wear sarees!
+        Every stitch tells a story—welcome to Apni Maati Vastram! 🌟
+        We’re here to revolutionize saree-wearing with ready-to-wear, pre-pleated sarees that blend elegance, comfort, and empowerment.
+
         </p>
         <ul className="mt-4 space-y-2 text-gray-600">
           <li className="flex items-center space-x-2">

@@ -29,6 +29,7 @@ const ReadyToWear: React.FC<CustomFieldsProps> = ({ product, onFieldsChange, onR
   // Handle individual field changes
   const handleFieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
+    if (isNaN(Number(value)) || Number(value) < 0) return; // Avoid negative values or invalid input
     const updatedFields = { ...fields, [id]: Number(value) };
     setFields(updatedFields);
     onFieldsChange(updatedFields);
@@ -47,7 +48,7 @@ const ReadyToWear: React.FC<CustomFieldsProps> = ({ product, onFieldsChange, onR
             />
             <div className="flex items-center space-x-2">
               <SparklesText
-                text="Make this Pre Plated Saree only in ₹"
+                text="Make this Ready to Wear only in ₹"
                 className="text-base sm:text-xl font-light"
               />
               <span className="font-bold text-base sm:text-xl">
@@ -58,9 +59,9 @@ const ReadyToWear: React.FC<CustomFieldsProps> = ({ product, onFieldsChange, onR
 
           {showFields && (
             <div className="mt-4 space-y-4">
-              {/* Wrist Field */}
+              {/* Waist Field */}
               <div>
-                <label className="block text-gray-700 font-medium mb-1" htmlFor="wrist">
+                <label className="block text-gray-700 font-medium mb-1" htmlFor="waist">
                   Waist
                 </label>
                 <input
@@ -68,7 +69,7 @@ const ReadyToWear: React.FC<CustomFieldsProps> = ({ product, onFieldsChange, onR
                   id="waist"
                   value={fields.waist}
                   className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter wrist size"
+                  placeholder="Enter waist size"
                   onChange={handleFieldChange}
                 />
               </div>

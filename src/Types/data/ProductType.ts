@@ -1,5 +1,6 @@
 import { Timestamp } from "firebase/firestore";
 import { ReadyToWear } from "./ReadyToWear";
+import { PrePlatedType } from "./PrePlateType";
 
 export interface ProductType {
   id: string;
@@ -9,6 +10,11 @@ export interface ProductType {
   permalink: string;
   createdAt: Timestamp;
   ModifiedAt: Timestamp;
+
+  
+  isPrePlated: boolean;
+  prePlatedCharges: number;
+  prePlated: PrePlatedType
 
   isReadyToWear: boolean;
   readyToWearCharges: number;

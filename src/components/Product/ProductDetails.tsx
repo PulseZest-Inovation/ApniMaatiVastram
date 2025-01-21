@@ -15,6 +15,7 @@ import ProductShortDescription from "./ProductShortDescription";
 import ExpandableSection from "./ExpandableSection";
 import ProductCard from "./ProductCard";
 import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
+import ReadyToPrePlated from "./ReadyToPreplated";
 
 interface ProductDetailsProps {
   product: ProductType;
@@ -34,19 +35,35 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
     hip: 0,
   });
   const [isReadyToWear, setIsReadyToWear] = useState(false); // Track the ReadyToWear state
+  const [isPrePlated, setIsPrePlated] = useState(false);
 
   const auth = getAuth(); // Get Firebase authentication instance
 
-  const handleFieldsChange = (fields: {
-    waist: number;
-    length: number;
-    hip: number;
-  }) => {
-    setReadyToWear(fields);
+  const handleCustomizationChange = (
+    fields: { waist: number } | { waist: number; length: number; hip: number }
+  ) => {
+    if ('length' in fields && 'hip' in fields) {
+      // Handle full customization (ReadyToWear)
+      setReadyToWear((prevState) => ({
+        ...prevState,
+        ...fields, // Spread the fields object to update the state
+      }));
+    } else {
+      // Handle only waist change (ReadyToPrePlated)
+      setReadyToWear((prevState) => ({
+        ...prevState,
+        waist: fields.waist, // Update only the waist value
+      }));
+    }
   };
+  
 
   const handleReadyToWearChange = (isReadyToWear: boolean) => {
     setIsReadyToWear(isReadyToWear);
+  };
+
+  const handlePrePlateToChange = (isPrePlated: boolean) => {
+    setIsPrePlated(isPrePlated);
   };
 
   const handleCartClick = async () => {
@@ -63,6 +80,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
       ...product,
       readyToWear,
       isReadyToWear,
+      isPrePlated,
     });
 
     setLoading((prev) => ({ ...prev, cart: false }));
@@ -159,8 +177,13 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
 
       <ReadyToWear
         product={product}
-        onFieldsChange={handleFieldsChange}
+        onFieldsChange={handleCustomizationChange}
         onReadyToWearChange={handleReadyToWearChange}
+      />
+       <ReadyToPrePlated
+        product={product}
+        onFieldsChange={handleCustomizationChange}
+        onPrePlatedChange={handlePrePlateToChange}
       />
 
       <ProductCard product={product} />

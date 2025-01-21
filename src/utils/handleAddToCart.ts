@@ -29,10 +29,8 @@ export const handleAddToCart = async (
       return false;
     }
 
-    // Ensure readyToWearCharges is defined (set to 0 if undefined)
-    const readyToWearCharges = product.readyToWearCharges ?? 0;
-
-    // Data to store in the cart
+    
+  // Updated Data to store in the cart
     const cartData = {
       productId: product.id,
       quantity: 1, // Default quantity can be 1 or passed from the front-end
@@ -43,9 +41,12 @@ export const handleAddToCart = async (
       addedAt: new Date(), // Timestamp of when the product was added to the cart
       status: "pending", // Could be "pending", "in-process", "purchased", etc.
       image: product.featuredImage,
-      readyToWear: product.readyToWear || null, // Include custom fields if available
-      readyToWearCharges: readyToWearCharges, // Make sure this is defined
-      isReadyToWear: product.isReadyToWear
+      readyData: product.readyToWear ?? null, // Ensure readyToWear is not undefined
+      readyToWearCharges: product.readyToWearCharges ?? 0, // Make sure this is defined
+      isReadyToWear: product.isReadyToWear ?? null, // Ensure a valid value (null if undefined)
+      isPrePlated: product.isPrePlated ?? null, // Ensure a valid value (null if undefined)
+      prePlated: product.prePlated ?? null, // Ensure prePlated is not undefined
+      prePlatedCharges: product.prePlatedCharges ?? 0, // Default to 0 if undefined
     };
 
     // Use the collection name to create a document in the cart subcollection
