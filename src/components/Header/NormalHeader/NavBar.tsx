@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import React, { useEffect, useState, useMemo } from "react";
 import { FaUser, FaShoppingCart, FaBars } from "react-icons/fa";
@@ -30,7 +30,9 @@ export const ApplicationLogo = React.memo(() => (
   </Link>
 ));
 
-export default function NavBar() {
+ApplicationLogo.displayName = 'Apni Maati Vastram';  // Adding display name
+
+const NavBar: React.FC = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -157,4 +159,8 @@ export default function NavBar() {
       />
     </nav>
   );
-}
+};
+
+NavBar.displayName = 'Apni Maati Vastram';  // Adding display name
+
+export default NavBar;
