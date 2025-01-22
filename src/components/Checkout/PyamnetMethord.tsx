@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { RadioGroup, Radio } from "@nextui-org/react";
+import { RadioGroup, Radio, form } from "@nextui-org/react";
 import { Typography } from 'antd';
 import Image from 'next/image';
 import { Button } from "@nextui-org/react";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { handleCodOrder } from './cod/cod';
 
 interface PaymentMethodProps {
   formData: {
@@ -51,9 +52,10 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData }) => {
   const handleSubmitOrder = () => {
     if (validateFields()) {
       // Submit order logic
+
+      handleCodOrder(formData)
       console.log('Order Submitted with Data:', formData);
       console.log('Selected Payment Method:', paymentMethod);
-      toast.success('Order submitted successfully!');
     }
   };
 
