@@ -24,7 +24,7 @@ interface PaymentMethodProps {
 }
 
 const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData, totalAmount }) => {
-  const [paymentMethod, setPaymentMethod] = useState<string | null>(null);
+  const [paymentMethod, setPaymentMethod] = useState<string | null>('online');
 
   const handlePaymentMethodChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPaymentMethod(e.target.value);
