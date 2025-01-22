@@ -110,13 +110,7 @@ export default function CheckoutOrderDetails() {
             className="w-full p-2 border border-gray-300 rounded"
           />
         </div>
-
-        <div className="flex items-center">
-          <input type="checkbox" id="newsletter" className="mr-2" />
-          <label htmlFor="newsletter" className="text-sm">
-            Text me with news and offers
-          </label>
-        </div>
+ 
 
         {/* Payment Method Section */}
         <RadioGroup label="Select Payment Method">
@@ -155,10 +149,7 @@ export default function CheckoutOrderDetails() {
         )}
       </form>
 
-      <p className="text-sm mt-4">
-        By signing up via text, you agree to receive recurring automated marketing messages, including cart reminders, at the phone number provided. Consent is not a condition of purchase. Reply STOP to unsubscribe. Reply HELP for help. Message frequency varies. Msg & data rates may apply. View our{" "}
-        <a href="#" className="text-blue-500">Terms</a> and <a href="#" className="text-blue-500">Privacy Policy</a>.
-      </p>
+  
     </div>
   );
 }
