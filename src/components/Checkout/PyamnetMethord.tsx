@@ -64,7 +64,6 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData, totalAmount }) 
       <ToastContainer />
       {/* Desktop UI */}
       <div className="hidden md:block">
-        <h3 className="text-lg font-bold mb-4">Payment Method</h3>
         <RadioGroup
           label="Select Payment Method"
           value={paymentMethod}
