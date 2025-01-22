@@ -1,73 +1,21 @@
-'use client'
-import React, { useEffect, useState } from "react";
-import { Card } from "@nextui-org/react";
-import { getAllDocsFromSubCollection } from "@/service/Firebase/getFirestore";
-import { getAuth } from "firebase/auth";
-import Image from "next/image";
+'use client';
+import React from 'react';
+import { Card } from '@nextui-org/react';
+import Image from 'next/image';
+import { CartItem } from '@/Types/data/CartItemType';
 
-interface CartItem {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
-  image: string;
-  productTitle: string;
-  isReadyToWear: boolean;
-  readyToWearCharges: number;
+
+interface CheckoutProductReviewProps {
+  cartItems: CartItem[];
+  totalAmount: number
 }
 
-export default function CheckoutProductReview() {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+export default function CheckoutProductReview({ cartItems,totalAmount }: CheckoutProductReviewProps) {
 
-  useEffect(() => {
-    let isMounted = true;
-
-    const fetchCartItems = async () => {
-      try {
-        const auth = getAuth();
-        const docId = auth.currentUser?.uid;
-
-        if (!docId) {
-          console.error("User not authenticated");
-          return;
-        }
-
-        const userDoc = docId.toString();
-
-        const fetchedCartItems = await getAllDocsFromSubCollection<CartItem>(
-          "customers",
-          userDoc,
-          "cart"
-        );
-
-        if (isMounted) {
-          setCartItems(fetchedCartItems);
-        }
-      } catch (error) {
-        console.error("Error fetching cart items: ", error);
-      }
-    };
-
-    fetchCartItems();
-
-    return () => {
-      isMounted = false;
-    };
-  });
-
-  const calculateTotal = () => {
-    return cartItems.reduce((total, item) => {
-      const readyToWearCharges = item.isReadyToWear ? Number(item.readyToWearCharges) : 0;
-      const price = Number(item.price);
-      const quantity = Number(item.quantity);
-  
-      return total + (price + readyToWearCharges) * quantity;
-    }, 0);
-  };
-  
+ 
 
   return (
-    <div className="hidden md:block md:w-1/3 p-4 md:sticky top-4">
+    <div className="hidden md:block ">
       <h3 className="text-lg font-bold mb-4">Order Summary</h3>
       <Card className="space-y-4 p-4">
         {cartItems.map((item) => (
@@ -98,13 +46,16 @@ export default function CheckoutProductReview() {
               )}
             </div>
             <p className="font-semibold">
-              ₹{Number(item.price) + Number((item.isReadyToWear ? item.readyToWearCharges : 0))}
+              ₹
+              {Number(item.price) +
+                Number(item.isReadyToWear ? item.readyToWearCharges : 0)}
             </p>
           </div>
         ))}
+        {/* Total Amount */}
         <div className="flex justify-between items-center mt-4">
           <p className="font-semibold">Total</p>
-          <p className="font-semibold">₹{calculateTotal()}</p>
+          <p className="font-semibold">₹{totalAmount}</p>
         </div>
       </Card>
     </div>

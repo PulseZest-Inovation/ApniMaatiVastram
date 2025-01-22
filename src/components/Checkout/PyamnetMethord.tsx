@@ -1,8 +1,9 @@
+'use client';
 import React, { useState } from 'react';
-import { RadioGroup, Radio, form } from "@nextui-org/react";
+import { RadioGroup, Radio } from '@nextui-org/react';
 import { Typography } from 'antd';
 import Image from 'next/image';
-import { Button } from "@nextui-org/react";
+import { Button } from '@nextui-org/react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { handleCodOrder } from './cod/cod';
@@ -19,9 +20,10 @@ interface PaymentMethodProps {
     pinCode: string;
     phoneNumber: string;
   };
+  totalAmount: number;
 }
 
-const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData }) => {
+const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData, totalAmount }) => {
   const [paymentMethod, setPaymentMethod] = useState<string | null>(null);
 
   const handlePaymentMethodChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,9 +53,7 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData }) => {
 
   const handleSubmitOrder = () => {
     if (validateFields()) {
-      // Submit order logic
-
-      handleCodOrder(formData)
+      handleCodOrder(formData);
       console.log('Order Submitted with Data:', formData);
       console.log('Selected Payment Method:', paymentMethod);
     }
@@ -62,45 +62,103 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData }) => {
   return (
     <div>
       <ToastContainer />
-      {/* Payment Method Section */}
-      <RadioGroup label="Select Payment Method" value={paymentMethod} onChange={handlePaymentMethodChange}>
-        <Radio value="online">
-          <div className="flex items-center">
-            <Typography className='font-bold'>Online</Typography>
-            <Image
-              src="https://firebasestorage.googleapis.com/v0/b/ecommerce-with-pulsezest.firebasestorage.app/o/pulsezest-assets%2Fphonepe.png?alt=media&token=b162c09c-86b4-41b8-8afa-b97bed7f13fb"
-              alt="phonepe"
-              height={20}
-              width={20}
-              className="ml-2 mr-2"
-            />
-            <Image
-              src="https://firebasestorage.googleapis.com/v0/b/ecommerce-with-pulsezest.firebasestorage.app/o/pulsezest-assets%2Fgoogle-pay.png?alt=media&token=20b78cef-cf9d-4496-978a-1785680f5a3e"
-              alt="google-pay"
-              height={20}
-              width={20}
-              className="mr-2"
-            />
-            <Image
-              src="https://firebasestorage.googleapis.com/v0/b/ecommerce-with-pulsezest.firebasestorage.app/o/pulsezest-assets%2Fpaytm.png?alt=media&token=63aaf82a-9999-4554-9725-0566dbb8e97d"
-              alt="paytm"
-              height={20}
-              width={20}
-            />
-          </div>
-        </Radio>
-        <Radio value="cod">
-          <Typography className='font-bold'>Cash on Delivery (COD)</Typography>
-        </Radio>
-      </RadioGroup>
+      {/* Desktop UI */}
+      <div className="hidden md:block">
+        <h3 className="text-lg font-bold mb-4">Payment Method</h3>
+        <RadioGroup
+          label="Select Payment Method"
+          value={paymentMethod}
+          onChange={handlePaymentMethodChange}
+        >
+          <Radio value="online">
+            <div className="flex items-center">
+              <Typography className="font-bold">Online</Typography>
+              <Image
+                src="https://firebasestorage.googleapis.com/v0/b/ecommerce-with-pulsezest.firebasestorage.app/o/pulsezest-assets%2Fphonepe.png?alt=media&token=b162c09c-86b4-41b8-8afa-b97bed7f13fb"
+                alt="phonepe"
+                height={20}
+                width={20}
+                className="ml-2 mr-2"
+              />
+              <Image
+                src="https://firebasestorage.googleapis.com/v0/b/ecommerce-with-pulsezest.firebasestorage.app/o/pulsezest-assets%2Fgoogle-pay.png?alt=media&token=20b78cef-cf9d-4496-978a-1785680f5a3e"
+                alt="google-pay"
+                height={20}
+                width={20}
+                className="mr-2"
+              />
+              <Image
+                src="https://firebasestorage.googleapis.com/v0/b/ecommerce-with-pulsezest.firebasestorage.app/o/pulsezest-assets%2Fpaytm.png?alt=media&token=63aaf82a-9999-4554-9725-0566dbb8e97d"
+                alt="paytm"
+                height={20}
+                width={20}
+              />
+            </div>
+          </Radio>
+          <Radio value="cod">
+            <Typography className="font-bold">Cash on Delivery (COD)</Typography>
+          </Radio>
+        </RadioGroup>
+        <Button
+          color={paymentMethod === 'cod' ? 'primary' : 'success'}
+          className="mt-4 text-white"
+          onPress={handleSubmitOrder}
+        >
+          {paymentMethod === 'cod' ? 'Place Order' : `Pay Online Safe & Secure ₹${totalAmount}`}
+        </Button>
+      </div>
 
-      <Button
-        color={paymentMethod === 'cod' ? "primary" : "warning"}
-        className="mt-4"
-        onClick={handleSubmitOrder}
-      >
-        {paymentMethod === 'cod' ? 'Place Order' : 'Pay Now'}
-      </Button>
+      {/* Mobile UI */}
+      <div className="block md:hidden">
+        <div className="p-4">
+          <h3 className="text-lg font-bold mb-4">Payment Method</h3>
+          <RadioGroup
+            label="Select Payment Method"
+            value={paymentMethod}
+            onChange={handlePaymentMethodChange}
+          >
+            <Radio value="online">
+              <div className="flex items-center">
+                <Typography className="font-bold">Online</Typography>
+                <Image
+                  src="https://firebasestorage.googleapis.com/v0/b/ecommerce-with-pulsezest.firebasestorage.app/o/pulsezest-assets%2Fphonepe.png?alt=media&token=b162c09c-86b4-41b8-8afa-b97bed7f13fb"
+                  alt="phonepe"
+                  height={20}
+                  width={20}
+                  className="ml-2 mr-2"
+                />
+                <Image
+                  src="https://firebasestorage.googleapis.com/v0/b/ecommerce-with-pulsezest.firebasestorage.app/o/pulsezest-assets%2Fgoogle-pay.png?alt=media&token=20b78cef-cf9d-4496-978a-1785680f5a3e"
+                  alt="google-pay"
+                  height={20}
+                  width={20}
+                  className="mr-2"
+                />
+                <Image
+                  src="https://firebasestorage.googleapis.com/v0/b/ecommerce-with-pulsezest.firebasestorage.app/o/pulsezest-assets%2Fpaytm.png?alt=media&token=63aaf82a-9999-4554-9725-0566dbb8e97d"
+                  alt="paytm"
+                  height={20}
+                  width={20}
+                />
+              </div>
+            </Radio>
+            <Radio value="cod">
+              <Typography className="font-bold">Cash on Delivery (COD)</Typography>
+            </Radio>
+          </RadioGroup>
+        </div>
+
+        {/* Sticky Button */}
+        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white shadow-lg ">
+          <Button
+            color={paymentMethod === 'cod' ? 'primary' : 'success'}
+            className="w-full text-white"
+            onPress={handleSubmitOrder}
+          >
+            {paymentMethod === 'cod' ? 'Place Order' : `Pay Online Safe & Secure ₹${totalAmount}`}
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };

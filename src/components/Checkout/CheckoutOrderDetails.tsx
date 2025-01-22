@@ -4,8 +4,14 @@ import { indianStates } from '@/utils/indiastate';
 import { getDataByDocName } from '@/service/Firebase/getFirestore';
 import { getAuth } from 'firebase/auth'; // Import Firebase Auth to get the current user
 import PaymentMethod from './PyamnetMethord';
+import { CartItem } from '@/Types/data/CartItemType';
 
-export default function CheckoutOrderDetails() {
+interface CheckoutOrderDeatils{
+  cartItems: CartItem[]
+  totalAmount: number;
+}
+
+export default function CheckoutOrderDetails({cartItems, totalAmount}: CheckoutOrderDeatils) {
   const [formData, setFormData] = useState({
     fullName: '',
     country: 'India',
@@ -56,7 +62,7 @@ export default function CheckoutOrderDetails() {
   }, []); // Run this effect only once when the component is mounted
 
   return (
-    <div className="md:w-2/3 p-4">
+    <div className="p-4">
       <h3 className="text-large font-bold mb-4">Delivery Details</h3>
       <form className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Delivery Details */}
@@ -174,7 +180,7 @@ export default function CheckoutOrderDetails() {
       </form>
 
       {/* Pass formData as props to PaymentMethod component */}
-      <PaymentMethod formData={formData} />
+      <PaymentMethod formData={formData} totalAmount={totalAmount} />
     </div>
   );
 }
