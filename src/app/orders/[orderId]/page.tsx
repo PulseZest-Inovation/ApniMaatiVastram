@@ -1,9 +1,9 @@
 import React from 'react'
 
-export default function OrderHistoryPage() {
+export default function OrderId() {
   return (
     <div>
-      order
+      
     </div>
   )
 }

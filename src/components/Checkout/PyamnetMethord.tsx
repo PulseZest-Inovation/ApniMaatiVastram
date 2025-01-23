@@ -59,14 +59,14 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData, totalAmount }) 
 
   const handleSubmitOrder = () => {
     if (validateFields()) {
-      handleCodOrder(formData, setLoading) // Pass setLoading to update loading state
+      handleCodOrder(formData,totalAmount, setLoading, ) // Pass setLoading to update loading state
         .then(() => {
           // Show success message
           toast.success('COD Order placed successfully!');
           
           // Redirect after 2 seconds
           setTimeout(() => {
-            router.push('/order'); // Redirect to /order page
+            router.push('/orders'); // Redirect to /order page
           }, 2000);
         })
         .catch((error) => {
