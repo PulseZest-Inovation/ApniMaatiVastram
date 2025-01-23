@@ -1,6 +1,6 @@
 import { getAuth } from "firebase/auth";  // Import Firebase Authentication
 import { getAllDocsFromCollection } from "@/service/Firebase/getFirestore";
-import { createDataWithCustomId } from "@/service/Firebase/postFirestore";
+import { createDataWithCustomId, placeOrderFiresotre } from "@/service/Firebase/postFirestore";
 import { Timestamp } from "firebase/firestore";
 import { deleteDocFromSubCollection } from "@/service/Firebase/deleteDocFromSubCollection";
 
@@ -43,6 +43,10 @@ export const placeOrder = async (orderData: any) => {
       orderData.orderId,  // Custom document ID (orderId)
       orderDataWithCartItems  // Data to save
     );
+
+    // saving data to the orders.
+    await placeOrderFiresotre('orders', orderData.orderId, orderDataWithCartItems);
+
 
     if (success) {
       console.log('Order placed successfully with ID:', orderData.orderId);

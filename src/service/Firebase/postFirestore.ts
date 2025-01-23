@@ -62,3 +62,31 @@ export const createDataWithCustomId = async <T extends Record<string, unknown>>(
 };
 
 
+ 
+export const placeOrderFiresotre = async <T extends Record<string, unknown>>(
+  collectionName: string, // Collection name (e.g., 'customers')
+  documentId: string, // Document ID (e.g., user ID)
+  data: T // Data to save in the document
+): Promise<boolean> => {
+  try {
+    // Reference to the specified document with custom document ID
+    const docRef = doc(
+      db,
+      "app_name",
+      ApplicationConfig.secretKey,
+      collectionName,
+      documentId
+    );
+
+    // Set the document data with the provided ID
+    await setDoc(docRef, data);
+    return true; // Indicate success
+  } catch (error) {
+    console.error("Error creating document with custom ID:", error);
+    return false; // Indicate failure
+  }
+};
+
+
+
+

@@ -22,7 +22,7 @@ export const handleCodOrder = async (deliveryDeatails: DeliverDetails) => {
   const newOrderData ={
     ...deliveryDeatails,
     ...cartDetails,
-    status: 'pending',
+    status: 'Pending',
     orderId: orderId,
   };
 
