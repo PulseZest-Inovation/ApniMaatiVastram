@@ -10,9 +10,10 @@ interface EmailTemplateProps {
   orderId: string;
   customerEmail: string;
   cartItems: CartItem[];
+  totalAmount: number;
 }
 
-export const generateOrderEmailTemplate = ({ orderId, customerEmail, cartItems }: EmailTemplateProps): string => {
+export const generateOrderEmailTemplate = ({ orderId, customerEmail, cartItems, totalAmount }: EmailTemplateProps): string => {
   return `
     <html>
       <head>
@@ -108,9 +109,7 @@ export const generateOrderEmailTemplate = ({ orderId, customerEmail, cartItems }
               )
               .join("")}
           </ul>
-          <p class="total">Total: ₹${cartItems
-            .reduce((acc, item) => acc + item.price * item.quantity, 0)
-            .toFixed(2)}</p>
+          <p class="total">Total: ₹${totalAmount}</p>
           <p><strong>Status:</strong> Pending</p>
           <p><strong>Created At:</strong> ${new Date().toLocaleString()}</p>
           

@@ -84,6 +84,7 @@ export const placeOrder = async (orderData: any) => {
           emailDetails, // Send email configuration details
           orderId: orderData.orderId, // Include the order ID for reference
           customerEmail: orderData.email, // Include customer email
+          totalAmount: orderData.totalAmount
         }),
       });
 

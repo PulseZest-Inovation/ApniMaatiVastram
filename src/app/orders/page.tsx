@@ -38,7 +38,12 @@ export default function OrderHistoryPage() {
           'orders'
         );
 
-        setOrders(fetchedOrders);
+        // Sort the orders by `createdAt` in descending order (latest first)
+        const sortedOrders = fetchedOrders.sort((a, b) => 
+          b.createdAt.toDate().getTime() - a.createdAt.toDate().getTime()
+        );
+
+        setOrders(sortedOrders);
       } catch (error) {
         console.error('Error fetching orders:', error);
       } finally {
@@ -91,9 +96,8 @@ export default function OrderHistoryPage() {
               </div>
               <p className="text-sm text-gray-500">Total: ₹{order.totalAmount}</p>
               <p className="text-sm text-gray-500">
-              Date: {new Date(order.createdAt?.toDate()).toLocaleDateString()}
-            </p>
-
+                Date: {new Date(order.createdAt?.toDate()).toLocaleDateString()}
+              </p>
             </li>
           ))}
         </ul>

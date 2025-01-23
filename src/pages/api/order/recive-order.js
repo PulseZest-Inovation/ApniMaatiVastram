@@ -7,9 +7,9 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { cartItems, emailDetails, orderId, customerEmail } = req.body;
+    const { cartItems, emailDetails, orderId, customerEmail, totalAmount } = req.body;
 
-    if (!cartItems || !emailDetails || !orderId || !customerEmail) {
+    if (!cartItems || !emailDetails || !orderId || !customerEmail ||!totalAmount) {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
@@ -63,7 +63,7 @@ export default async function handler(req, res) {
     // Verify transporter
     await transporter.verify();
 
-    const emailContent = generateOrderEmailTemplate({ orderId, customerEmail, cartItems });
+    const emailContent = generateOrderEmailTemplate({ orderId, customerEmail, cartItems, totalAmount });
 
     const mailOptions = {
       from: emailType === "google" ? googleEmail : customEmail,

@@ -80,6 +80,7 @@ export default function OrderId() {
       <h1 className="text-2xl font-bold mb-4">Order Details</h1>
       <p><strong>Order ID:</strong> {orderData.id}</p>
       <p><strong>Status:</strong> {orderData.status}</p>
+      <p><strong>Total:</strong> ₹{orderData.totalAmount}</p>
       <p><strong>Created At:</strong> {new Date(orderData.createdAt.seconds * 1000).toLocaleString()}</p>
 
       {/* Timeline Section */}
