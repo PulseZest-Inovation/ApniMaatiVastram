@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation'; // Import the `useParams` hook
+import { useParams } from 'next/navigation';
 import { getDataFromSubCollection } from '@/service/Firebase/getFirestore';
-import { getAuth } from 'firebase/auth'; // Firebase Auth
-import { Spin, Timeline } from 'antd'; // Import Ant Design Timeline component
+import { getAuth, onAuthStateChanged } from 'firebase/auth'; // Import `onAuthStateChanged`
+import { Spin, Timeline } from 'antd';
 
 export default function OrderId() {
   const params = useParams();
@@ -13,22 +13,11 @@ export default function OrderId() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchOrderData = async () => {
+    const fetchOrderData = async (userUid: string) => {
       try {
-        // Get the current user using Firebase Auth
-        const auth = getAuth();
-        const user = auth.currentUser;
-
-        if (!user) {
-          console.error('No authenticated user found.');
-          setLoading(false);
-          return;
-        }
-
-        const userDocId = user.uid; // Use the user's UID as the document ID
         const data = await getDataFromSubCollection(
           'customers', // Main collection
-          userDocId, // Current user document ID
+          userUid, // Current user document ID
           'orders', // Subcollection name
           orderId // Order ID as the document name
         );
@@ -41,7 +30,19 @@ export default function OrderId() {
       }
     };
 
-    fetchOrderData();
+    const auth = getAuth();
+
+    // Use `onAuthStateChanged` to ensure Firebase initializes properly
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        fetchOrderData(user.uid); // Fetch data after authentication is resolved
+      } else {
+        console.error('No authenticated user found.');
+        setLoading(false);
+      }
+    });
+
+    return () => unsubscribe(); // Cleanup the listener on unmount
   }, [orderId]);
 
   if (loading) {
