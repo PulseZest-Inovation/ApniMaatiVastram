@@ -1,0 +1,24 @@
+{
+    "orderID": "12345",
+    "customerName": "John Doe",
+    "customerEmail": "john.doe@example.com",
+    "customerPhoneNumber": "+1234567890",
+    "orderType": "Online",
+    "transactionId": "abc123xyz",
+    "orderDetails": [
+      {
+        "id": "p1",
+        "productTitle": "T-shirt",
+        "productSubtitle": "Cotton T-shirt",
+        "slug": "cotton-tshirt",
+        "price": 20.0,
+        "quantity": 2,
+        "image": "image_url",
+        "isReadyToWear": true,
+        "readyToWearCharges": 5.0,
+        "isPrePlated": false,
+        "prePlatedCharges": 0
+      }
+    ]
+  }
+  

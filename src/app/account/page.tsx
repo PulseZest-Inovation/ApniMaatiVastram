@@ -101,7 +101,7 @@ const UserProfilePage: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div
           className="p-6 bg-gray-100 rounded-lg hover:bg-gray-200 cursor-pointer"
-          onClick={() => handleNavigation("/order-history")}
+          onClick={() => handleNavigation("/orders")}
         >
           <h3 className="text-2xl font-semibold text-gray-800">Order History</h3>
           <p className="text-gray-600">View your past orders and track your purchases.</p>

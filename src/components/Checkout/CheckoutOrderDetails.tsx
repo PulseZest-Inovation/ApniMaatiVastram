@@ -1,18 +1,73 @@
-import React, { useState } from 'react';
-import { Button } from "@nextui-org/react";
-import { RadioGroup, Radio } from "@nextui-org/react";
+'use client'
+import React, { useState, useEffect } from 'react';
 import { indianStates } from '@/utils/indiastate';
-import { Typography } from 'antd';
-import Image from 'next/image';
+import { getDataByDocName } from '@/service/Firebase/getFirestore';
+import { getAuth } from 'firebase/auth'; // Import Firebase Auth to get the current user
+import PaymentMethod from './PyamnetMethord';
+import { CartItem } from '@/Types/data/CartItemType';
 
+interface CheckoutOrderDeatils{
+  cartItems: CartItem[]
+  totalAmount: number;
+}
 
+export default function CheckoutOrderDetails({cartItems, totalAmount}: CheckoutOrderDeatils) {
+  const [formData, setFormData] = useState({
+    fullName: '',
+    country: 'India',
+    state: '',
+    address: '',
+    apartment: '',
+    houseNumber: '',
+    city: '',
+    pinCode: '',
+    phoneNumber: '',
+    email: '',
+  });
 
-export default function CheckoutOrderDetails() {
-  const [paymentMethod, setPaymentMethod] = useState<string | null>(null);
+  useEffect(() => {
+    const fetchData = async () => {
+      // Get the current authenticated user's UID from Firebase Auth
+      const auth = getAuth();
+      const user = auth.currentUser;
+      
+      if (user) {
+        const userId = user.uid; // Get the current user's UID
+        
+        const collectionName = 'customers'; // Collection name
+        const docName = userId; // Use the current user's UID as the document name
+
+        // Fetch data using getDataByDocName function
+        const data = await getDataByDocName<typeof formData>(collectionName, docName);
+
+        // If data exists, update formData with the fetched values
+        if (data) {
+          setFormData({
+            fullName: data.fullName || '',
+            country: data.country || 'India',
+            state: data.state || '',
+            address: data.address || '',
+            apartment: data.apartment || '',
+            houseNumber: data.houseNumber || '',
+            city: data.city || '',
+            pinCode: data.pinCode || '',
+            phoneNumber: data.phoneNumber || '',
+            email: data.email || ''
+          });
+        }
+      } else {
+        console.log('No user is signed in.');
+      }
+    };
+
+    console.log(cartItems)
+
+    fetchData();
+  }, []); // Run this effect only once when the component is mounted
 
   return (
-    <div className="md:w-2/3 p-4">
-      <h3 className="text-lg font-bold mb-4">Delivery </h3>
+    <div className="p-4">
+      <h3 className="text-large font-bold mb-4">Delivery Details</h3>
       <form className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Delivery Details */}
         <div>
@@ -20,16 +75,8 @@ export default function CheckoutOrderDetails() {
           <input
             type="text"
             placeholder="Enter your first name"
-            required
-            className="w-full p-2 border border-gray-300 rounded"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-semibold mb-2">Last Name</label>
-          <input
-            type="text"
-            placeholder="Enter your last name"
+            value={formData.fullName}
+            onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
             required
             className="w-full p-2 border border-gray-300 rounded"
           />
@@ -39,7 +86,7 @@ export default function CheckoutOrderDetails() {
           <label className="block text-sm font-semibold mb-2">Country</label>
           <input
             type="text"
-            value="India"
+            value={formData.country}
             readOnly
             className="w-full p-2 border border-gray-300 rounded"
           />
@@ -50,6 +97,8 @@ export default function CheckoutOrderDetails() {
           <select
             id="state"
             name="state"
+            value={formData.state}
+            onChange={(e) => setFormData({ ...formData, state: e.target.value })}
             required
             className="w-full p-2 border border-gray-300 rounded"
           >
@@ -63,39 +112,59 @@ export default function CheckoutOrderDetails() {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold mb-2">Address</label>
-          <input
-            type="text"
-            placeholder="Enter your address"
-            required
-            className="w-full p-2 border border-gray-300 rounded"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-semibold mb-2">Apartment, suite, etc. (optional)</label>
-          <input
-            type="text"
-            placeholder="Enter additional address info"
-            className="w-full p-2 border border-gray-300 rounded"
-          />
-        </div>
-
-        <div>
           <label className="block text-sm font-semibold mb-2">City</label>
           <input
             type="text"
             placeholder="Enter your city"
+            value={formData.city}
+            onChange={(e) => setFormData({ ...formData, city: e.target.value })}
             required
             className="w-full p-2 border border-gray-300 rounded"
           />
         </div>
+
+        <div>
+          <label className="block text-sm font-semibold mb-2">Address</label>
+          <input
+            type="text"
+            placeholder="Enter your address"
+            value={formData.address}
+            onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+            required
+            className="w-full p-2 border border-gray-300 rounded"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-semibold mb-2">Apartment, suite, etc</label>
+          <input
+            type="text"
+            placeholder="Enter additional address info"
+            value={formData.apartment}
+            onChange={(e) => setFormData({ ...formData, apartment: e.target.value })}
+            className="w-full p-2 border border-gray-300 rounded"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-semibold mb-2">House Number</label>
+          <input
+            type="text"
+            placeholder="Enter House Number"
+            value={formData.houseNumber}
+            onChange={(e) => setFormData({ ...formData, houseNumber: e.target.value })}
+            className="w-full p-2 border border-gray-300 rounded"
+          />
+        </div>
+      
 
         <div>
           <label className="block text-sm font-semibold mb-2">PIN Code</label>
           <input
             type="text"
             placeholder="Enter your PIN code"
+            value={formData.pinCode}
+            onChange={(e) => setFormData({ ...formData, pinCode: e.target.value })}
             required
             className="w-full p-2 border border-gray-300 rounded"
           />
@@ -106,50 +175,28 @@ export default function CheckoutOrderDetails() {
           <input
             type="text"
             placeholder="+91 Enter your phone number"
+            value={formData.phoneNumber}
+            onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
             required
             className="w-full p-2 border border-gray-300 rounded"
           />
         </div>
- 
 
-        {/* Payment Method Section */}
-        <RadioGroup label="Select Payment Method">
-          <Radio value="online" onChange={() => setPaymentMethod('online')}>
-         
-            <div className="flex items-center">
-                <Typography className='font-bold'>Online </Typography>
-               <Image src='https://firebasestorage.googleapis.com/v0/b/ecommerce-with-pulsezest.firebasestorage.app/o/pulsezest-assets%2Fphonepe.png?alt=media&token=b162c09c-86b4-41b8-8afa-b97bed7f13fb' alt='phonepe' height={20} width={20} className='ml-2 mr-2'/>
-               <Image src='https://firebasestorage.googleapis.com/v0/b/ecommerce-with-pulsezest.firebasestorage.app/o/pulsezest-assets%2Fgoogle-pay.png?alt=media&token=20b78cef-cf9d-4496-978a-1785680f5a3e' alt='google-pay' height={20} width={20} className='mr-2'/>
-               <Image src='https://firebasestorage.googleapis.com/v0/b/ecommerce-with-pulsezest.firebasestorage.app/o/pulsezest-assets%2Fcard.png?alt=media&token=413dd589-566d-4f47-baa9-6e4f56e34605' alt='card' height={20} width={20} className='mr-2'/>
-               <Image src='https://firebasestorage.googleapis.com/v0/b/ecommerce-with-pulsezest.firebasestorage.app/o/pulsezest-assets%2Fatm-card.png?alt=media&token=af9d880b-d452-4e20-8a98-5268ce35b0cd' alt='atm-card' height={20} width={20} className='mr-2'/>
-            </div>
-          </Radio>
-          <Radio value="cod" onChange={() => setPaymentMethod('cod')}>
-            COD
-          </Radio>
-        </RadioGroup>
-
-        {/* Conditional Payment Buttons */}
-        {paymentMethod === 'online' && (
-          <div className="mt-4">
-            <Button
-              className="bg-gradient-to-tr from-pink-500 to-yellow-500 text-white shadow-lg w-full"
-              radius="full"
-            >
-              Pay Now
-            </Button>
-          </div>
-        )}
-        {paymentMethod === 'cod' && (
-          <div className="mt-4">
-            <Button color="primary" className="w-full">
-              Place Order
-            </Button>
-          </div>
-        )}
+        <div>
+          <label className="block text-sm font-semibold mb-2">Email</label>
+          <input
+            type="text"
+            placeholder="Enter your Email"
+            value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            required
+            className="w-full p-2 border border-gray-300 rounded"
+          />
+        </div>
       </form>
 
-  
+      {/* Pass formData as props to PaymentMethod component */}
+      <PaymentMethod formData={formData} totalAmount={totalAmount} />
     </div>
   );
 }

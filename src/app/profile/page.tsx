@@ -13,6 +13,9 @@ export default function UserProfilePage() {
     fullName: '',
     email: '',
     phoneNumber: '',
+    country: 'india',
+    houseNumber: '',
+    apartment: '',
     address: '',
     city: '',
     pinCode: '',
@@ -31,11 +34,20 @@ export default function UserProfilePage() {
   // Function to save the form data
   const saveChanges = async () => {
     if (currentUser) {
-      const { fullName, email, phoneNumber, address, city, pinCode } = formData;
+      const { fullName, email, phoneNumber, address, city, pinCode, country, houseNumber, apartment } = formData;
       try {
         // Update fields if they are different
         if (name !== userData?.fullName) {
           await updateUserProfile(currentUser.uid, 'name', fullName);
+        }
+        if (country !== userData?.country) {
+          await updateUserProfile(currentUser.uid, 'country', country);
+        }
+        if (houseNumber !== userData?.houseNumber) {
+          await updateUserProfile(currentUser.uid, 'houseNumber', houseNumber);
+        }
+        if (apartment !== userData?.apartment) {
+          await updateUserProfile(currentUser.uid, 'apartment', apartment);
         }
         if (email !== userData?.email) {
           await updateUserProfile(currentUser.uid, 'email', email);
@@ -57,6 +69,9 @@ export default function UserProfilePage() {
         setUserData({
           fullName,
           email,
+          country,
+          apartment,
+          houseNumber,
           phoneNumber,
           address,
           city,
@@ -114,13 +129,22 @@ export default function UserProfilePage() {
             <span>{userData.phoneNumber || 'N/A'}</span>
           </div>
           <div className="flex justify-between">
+            <span className="font-medium">City:</span>
+            <span>{userData.city || 'N/A'}</span>
+          </div>
+          <div className="flex justify-between">
             <span className="font-medium">Address:</span>
             <span>{userData.address || 'N/A'}</span>
           </div>
           <div className="flex justify-between">
-            <span className="font-medium">City:</span>
-            <span>{userData.city || 'N/A'}</span>
+            <span className="font-medium">House Number:</span>
+            <span>{userData.houseNumber || 'N/A'}</span>
           </div>
+          <div className="flex justify-between">
+            <span className="font-medium">Apartment:</span>
+            <span>{userData.apartment || 'N/A'}</span>
+          </div>
+        
           <div className="flex justify-between">
             <span className="font-medium">Pin Code:</span>
             <span>{userData.pinCode || 'N/A'}</span>
@@ -170,6 +194,16 @@ export default function UserProfilePage() {
             />
           </div>
           <div>
+            <label className="block text-sm font-semibold">City</label>
+            <input
+              type="text"
+              name="city"
+              value={formData.city}
+              onChange={handleChange}
+              className="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <div>
             <label className="block text-sm font-semibold">Address</label>
             <input
               type="text"
@@ -180,15 +214,26 @@ export default function UserProfilePage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold">City</label>
+            <label className="block text-sm font-semibold">Apartment</label>
             <input
               type="text"
-              name="city"
-              value={formData.city}
+              name="apartment"
+              value={formData.apartment}
               onChange={handleChange}
               className="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
+          <div>
+            <label className="block text-sm font-semibold">House Number:</label>
+            <input
+              type="text"
+              name="houseNumber"
+              value={formData.houseNumber}
+              onChange={handleChange}
+              className="w-full p-3 mt-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+      
           <div>
             <label className="block text-sm font-semibold">Pin Code</label>
             <input

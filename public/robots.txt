@@ -2,8 +2,10 @@ User-agent: Googlebot
 Disallow: /private/
 Disallow: /admin/
 Allow: /public/
+Allow: /sitemap.xml
 
 User-agent: *
 Disallow: /private/
 Allow: /
+
 Sitemap: https://apnimaativastram.com/sitemap.xml
