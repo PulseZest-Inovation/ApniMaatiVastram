@@ -9,6 +9,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/navigation'; // Import useRouter
 import { handleCodOrder } from './cod/cod';
+import { handleOnlineOrder } from './online/online';
 
 interface PaymentMethodProps {
   formData: {
@@ -42,7 +43,6 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData, totalAmount }) 
     if (!formData.country) missingFields.push('Country');
     if (!formData.state) missingFields.push('State');
     if (!formData.address) missingFields.push('Address');
-    if (!formData.apartment) missingFields.push('Apartment');
     if (!formData.houseNumber) missingFields.push('House Number');
     if (!formData.city) missingFields.push('City');
     if (!formData.pinCode) missingFields.push('Pin Code');
@@ -59,24 +59,34 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData, totalAmount }) 
 
   const handleSubmitOrder = () => {
     if (validateFields()) {
-      handleCodOrder(formData,totalAmount, setLoading, ) // Pass setLoading to update loading state
-        .then(() => {
-          // Show success message
-          toast.success('COD Order placed successfully!');
-          
-          // Redirect after 2 seconds
-          setTimeout(() => {
-            router.push('/orders'); // Redirect to /order page
-          }, 2000);
-        })
-        .catch((error) => {
-          toast.error('Error placing COD order. Please try again later.');
-          console.error('Error placing COD order:', error);
-        });
-      console.log('Order Submitted with Data:', formData);
-      console.log('Selected Payment Method:', paymentMethod);
+      if (paymentMethod === 'online') {
+        handleOnlineOrder(formData, totalAmount, setLoading)
+          .then(() => {
+            toast.success('Online payment successful!');
+            setTimeout(() => {
+              router.push('/orders'); // Redirect to /orders page
+            }, 2000);
+          })
+          .catch((error) => {
+            toast.error('Error processing online payment. Please try again later.');
+            console.error('Error with online payment:', error);
+          });
+      } else if (paymentMethod === 'cod') {
+        handleCodOrder(formData, totalAmount, setLoading)
+          .then(() => {
+            toast.success('COD order placed successfully!');
+            setTimeout(() => {
+              router.push('/orders'); // Redirect to /orders page
+            }, 2000);
+          })
+          .catch((error) => {
+            toast.error('Error placing COD order. Please try again later.');
+            console.error('Error placing COD order:', error);
+          });
+      }
     }
   };
+  
 
   return (
     <div>
