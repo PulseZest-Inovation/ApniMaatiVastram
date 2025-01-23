@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { getDataFromSubCollection } from '@/service/Firebase/getFirestore';
-import { getAuth, onAuthStateChanged } from 'firebase/auth'; // Import `onAuthStateChanged`
+import { getAuth, onAuthStateChanged } from 'firebase/auth';  
 import { Spin, Timeline } from 'antd';
 
 export default function OrderId() {

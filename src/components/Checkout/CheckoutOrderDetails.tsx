@@ -60,6 +60,8 @@ export default function CheckoutOrderDetails({cartItems, totalAmount}: CheckoutO
       }
     };
 
+    console.log(cartItems)
+
     fetchData();
   }, []); // Run this effect only once when the component is mounted
 
