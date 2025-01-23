@@ -101,4 +101,46 @@ export const getAllDocsFromCollection = async <T>(
     }
   };
    
-   
+
+  
+  export const getDataFromSubCollection = async <T>(
+    collectionName: string,
+    userDoc: string,
+    subCollectionName: string,
+    subCollectionDocName: string
+  ): Promise<T & { id: string } | null> => {
+    try {
+      // Ensure the secret key is present
+      if (!ApplicationConfig.secretKey) {
+        throw new Error('No security key found!');
+      }
+  
+      // Build the document reference path
+      const docRef = doc(
+        db,
+        'app_name',
+        ApplicationConfig.secretKey,
+        collectionName,
+        userDoc,
+        subCollectionName,
+        subCollectionDocName
+      );
+  
+      // Fetch the document
+      const docSnapshot = await getDoc(docRef);
+  
+      // Check if the document exists
+      if (docSnapshot.exists()) {
+        return {
+          id: docSnapshot.id,
+          ...(docSnapshot.data() as T),
+        };
+      } else {
+        console.warn('No document found with the provided path:', docRef.path);
+        return null;
+      }
+    } catch (error) {
+      console.error('Error getting document:', error);
+      return null;
+    }
+  };  
