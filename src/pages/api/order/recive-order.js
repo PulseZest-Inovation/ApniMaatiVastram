@@ -7,10 +7,8 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Destructure data from the request body
     const { cartItems, emailDetails, orderId, customerEmail } = req.body;
 
-    // Validate the required fields
     if (!cartItems || !emailDetails || !orderId || !customerEmail) {
       return res.status(400).json({ message: "Missing required fields" });
     }
@@ -61,22 +59,24 @@ export default async function handler(req, res) {
     }
 
     const transporter = nodemailer.createTransport(transporterConfig);
-    const emailContent = generateOrderEmailTemplate(orderId, customerEmail, cartItems);
+
+    // Verify transporter
+    await transporter.verify();
+
+    const emailContent = generateOrderEmailTemplate({ orderId, customerEmail, cartItems });
 
     const mailOptions = {
       from: emailType === "google" ? googleEmail : customEmail,
       to: emailList?.join(", ") || customerEmail,
       subject: "New Order Received",
-      html:  emailContent,
+      html: emailContent,
     };
 
     await transporter.sendMail(mailOptions);
 
-    return res
-      .status(201)
-      .json({ message: "Order created successfully and email sent", orderId });
+    return res.status(201).json({ message: "Order created successfully and email sent", orderId });
   } catch (error) {
     console.error("Error:", error);
-    return res.status(500).json({ message: "Internal Server Error" });
+    return res.status(500).json({ message: "Internal Server Error", error: error.message });
   }
 }
