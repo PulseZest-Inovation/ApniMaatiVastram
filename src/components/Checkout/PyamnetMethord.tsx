@@ -1,4 +1,5 @@
 'use client';
+
 import React, { useState } from 'react';
 import { RadioGroup, Radio } from '@nextui-org/react';
 import { Typography } from 'antd';
@@ -6,6 +7,7 @@ import Image from 'next/image';
 import { Button } from '@nextui-org/react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useRouter } from 'next/navigation'; // Import useRouter
 import { handleCodOrder } from './cod/cod';
 
 interface PaymentMethodProps {
@@ -26,6 +28,8 @@ interface PaymentMethodProps {
 
 const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData, totalAmount }) => {
   const [paymentMethod, setPaymentMethod] = useState<string | null>('online');
+  const [loading, setLoading] = useState<boolean>(false); // Loading state
+  const router = useRouter(); // Initialize useRouter
 
   const handlePaymentMethodChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPaymentMethod(e.target.value);
@@ -55,7 +59,20 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData, totalAmount }) 
 
   const handleSubmitOrder = () => {
     if (validateFields()) {
-      handleCodOrder(formData);
+      handleCodOrder(formData, setLoading) // Pass setLoading to update loading state
+        .then(() => {
+          // Show success message
+          toast.success('COD Order placed successfully!');
+          
+          // Redirect after 2 seconds
+          setTimeout(() => {
+            router.push('/order'); // Redirect to /order page
+          }, 2000);
+        })
+        .catch((error) => {
+          toast.error('Error placing COD order. Please try again later.');
+          console.error('Error placing COD order:', error);
+        });
       console.log('Order Submitted with Data:', formData);
       console.log('Selected Payment Method:', paymentMethod);
     }
@@ -66,11 +83,7 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData, totalAmount }) 
       <ToastContainer />
       {/* Desktop UI */}
       <div className="hidden md:block">
-        <RadioGroup
-          label="Select Payment Method"
-          value={paymentMethod}
-          onChange={handlePaymentMethodChange}
-        >
+        <RadioGroup label="Select Payment Method" value={paymentMethod} onChange={handlePaymentMethodChange}>
           <Radio value="online">
             <div className="flex items-center">
               <Typography className="font-bold">Online</Typography>
@@ -104,8 +117,9 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData, totalAmount }) 
           color={paymentMethod === 'cod' ? 'primary' : 'success'}
           className="mt-4 text-white"
           onPress={handleSubmitOrder}
+          disabled={loading} // Disable button while loading
         >
-          {paymentMethod === 'cod' ? 'Place Order' : `Pay Online Safe & Secure ₹${totalAmount}`}
+          {loading ? 'Placing Order...' : paymentMethod === 'cod' ? 'Place Order' : `Pay Online Safe & Secure ₹${totalAmount}`}
         </Button>
       </div>
 
@@ -113,11 +127,7 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData, totalAmount }) 
       <div className="block md:hidden">
         <div className="p-4">
           <h3 className="text-lg font-bold mb-4">Payment Method</h3>
-          <RadioGroup
-            label="Select Payment Method"
-            value={paymentMethod}
-            onChange={handlePaymentMethodChange}
-          >
+          <RadioGroup label="Select Payment Method" value={paymentMethod} onChange={handlePaymentMethodChange}>
             <Radio value="online">
               <div className="flex items-center">
                 <Typography className="font-bold">Online</Typography>
@@ -150,13 +160,14 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData, totalAmount }) 
         </div>
 
         {/* Sticky Button */}
-        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white shadow-lg ">
+        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white shadow-lg">
           <Button
             color={paymentMethod === 'cod' ? 'primary' : 'success'}
             className="w-full text-white"
             onPress={handleSubmitOrder}
+            disabled={loading} // Disable button while loading
           >
-            {paymentMethod === 'cod' ? 'Place Order' : `Pay Online Safe & Secure ₹${totalAmount}`}
+            {loading ? 'Placing Order...' : paymentMethod === 'cod' ? 'Place Order' : `Pay Online Safe & Secure ₹${totalAmount}`}
           </Button>
         </div>
       </div>

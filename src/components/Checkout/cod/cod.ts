@@ -1,6 +1,7 @@
 import { placeOrder  } from '../placeOrder';
 import { generateOrderId } from '../genrateOrderId';
 import { getAllDocsFromCollection } from '@/service/Firebase/getFirestore';
+import { toast } from 'react-toastify';
 
 
 interface DeliverDetails{
@@ -16,26 +17,27 @@ interface DeliverDetails{
 }
 
 // Handle the COD Order
-export const handleCodOrder = async (deliveryDeatails: DeliverDetails) => {
-  const orderId = generateOrderId(); // Generate unique order ID
-  const cartDetails = await getAllDocsFromCollection('carts');
-  const newOrderData ={
-    ...deliveryDeatails,
-    ...cartDetails,
-    status: 'Pending',
-    orderId: orderId,
-  };
+export const handleCodOrder = async (deliveryDeatails: DeliverDetails, setLoading: (loading: boolean) => void) => {
+  try {
+    const orderId = generateOrderId(); // Generate unique order ID
+    const cartDetails = await getAllDocsFromCollection('carts');
+    const newOrderData = {
+      ...deliveryDeatails,
+      ...cartDetails,
+      status: 'Pending',
+      orderId: orderId,
+    };
 
-  console.log(newOrderData);
+    console.log(newOrderData);
 
-  // Place the order in Firebase
-  placeOrder(newOrderData)
-    .then(() => {
-      console.log('COD Order placed successfully!');
-      // You can show a success message or redirect user
-    })
-    .catch((error) => {
-      console.error('Error placing COD order:', error);
-      // Handle error gracefully
-    });
+    setLoading(true); // Set loading to true while placing the order
+    await placeOrder(newOrderData); // Place the order in Firebase
+    setLoading(false); // Set loading to false once done
+
+    toast.success('COD Order placed successfully!'); // Success message
+  } catch (error) {
+    setLoading(false); // Set loading to false if there's an error
+    toast.error('Error placing COD order. Please try again later.'); // Error message
+    console.error('Error placing COD order:', error);
+  }
 };
