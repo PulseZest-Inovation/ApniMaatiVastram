@@ -21,7 +21,8 @@ export default function CheckoutOrderDetails({cartItems, totalAmount}: CheckoutO
     houseNumber: '',
     city: '',
     pinCode: '',
-    phoneNumber: ''
+    phoneNumber: '',
+    email: '',
   });
 
   useEffect(() => {
@@ -50,7 +51,8 @@ export default function CheckoutOrderDetails({cartItems, totalAmount}: CheckoutO
             houseNumber: data.houseNumber || '',
             city: data.city || '',
             pinCode: data.pinCode || '',
-            phoneNumber: data.phoneNumber || ''
+            phoneNumber: data.phoneNumber || '',
+            email: data.email || ''
           });
         }
       } else {
@@ -173,6 +175,18 @@ export default function CheckoutOrderDetails({cartItems, totalAmount}: CheckoutO
             placeholder="+91 Enter your phone number"
             value={formData.phoneNumber}
             onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
+            required
+            className="w-full p-2 border border-gray-300 rounded"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-semibold mb-2">Email</label>
+          <input
+            type="text"
+            placeholder="Enter your Email"
+            value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             required
             className="w-full p-2 border border-gray-300 rounded"
           />

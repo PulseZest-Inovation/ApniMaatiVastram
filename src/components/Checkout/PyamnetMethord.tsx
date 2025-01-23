@@ -19,6 +19,7 @@ interface PaymentMethodProps {
     city: string;
     pinCode: string;
     phoneNumber: string;
+    email: string;
   };
   totalAmount: number;
 }
@@ -42,6 +43,7 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData, totalAmount }) 
     if (!formData.city) missingFields.push('City');
     if (!formData.pinCode) missingFields.push('Pin Code');
     if (!formData.phoneNumber) missingFields.push('Phone Number');
+    if (!formData.email) missingFields.push('Email');
     if (!paymentMethod) missingFields.push('Payment Method');
 
     if (missingFields.length > 0) {
