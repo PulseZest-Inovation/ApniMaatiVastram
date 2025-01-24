@@ -108,7 +108,7 @@ export default function CheckoutPage() {
       {/* Mobile */}
       <div className="block md:hidden">
         <div className="flex flex-col">
-          <CheckoutOrderDetails cartItems={cartItems} totalAmount={price} />
+          <CheckoutOrderDetails  totalAmount={price} />
           <CouponCode
             totalAmount={price}
             couponCode={couponCode}
@@ -127,7 +127,7 @@ export default function CheckoutPage() {
       {/* Desktop */}
       <div className="hidden md:flex gap-1 mx-auto sticky top-2">
         <div className="md:w-[70%] flex-shrink-0">
-          <CheckoutOrderDetails cartItems={cartItems} totalAmount={price} />
+          <CheckoutOrderDetails totalAmount={price} />
         </div>
         <div className="md:w-[30%] flex flex-col gap-2">
           <div className="p-4 border rounded-md">

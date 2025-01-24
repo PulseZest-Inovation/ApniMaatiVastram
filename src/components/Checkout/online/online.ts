@@ -1,4 +1,3 @@
-import { placeOrder } from '../placeOrder';
 import { generateOrderId } from '../genrateOrderId';
 import { getAllDocsFromCollection } from '@/service/Firebase/getFirestore';
 import { toast } from 'react-toastify';

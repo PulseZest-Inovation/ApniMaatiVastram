@@ -27,7 +27,6 @@ export default async function handler(req, res) {
       password,
       googleEmail,
       appPassword,
-      emailList,
       isEnabled,
     } = emailDetails;
 

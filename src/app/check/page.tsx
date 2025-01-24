@@ -37,9 +37,7 @@ const Payment = () => {
       } else {
         alert('Payment initiation failed');
       }
-    } catch (error) {
-      alert('Error initiating payment');
-    } finally {
+    }   finally {
       setLoading(false);
     }
   };
