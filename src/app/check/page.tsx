@@ -1,5 +1,5 @@
 'use client'
-// components/Payment.js
+
 import { useState } from 'react';
 
 const Payment = () => {
@@ -9,8 +9,8 @@ const Payment = () => {
     setLoading(true);
 
     const paymentData = {
-      user_id: '12345', // Example user ID
-      price: 500, // Price in INR
+      user_id: '12345', 
+      price: 500, 
       phone: '9876543210',
       name: 'John Doe',
     };
