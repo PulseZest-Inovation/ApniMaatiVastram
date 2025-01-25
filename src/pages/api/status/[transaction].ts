@@ -4,10 +4,13 @@ import axios from 'axios';
 
 const checkStatus = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
-    const { txnId } = req.query;
+    const { transaction } = req.query;
+
+    // Debug log for transaction ID
+    console.log('Received transaction ID:', transaction);
 
     // Validate transaction ID
-    if (!txnId || Array.isArray(txnId)) {
+    if (!transaction || Array.isArray(transaction)) {
       return res.status(400).json({
         success: false,
         message: 'Invalid or missing transaction ID.',
@@ -15,9 +18,9 @@ const checkStatus = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     // Load payment settings from environment variables
-    const merchantId = process.env.PHONEPE_MERCHANT_ID;
-    const saltKey = process.env.PHONEPE_SALT_KEY;
-    const keyIndex = process.env.PHONEPE_KEY_INDEX;
+    const merchantId = "M22FSTSDU1CZW";
+    const saltKey = "89952abe-9680-447b-9dcf-18f2b31d923b";
+    const keyIndex = "1";
 
     // Validate environment variables
     if (!merchantId || !saltKey || !keyIndex) {
@@ -27,7 +30,7 @@ const checkStatus = async (req: NextApiRequest, res: NextApiResponse) => {
       });
     }
 
-    const merchantTransactionId = txnId;
+    const merchantTransactionId = transaction;
 
     // Generate the checksum
     const stringToHash = `/pg/v1/status/${merchantId}/${merchantTransactionId}${saltKey}`;
@@ -63,19 +66,11 @@ const checkStatus = async (req: NextApiRequest, res: NextApiResponse) => {
         data: response.data,
       });
     }
-  } catch (err: unknown) {
-    if (err instanceof Error) {
-      console.error(err.message);
-      return res.status(500).json({
-        success: false,
-        message: 'An error occurred while checking the payment status.',
-        error: err.message,
-      });
-    }
-    console.error('Unknown error:', err);
+  } catch (err) {
+    console.error(err);
     return res.status(500).json({
       success: false,
-      message: 'An unexpected error occurred.',
+      message: 'An error occurred while checking the payment status.',
     });
   }
 };
