@@ -2,6 +2,7 @@ import crypto from 'crypto';
 import axios from 'axios';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { ApplicationConfig } from '@/config/ApplicationConfig';
+import { fetchPaymentDetails } from '@/utils/fetchPaymentSetting';
 
 interface PaymentRequestBody {
   user_id: string;
@@ -21,12 +22,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ message: 'Missing required fields', success: false });
       }
 
+      // Fetch the payment settings from Firebase
+      const paymentSettings = await fetchPaymentDetails();
+      if (!paymentSettings) {
+        return res.status(500).json({ message: 'Payment settings not found', success: false });
+      }
+
+      const { secretKey, merchantId, keyIndex } = paymentSettings;
+
       // Generate a unique merchant transaction ID
       const merchantTransactionId = 'M' + Date.now();
 
       // Construct payment data
       const data = {
-        merchantId: process.env.MERCHANT_ID as string,
+        merchantId, // Using the fetched merchantId
         merchantTransactionId,
         merchantUserId: 'MUID' + user_id,
         name,
@@ -46,11 +55,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const payloadMain = Buffer.from(payload).toString('base64');
       console.log('Base64 Payload:', payloadMain); // Log base64 encoded payload
 
-      // Generate checksum
-      const keyIndex = 1;
-      const string = payloadMain + '/pg/v1/pay' + (process.env.SALT_KEY as string);
+      // Generate checksum using the fetched saltKey and keyIndex
+      const string = payloadMain + '/pg/v1/pay' + secretKey;  // Using the secretKey fetched from Firebase
       const sha256 = crypto.createHash('sha256').update(string).digest('hex');
-      const checksum = `${sha256}###${keyIndex}`;
+      const checksum = `${sha256}###${keyIndex}`; // Append the keyIndex
       console.log('Checksum:', checksum); // Log checksum for debugging
 
       // API call to PhonePe (ensure using correct URL for environment)
