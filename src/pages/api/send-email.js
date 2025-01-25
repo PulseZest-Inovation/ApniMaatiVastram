@@ -94,7 +94,7 @@ export default async function handler(req, res) {
 
     const mailOptions = {
       from: emailDetails.emailType === "google" ? googleEmail : customEmail,
-      to: orderDetails.email,
+      to: customerEmail,
       subject: `${ApplicationConfig.applicationName} ${emailType.replace(/([A-Z])/g, " $1")}`, // Format emailType for subject
       html:  emailContent,
     };

@@ -59,6 +59,7 @@ const checkStatus = async (req: NextApiRequest, res: NextApiResponse) => {
         message: 'Payment Success',
         data: response.data,
       });
+      
     } else {
       return res.status(400).json({
         success: false,

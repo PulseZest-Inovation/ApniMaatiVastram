@@ -4,12 +4,15 @@ import React, { useState } from 'react';
 import { RadioGroup, Radio } from '@nextui-org/react';
 import { Typography } from 'antd';
 import Image from 'next/image';
-import { Button } from '@nextui-org/react';
+import { Button, Spinner } from '@nextui-org/react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/navigation'; // Import useRouter
 import { handleCodOrder } from './cod/cod';
 import { handleOnlineOrder } from './online/online';
+import { CartItem } from '@/Types/data/CartItemType';
+import { fetchEmailDetails } from '@/utils/getSendingEmail';
+import { generateOrderId } from './genrateOrderId';
 
 interface PaymentMethodProps {
   formData: {
@@ -26,11 +29,13 @@ interface PaymentMethodProps {
     customerId: string;
   };
   totalAmount: number;
+  cartItem: CartItem;
 }
 
-const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData, totalAmount }) => {
+const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData, totalAmount, cartItem }) => {
   const [paymentMethod, setPaymentMethod] = useState<string | null>('online');
   const [loading, setLoading] = useState<boolean>(false); // Loading state
+  const [isOrderPlaced, setIsOrderPlaced] = useState<boolean>(false); // Track if order is placed
   const router = useRouter(); // Initialize useRouter
 
   const handlePaymentMethodChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,22 +64,63 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData, totalAmount }) 
   };
 
   const handleSubmitOrder = async () => {
+        const orderId = generateOrderId(); // Generate unique order ID
+    
     if (validateFields()) {
       setLoading(true);
       try {
+        let success = false;
+
         if (paymentMethod === 'online') {
-          const success = await handleOnlineOrder(formData, totalAmount);
+          success = await handleOnlineOrder(formData, totalAmount, orderId);
           if (success) {
             toast.success('Redirecting to payment page...');
           } else {
             toast.error('Online payment initiation failed.');
           }
         } else if (paymentMethod === 'cod') {
-          await handleCodOrder(formData, totalAmount, setLoading);
+          success = await handleCodOrder(formData, totalAmount, orderId, setLoading);
           toast.success('COD order placed successfully!');
           setTimeout(() => {
             router.push('/orders'); // Redirect to /orders page
           }, 2000);
+        }
+        const emailDetail = await fetchEmailDetails()
+
+        if (success) {
+          // After successfully placing the order, call the API to receive the order.
+          const apiResponse = await fetch('/api/order/receive-order', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              cartItem,
+              formData,
+              emailDetail,
+              orderId,
+              email: formData.email,
+              totalAmount,
+            }),
+          });
+
+          if (!apiResponse.ok) {
+            const errorDetails = await apiResponse.json();
+            throw new Error(
+              `Failed to call the API. Status: ${apiResponse.status}, Message: ${errorDetails.message}`
+            );
+          }
+
+          const apiResult = await apiResponse.json();
+          if (apiResult.status === 'success') {
+            setIsOrderPlaced(true); // Set order placed flag to true
+            toast.success('Order received successfully!');
+            setTimeout(() => {
+              router.push('/orders'); // Redirect to orders page
+            }, 2000);
+          } else {
+            throw new Error('Failed to receive the order.');
+          }
         }
       } catch (error) {
         toast.error('An error occurred while placing the order. Please try again.');
@@ -126,7 +172,7 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData, totalAmount }) 
           onPress={handleSubmitOrder}
           disabled={loading} // Disable button while loading
         >
-          {loading ? 'Placing Order...' : paymentMethod === 'cod' ? 'Place Order' : `Pay Online Safe & Secure ₹${totalAmount}`}
+          {loading ? <Spinner color='success' /> : paymentMethod === 'cod' ? 'Place Order' : `Pay Online Safe & Secure ₹${totalAmount}`}
         </Button>
       </div>
 
@@ -174,7 +220,7 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData, totalAmount }) 
             onPress={handleSubmitOrder}
             disabled={loading} // Disable button while loading
           >
-            {loading ? 'Placing Order...' : paymentMethod === 'cod' ? 'Place Order' : `Pay Online Safe & Secure ₹${totalAmount}`}
+            {loading ? <Spinner color='success' /> : paymentMethod === 'cod' ? 'Place Order' : `Pay Online Safe & Secure ₹${totalAmount}`}
           </Button>
         </div>
       </div>

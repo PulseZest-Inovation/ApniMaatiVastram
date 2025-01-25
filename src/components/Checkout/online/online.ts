@@ -3,29 +3,33 @@ import { getAllDocsFromCollection } from '@/service/Firebase/getFirestore';
 import { toast } from 'react-toastify';
 import { DeliverDetails } from '@/Types/data/DeliveryDetails';
 import { fetchPaymentDetails } from '@/utils/fetchPaymentSetting';
+import OrderId from '@/app/orders/[orderId]/page';
 
 // Handle the Online Order
 export const handleOnlineOrder = async (
   deliveryDetails: DeliverDetails,
-  totalAmount: number
+  totalAmount: number,
+  orderId: string
 ): Promise<boolean> => {
   try {
-    const orderId = generateOrderId(); // Generate unique order ID
     const cartDetails = await getAllDocsFromCollection('carts');
 
     const newOrderData = {
       ...deliveryDetails,
       ...cartDetails,
-      status: 'Pending',
+      status: 'Confirmed',
       orderId: orderId,
       totalAmount: totalAmount,
     };
 
     console.log(newOrderData);
 
+    // Store the order data in localStorage before navigating
+    localStorage.setItem('orderDetails', JSON.stringify(newOrderData));
+
     // Payment data to send to the API
     const paymentData = {
-      user_id: deliveryDetails.customerId,  
+      user_id: deliveryDetails.customerId,
       price: totalAmount,
       phone: deliveryDetails.phoneNumber,
       name: deliveryDetails.fullName,
@@ -62,4 +66,4 @@ export const handleOnlineOrder = async (
     toast.error('An error occurred while processing the order');
     return false;
   }
-}
+};

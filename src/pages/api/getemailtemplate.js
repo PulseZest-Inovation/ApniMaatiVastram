@@ -13,15 +13,15 @@ export const getEmailTemplate = async (emailType) => {
 
     // Map emailType to the corresponding template
     switch (emailType) {
-      case "OrderCancelled":
+      case "Cancled":
         return data.OrderCancelled || null;
-      case "OrderConfirmed":
+      case "Confirmed":
         return data.OrderConfirmed || null;
-      case "OrderPending":
+      case "Pending":
         return data.OrderPending || null;
-      case "OrderPlaced":
+      case "Delivered":
         return data.OrderPlaced || null;
-      case "OrderProcessing":
+      case "Processing":
         return data.OrderProcessing || null;
       default:
         console.warn("Invalid email type provided.");
