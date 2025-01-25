@@ -21,6 +21,7 @@ export default function CheckoutOrderDetails({ totalAmount}: CheckoutOrderDeatil
     pinCode: '',
     phoneNumber: '',
     email: '',
+    customerId: ''
   });
 
   useEffect(() => {
@@ -50,7 +51,8 @@ export default function CheckoutOrderDetails({ totalAmount}: CheckoutOrderDeatil
             city: data.city || '',
             pinCode: data.pinCode || '',
             phoneNumber: data.phoneNumber || '',
-            email: data.email || ''
+            email: data.email || '',
+            customerId: docName
           });
         }
       } else {

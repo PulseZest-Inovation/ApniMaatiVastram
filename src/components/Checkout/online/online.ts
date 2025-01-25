@@ -1,28 +1,17 @@
 import { generateOrderId } from '../genrateOrderId';
 import { getAllDocsFromCollection } from '@/service/Firebase/getFirestore';
 import { toast } from 'react-toastify';
+import { DeliverDetails } from '@/Types/data/DeliveryDetails';
 
-interface DeliverDetails {
-  fullName: string;
-  country: string;
-  state: string;
-  address: string;
-  apartment: string;
-  houseNumber: string;
-  city: string;
-  pinCode: string;
-  phoneNumber: string;
-}
-
-// Handle the COD Order
+// Handle the Online Order
 export const handleOnlineOrder = async (
   deliveryDetails: DeliverDetails,
-  totalAmount: number,
-  setLoading: (loading: boolean) => void
-) => {
+  totalAmount: number
+): Promise<boolean> => {
   try {
     const orderId = generateOrderId(); // Generate unique order ID
     const cartDetails = await getAllDocsFromCollection('carts');
+
     const newOrderData = {
       ...deliveryDetails,
       ...cartDetails,
@@ -33,14 +22,40 @@ export const handleOnlineOrder = async (
 
     console.log(newOrderData);
 
-    // Here redirect to the payment page.. after getting the success status.. run the given placeOrder function..
+    // Payment data to send to the API
+    const paymentData = {
+      user_id: deliveryDetails.customerId, // Use the generated order ID as user_id for this case
+      price: totalAmount,
+      phone: deliveryDetails.phoneNumber,
+      name: deliveryDetails.fullName,
+    };
 
-   
-    // await placeOrder(newOrderData); // Place the order in Firebase
-    setLoading(false); // Set loading to false once done
+    const response = await fetch('/api/payment', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(paymentData),
+    });
 
-    toast.success('COD Order placed successfully!'); // Success message
-  } catch {
-    setLoading(false); // Set loading to false if there's an error
+    if (response.ok) {
+      const responseData = await response.json();
+
+      if (responseData.success && responseData.paymentUrl) {
+        // Return the payment URL for redirection
+        window.location.href = responseData.paymentUrl;
+        return true;
+      } else {
+        toast.error('Failed to get payment URL');
+        return false;
+      }
+    } else {
+      toast.error('Payment initiation failed');
+      return false;
+    }
+  } catch (error) {
+    console.error('Error handling online order:', error);
+    toast.error('An error occurred while processing the order');
+    return false;
   }
-};
+}

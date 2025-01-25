@@ -2,25 +2,14 @@ import { placeOrder } from '../placeOrder';
 import { generateOrderId } from '../genrateOrderId';
 import { getAllDocsFromCollection } from '@/service/Firebase/getFirestore';
 import { toast } from 'react-toastify';
-
-interface DeliverDetails {
-  fullName: string;
-  country: string;
-  state: string;
-  address: string;
-  apartment: string;
-  houseNumber: string;
-  city: string;
-  pinCode: string;
-  phoneNumber: string;
-}
+import { DeliverDetails } from '@/Types/data/DeliveryDetails';
 
 // Handle the COD Order
 export const handleCodOrder = async (
   deliveryDetails: DeliverDetails,
   totalAmount: number,
   setLoading: (loading: boolean) => void
-) => {
+): Promise<boolean> => {
   try {
     const orderId = generateOrderId(); // Generate unique order ID
     const cartDetails = await getAllDocsFromCollection('carts');
@@ -39,7 +28,11 @@ export const handleCodOrder = async (
     setLoading(false); // Set loading to false once done
 
     toast.success('COD Order placed successfully!'); // Success message
-  } catch {
+    return true; // Indicate success
+  } catch (error) {
+    console.error('Error placing COD order:', error);
     setLoading(false); // Set loading to false if there's an error
+    toast.error('Failed to place COD order. Please try again.'); // Error message
+    return false; // Indicate failure
   }
 };

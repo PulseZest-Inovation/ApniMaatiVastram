@@ -23,6 +23,7 @@ interface PaymentMethodProps {
     pinCode: string;
     phoneNumber: string;
     email: string;
+    customerId: string;
   };
   totalAmount: number;
 }
@@ -57,36 +58,32 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData, totalAmount }) 
     return true;
   };
 
-  const handleSubmitOrder = () => {
+  const handleSubmitOrder = async () => {
     if (validateFields()) {
-      if (paymentMethod === 'online') {
-        handleOnlineOrder(formData, totalAmount, setLoading)
-          .then(() => {
-            toast.success('Online payment successful!');
-            setTimeout(() => {
-              router.push('/orders'); // Redirect to /orders page
-            }, 2000);
-          })
-          .catch((error) => {
-            toast.error('Error processing online payment. Please try again later.');
-            console.error('Error with online payment:', error);
-          });
-      } else if (paymentMethod === 'cod') {
-        handleCodOrder(formData, totalAmount, setLoading)
-          .then(() => {
-            toast.success('COD order placed successfully!');
-            setTimeout(() => {
-              router.push('/orders'); // Redirect to /orders page
-            }, 2000);
-          })
-          .catch((error) => {
-            toast.error('Error placing COD order. Please try again later.');
-            console.error('Error placing COD order:', error);
-          });
+      setLoading(true);
+      try {
+        if (paymentMethod === 'online') {
+          const success = await handleOnlineOrder(formData, totalAmount);
+          if (success) {
+            toast.success('Redirecting to payment page...');
+          } else {
+            toast.error('Online payment initiation failed.');
+          }
+        } else if (paymentMethod === 'cod') {
+          await handleCodOrder(formData, totalAmount, setLoading);
+          toast.success('COD order placed successfully!');
+          setTimeout(() => {
+            router.push('/orders'); // Redirect to /orders page
+          }, 2000);
+        }
+      } catch (error) {
+        toast.error('An error occurred while placing the order. Please try again.');
+        console.error('Order error:', error);
+      } finally {
+        setLoading(false);
       }
     }
   };
-  
 
   return (
     <div>
