@@ -1,11 +1,17 @@
 import crypto from 'crypto';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { fetchPaymentDetails } from '@/utils/fetchPaymentSetting';
 
 interface CallbackData {
   status: string;
   orderId?: string;
   amount?: number;
   [key: string]: any; // Allow for additional dynamic properties
+}
+
+// Helper function to calculate checksum
+const calculateChecksum = (data: string, saltKey: string): string => {
+  return crypto.createHash('sha256').update(data + saltKey).digest('hex');
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -26,15 +32,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       console.log('Received callback for transaction:', transactionId);
       console.log('Callback data:', data);
 
+      // Fetch payment details (merchantId, secretKey, keyIndex)
+      const paymentDetails = await fetchPaymentDetails();
+      if (!paymentDetails) {
+        return res.status(500).json({ success: false, message: 'Failed to fetch payment settings' });
+      }
+
+      // Extract secretKey and saltKey
+      const { secretKey} = paymentDetails;
+
       // Normalize headers to avoid case-sensitivity issues
       const headers = Object.keys(req.headers).reduce((acc, key) => {
         const headerValue = req.headers[key];
-        
+
         // Ensure headerValue is a string (or join if it's an array)
         if (Array.isArray(headerValue)) {
-          acc[key.toLowerCase()] = headerValue.join(', ');  // Join array elements as a string
+          acc[key.toLowerCase()] = headerValue.join(', '); // Join array elements as a string
         } else {
-          acc[key.toLowerCase()] = headerValue;  // If it's a single string, directly assign it
+          acc[key.toLowerCase()] = headerValue; // If it's a single string, directly assign it
         }
 
         return acc;
@@ -45,15 +60,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ success: false, message: 'Missing checksum in the headers' });
       }
 
-      // Ensure SALT_KEY is defined
-      const saltKey = process.env.SALT_KEY;
-      if (!saltKey) {
-        return res.status(500).json({ success: false, message: 'SALT_KEY environment variable is missing' });
-      }
-
       // Generate payload and compute checksum
-      const payload = JSON.stringify(data) + saltKey;
-      const computedChecksum = crypto.createHash('sha256').update(payload).digest('hex');
+      const payload = JSON.stringify(data);
+      const computedChecksum = calculateChecksum(payload, secretKey);
 
       // Verify the checksum
       if (expectedChecksum !== computedChecksum) {
