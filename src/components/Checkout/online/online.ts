@@ -2,6 +2,7 @@ import { generateOrderId } from '../genrateOrderId';
 import { getAllDocsFromCollection } from '@/service/Firebase/getFirestore';
 import { toast } from 'react-toastify';
 import { DeliverDetails } from '@/Types/data/DeliveryDetails';
+import { fetchPaymentDetails } from '@/utils/fetchPaymentSetting';
 
 // Handle the Online Order
 export const handleOnlineOrder = async (
@@ -24,11 +25,14 @@ export const handleOnlineOrder = async (
 
     // Payment data to send to the API
     const paymentData = {
-      user_id: deliveryDetails.customerId, // Use the generated order ID as user_id for this case
+      user_id: deliveryDetails.customerId,  
       price: totalAmount,
       phone: deliveryDetails.phoneNumber,
       name: deliveryDetails.fullName,
     };
+
+    const paymentDetails = await fetchPaymentDetails();
+    console.log(paymentDetails);
 
     const response = await fetch('/api/payment', {
       method: 'POST',
