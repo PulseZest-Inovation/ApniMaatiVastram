@@ -11,6 +11,11 @@ interface EmailSettings {
   appPassword?: string;
   isEnabled?: boolean;
   emailList?: string[];
+  OrderCancelled? : string;
+  OrderConfirmed? : string;
+  OrderPending? : string;
+  OrderPlaced? : string;
+  OrderProcessing? : string;
 }
 
 export const fetchEmailDetails = async (): Promise<EmailSettings | null> => {

@@ -2,16 +2,14 @@
 import React, { useState, useEffect } from 'react';
 import { indianStates } from '@/utils/indiastate';
 import { getDataByDocName } from '@/service/Firebase/getFirestore';
-import { getAuth } from 'firebase/auth'; // Import Firebase Auth to get the current user
+import { getAuth } from 'firebase/auth';  
 import PaymentMethod from './PyamnetMethord';
-import { CartItem } from '@/Types/data/CartItemType';
 
 interface CheckoutOrderDeatils{
-  cartItems: CartItem[]
   totalAmount: number;
 }
 
-export default function CheckoutOrderDetails({cartItems, totalAmount}: CheckoutOrderDeatils) {
+export default function CheckoutOrderDetails({ totalAmount}: CheckoutOrderDeatils) {
   const [formData, setFormData] = useState({
     fullName: '',
     country: 'India',
@@ -23,6 +21,7 @@ export default function CheckoutOrderDetails({cartItems, totalAmount}: CheckoutO
     pinCode: '',
     phoneNumber: '',
     email: '',
+    customerId: ''
   });
 
   useEffect(() => {
@@ -52,7 +51,8 @@ export default function CheckoutOrderDetails({cartItems, totalAmount}: CheckoutO
             city: data.city || '',
             pinCode: data.pinCode || '',
             phoneNumber: data.phoneNumber || '',
-            email: data.email || ''
+            email: data.email || '',
+            customerId: docName
           });
         }
       } else {
@@ -60,7 +60,6 @@ export default function CheckoutOrderDetails({cartItems, totalAmount}: CheckoutO
       }
     };
 
-    console.log(cartItems)
 
     fetchData();
   }, []); // Run this effect only once when the component is mounted
