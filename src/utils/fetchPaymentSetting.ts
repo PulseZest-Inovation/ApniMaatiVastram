@@ -1,7 +1,7 @@
 import { getDataByDocName } from "@/service/Firebase/getFirestore";
 
 interface PaymentSetting {
-    secretKey: string;
+    saltKey: string;
     merchantId: string;
     keyIndex: string;
 }

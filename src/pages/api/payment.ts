@@ -28,7 +28,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(500).json({ message: 'Payment settings not found', success: false });
       }
 
-      const { secretKey, merchantId, keyIndex } = paymentSettings;
+      const { saltKey, merchantId, keyIndex } = paymentSettings;
 
       // Generate a unique merchant transaction ID
       const merchantTransactionId = 'M' + Date.now();
@@ -56,9 +56,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       console.log('Base64 Payload:', payloadMain); // Log base64 encoded payload
 
       // Generate checksum using the fetched saltKey and keyIndex
-      const string = payloadMain + '/pg/v1/pay' + secretKey;  // Using the secretKey fetched from Firebase
-      const sha256 = crypto.createHash('sha256').update(string).digest('hex');
-      const checksum = `${sha256}###${keyIndex}`; // Append the keyIndex
+      const stringToHash = payloadMain + '/pg/v1/pay' + saltKey;  // Correct string construction
+      const sha256 = crypto.createHash('sha256').update(stringToHash).digest('hex');
+      const checksum = `${sha256}###${keyIndex}`; // Append the keyIndex to checksum
       console.log('Checksum:', checksum); // Log checksum for debugging
 
       // API call to PhonePe (ensure using correct URL for environment)
@@ -70,10 +70,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         headers: {
           accept: 'application/json',
           'Content-Type': 'application/json',
-          'X-VERIFY': checksum,
+          'X-VERIFY': checksum, // Set checksum in header
         },
         data: {
-          request: payloadMain,
+          request: payloadMain, // Send base64 encoded payload
         },
       };
 

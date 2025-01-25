@@ -39,7 +39,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       // Extract secretKey and saltKey
-      const { secretKey} = paymentDetails;
+      const { saltKey } = paymentDetails;
 
       // Normalize headers to avoid case-sensitivity issues
       const headers = Object.keys(req.headers).reduce((acc, key) => {
@@ -62,9 +62,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       // Generate payload and compute checksum
       const payload = JSON.stringify(data);
-      const computedChecksum = calculateChecksum(payload, secretKey);
+      const computedChecksum = calculateChecksum(payload, saltKey);
 
-      // Verify the checksum
+      // Manually compare checksum with the provided checksum
       if (expectedChecksum !== computedChecksum) {
         console.error('Checksum verification failed');
         return res.status(400).json({ success: false, message: 'Checksum verification failed' });
@@ -73,7 +73,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       // Process the payment status
       switch (data.status) {
         case 'SUCCESS':
-          // Example: Update the order status in your database
           console.log(`Payment successful for transaction: ${transactionId}`);
           return res.json({ success: true, message: 'Payment processed successfully' });
         case 'FAILED':
@@ -97,7 +96,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
     }
   } else {
-    // Method not allowed for non-POST requests
     return res.status(405).json({ success: false, message: 'Method Not Allowed' });
   }
 }
