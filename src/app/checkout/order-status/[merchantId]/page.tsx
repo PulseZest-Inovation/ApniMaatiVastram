@@ -93,6 +93,9 @@ const OrderStatus = () => {
             throw new Error('Order placement failed.');
           }
 
+            // If the order is placed successfully, remove the order details from localStorage
+          localStorage.removeItem('orderDetails');
+
           // Navigate to the order confirmation page
           const orderId = combinedOrderData.orderId;
           Router.push(`/orders/${orderId}`);
