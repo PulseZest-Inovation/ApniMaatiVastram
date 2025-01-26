@@ -1,9 +1,7 @@
-import { generateOrderId } from '../genrateOrderId';
 import { getAllDocsFromCollection } from '@/service/Firebase/getFirestore';
 import { toast } from 'react-toastify';
 import { DeliverDetails } from '@/Types/data/DeliveryDetails';
 import { fetchPaymentDetails } from '@/utils/fetchPaymentSetting';
-import OrderId from '@/app/orders/[orderId]/page';
 
 // Handle the Online Order
 export const handleOnlineOrder = async (

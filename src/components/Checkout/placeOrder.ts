@@ -1,4 +1,3 @@
-import { getAuth } from "firebase/auth"; // Import Firebase Authentication
 import { getAllDocsFromCollection } from "@/service/Firebase/getFirestore";
 import { createDataWithCustomId, placeOrderFiresotre } from "@/service/Firebase/postFirestore";
 import { Timestamp } from "firebase/firestore";

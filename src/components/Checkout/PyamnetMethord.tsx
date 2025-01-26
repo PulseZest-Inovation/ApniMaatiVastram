@@ -7,10 +7,9 @@ import Image from 'next/image';
 import { Button, Spinner } from '@nextui-org/react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useRouter } from 'next/navigation'; // Import useRouter
+import { useRouter } from 'next/navigation';  
 import { handleCodOrder } from './cod/cod';
 import { handleOnlineOrder } from './online/online';
-import { CartItem } from '@/Types/data/CartItemType';
 import { generateOrderId } from './genrateOrderId';
 
 interface PaymentMethodProps {
@@ -28,14 +27,12 @@ interface PaymentMethodProps {
     customerId: string;
   };
   totalAmount: number;
-  cartItem: CartItem;
 }
 
-const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData, totalAmount, cartItem }) => {
+const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData, totalAmount, }) => {
   const [paymentMethod, setPaymentMethod] = useState<string | null>('online');
-  const [loading, setLoading] = useState<boolean>(false); // Loading state
-  const [isOrderPlaced, setIsOrderPlaced] = useState<boolean>(false); // Track if order is placed
-  const router = useRouter(); // Initialize useRouter
+  const [loading, setLoading] = useState<boolean>(false); 
+  const router = useRouter(); 
 
   const handlePaymentMethodChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPaymentMethod(e.target.value);
@@ -63,7 +60,7 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData, totalAmount, ca
   };
 
   const handleSubmitOrder = async () => {
-    const orderId = generateOrderId(); // Generate unique order ID
+    const orderId = generateOrderId();  
   
     if (validateFields()) {
       setLoading(true);
