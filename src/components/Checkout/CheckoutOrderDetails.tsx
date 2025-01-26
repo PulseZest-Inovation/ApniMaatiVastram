@@ -1,45 +1,44 @@
-'use client'
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import { indianStates } from '@/utils/indiastate';
 import { getDataByDocName } from '@/service/Firebase/getFirestore';
-import { getAuth } from 'firebase/auth';  
+import { getAuth } from 'firebase/auth';
 import PaymentMethod from './PyamnetMethord';
 
-interface CheckoutOrderDeatils{
+interface CheckoutOrderDetailsProps {
   totalAmount: number;
 }
 
-export default function CheckoutOrderDetails({ totalAmount}: CheckoutOrderDeatils) {
+export default function CheckoutOrderDetails({ totalAmount }: CheckoutOrderDetailsProps) {
   const [formData, setFormData] = useState({
     fullName: '',
     country: 'India',
     state: '',
     address: '',
     apartment: '',
-    houseNumber: '',
     city: '',
     pinCode: '',
     phoneNumber: '',
+    altPhoneNumber: '',
     email: '',
-    customerId: ''
+    customerId: '',
   });
+
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
-      // Get the current authenticated user's UID from Firebase Auth
       const auth = getAuth();
       const user = auth.currentUser;
-      
-      if (user) {
-        const userId = user.uid; // Get the current user's UID
-        
-        const collectionName = 'customers'; // Collection name
-        const docName = userId; // Use the current user's UID as the document name
 
-        // Fetch data using getDataByDocName function
+      if (user) {
+        const userId = user.uid;
+        const collectionName = 'customers';
+        const docName = userId;
+
         const data = await getDataByDocName<typeof formData>(collectionName, docName);
 
-        // If data exists, update formData with the fetched values
         if (data) {
           setFormData({
             fullName: data.fullName || '',
@@ -47,33 +46,45 @@ export default function CheckoutOrderDetails({ totalAmount}: CheckoutOrderDeatil
             state: data.state || '',
             address: data.address || '',
             apartment: data.apartment || '',
-            houseNumber: data.houseNumber || '',
             city: data.city || '',
             pinCode: data.pinCode || '',
             phoneNumber: data.phoneNumber || '',
+            altPhoneNumber: data.altPhoneNumber || '',
             email: data.email || '',
-            customerId: docName
+            customerId: docName,
           });
         }
       } else {
         console.log('No user is signed in.');
       }
+
+      setLoading(false);
     };
 
-
     fetchData();
-  }, []); // Run this effect only once when the component is mounted
+  }, []);
+
+  const validateEmail = (email: string) =>
+    /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email);
+
+ 
+
+  const validatePinCode = (pinCode: string) =>
+    /^[1-9][0-9]{5}$/.test(pinCode);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="p-4">
       <h3 className="text-large font-bold mb-4">Delivery Details</h3>
       <form className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Delivery Details */}
         <div>
-          <label className="block text-sm font-semibold mb-2">First Name</label>
+          <label className="block text-sm font-semibold mb-2">Full Name</label>
           <input
             type="text"
-            placeholder="Enter your first name"
+            placeholder="Enter your full name"
             value={formData.fullName}
             onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
             required
@@ -135,7 +146,7 @@ export default function CheckoutOrderDetails({ totalAmount}: CheckoutOrderDeatil
         </div>
 
         <div>
-          <label className="block text-sm font-semibold mb-2">Apartment, suite, etc</label>
+          <label className="block text-sm font-semibold mb-2">Apartment, Suite (optional)</label>
           <input
             type="text"
             placeholder="Enter additional address info"
@@ -144,19 +155,7 @@ export default function CheckoutOrderDetails({ totalAmount}: CheckoutOrderDeatil
             className="w-full p-2 border border-gray-300 rounded"
           />
         </div>
-
-        <div>
-          <label className="block text-sm font-semibold mb-2">House Number</label>
-          <input
-            type="text"
-            placeholder="Enter House Number"
-            value={formData.houseNumber}
-            onChange={(e) => setFormData({ ...formData, houseNumber: e.target.value })}
-            className="w-full p-2 border border-gray-300 rounded"
-          />
-        </div>
-      
-
+ 
         <div>
           <label className="block text-sm font-semibold mb-2">PIN Code</label>
           <input
@@ -165,36 +164,50 @@ export default function CheckoutOrderDetails({ totalAmount}: CheckoutOrderDeatil
             value={formData.pinCode}
             onChange={(e) => setFormData({ ...formData, pinCode: e.target.value })}
             required
-            className="w-full p-2 border border-gray-300 rounded"
+            className={`w-full p-2 border ${validatePinCode(formData.pinCode) ? 'border-gray-300' : 'border-red-500'} rounded`}
           />
         </div>
 
         <div>
-          <label className="block text-sm font-semibold mb-2">Phone</label>
+          <label className="block text-sm font-semibold mb-2">Phone Number</label>
           <input
             type="text"
             placeholder="+91 Enter your phone number"
             value={formData.phoneNumber}
             onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
             required
+            disabled
             className="w-full p-2 border border-gray-300 rounded"
+
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-semibold mb-2">Alternative Phone </label>
+          <input
+            type="text"
+            placeholder="+91 Enter your alternative phone number"
+            value={formData.altPhoneNumber}
+            onChange={(e) => setFormData({ ...formData, altPhoneNumber: e.target.value })}
+            required
+            className="w-full p-2 border border-gray-300 rounded"
+
           />
         </div>
 
         <div>
           <label className="block text-sm font-semibold mb-2">Email</label>
           <input
-            type="text"
-            placeholder="Enter your Email"
+            type="email"
+            placeholder="Enter your email"
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             required
-            className="w-full p-2 border border-gray-300 rounded"
+            className={`w-full p-2 border ${validateEmail(formData.email) ? 'border-gray-300' : 'border-red-500'} rounded`}
           />
         </div>
       </form>
 
-      {/* Pass formData as props to PaymentMethod component */}
       <PaymentMethod formData={formData} totalAmount={totalAmount} />
     </div>
   );
