@@ -68,7 +68,7 @@ const OrderStatus = () => {
               address: combinedOrderData.address,
             },
             emailDetails: emailDetail,
-            emailType: 'Pending', // Match the backend handler's logic
+            emailType: 'Confirmed', // Match the backend handler's logic
           };
 
           // Send email
