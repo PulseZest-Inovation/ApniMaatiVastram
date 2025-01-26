@@ -1,54 +1,67 @@
-'use client'
+'use client';
+import React, { useEffect, useState } from "react";
+import { getAuth } from "firebase/auth";
+import { getAllDocsFromSubCollection } from "@/service/Firebase/getFirestore";
 
-import { useState } from 'react';
+export default function GetCartItemAndShow() {
+  const [cartItems, setCartItems] = useState<any[]>([]); // Using 'any' for now
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-const Payment = () => {
-  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    const fetchCartItems = async () => {
+      setLoading(true);
+      try {
+        // Get the current user's UID
+        const auth = getAuth();
+        const currentUser = auth.currentUser;
 
-  const handlePayment = async () => {
-    setLoading(true);
+        if (!currentUser) {
+          throw new Error("No user is currently logged in.");
+        }
 
-    const paymentData = {
-      user_id: '12345', 
-      price: 500, 
-      phone: '9876543210',
-      name: 'John Doe',
+        const userId = currentUser.uid;
+        console.log("Current user ID:", userId);
+
+        // Fetch cart items for the current user
+        const cartDetails = await getAllDocsFromSubCollection("customers", userId, "cart");
+        console.log(cartDetails);
+        setCartItems(cartDetails);
+      } catch (err) {
+        console.error("Error fetching cart items:", err);
+        setError("Failed to load cart items.");
+      } finally {
+        setLoading(false);
+      }
     };
 
-    try {
-      const response = await fetch('/api/payment', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(paymentData),
-      });
+    fetchCartItems();
+  }, []);
 
-      if (response.ok) {
-        const responseData = await response.json();
+  if (loading) {
+    return <div>Loading cart items...</div>;
+  }
 
-        // Check if paymentUrl exists in the response data
-        if (responseData.success && responseData.paymentUrl) {
-          // Redirect the user to the payment URL
-          window.location.href = responseData.paymentUrl;
-        } else {
-          alert('Failed to get payment URL');
-        }
-      } else {
-        alert('Payment initiation failed');
-      }
-    }   finally {
-      setLoading(false);
-    }
-  };
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <div>
-      <button onClick={handlePayment} disabled={loading}>
-        {loading ? 'Processing Payment...' : 'Pay with PhonePe'}
-      </button>
+      <h1 className="text-xl font-bold">Cart Items</h1>
+      {cartItems.length > 0 ? (
+        <ul className="space-y-4">
+          {cartItems.map((item: any) => (
+            <li key={item.id} className="p-4 border rounded-md shadow-sm">
+              <h2 className="text-lg font-medium">{item.name}</h2>
+              <p>Price: ${item.price}</p>
+              <p>Quantity: {item.quantity}</p>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>No items in the cart.</p>
+      )}
     </div>
   );
-};
-
-export default Payment;
+}

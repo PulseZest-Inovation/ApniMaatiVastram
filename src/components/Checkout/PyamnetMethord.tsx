@@ -11,7 +11,6 @@ import { useRouter } from 'next/navigation'; // Import useRouter
 import { handleCodOrder } from './cod/cod';
 import { handleOnlineOrder } from './online/online';
 import { CartItem } from '@/Types/data/CartItemType';
-import { fetchEmailDetails } from '@/utils/getSendingEmail';
 import { generateOrderId } from './genrateOrderId';
 
 interface PaymentMethodProps {
@@ -64,13 +63,13 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData, totalAmount, ca
   };
 
   const handleSubmitOrder = async () => {
-        const orderId = generateOrderId(); // Generate unique order ID
-    
+    const orderId = generateOrderId(); // Generate unique order ID
+  
     if (validateFields()) {
       setLoading(true);
       try {
         let success = false;
-
+  
         if (paymentMethod === 'online') {
           success = await handleOnlineOrder(formData, totalAmount, orderId);
           if (success) {
@@ -84,44 +83,7 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData, totalAmount, ca
           setTimeout(() => {
             router.push('/orders'); // Redirect to /orders page
           }, 2000);
-        }
-        const emailDetail = await fetchEmailDetails()
-
-        if (success) {
-          // After successfully placing the order, call the API to receive the order.
-          const apiResponse = await fetch('/api/order/receive-order', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              cartItem,
-              formData,
-              emailDetail,
-              orderId,
-              email: formData.email,
-              totalAmount,
-            }),
-          });
-
-          if (!apiResponse.ok) {
-            const errorDetails = await apiResponse.json();
-            throw new Error(
-              `Failed to call the API. Status: ${apiResponse.status}, Message: ${errorDetails.message}`
-            );
-          }
-
-          const apiResult = await apiResponse.json();
-          if (apiResult.status === 'success') {
-            setIsOrderPlaced(true); // Set order placed flag to true
-            toast.success('Order received successfully!');
-            setTimeout(() => {
-              router.push('/orders'); // Redirect to orders page
-            }, 2000);
-          } else {
-            throw new Error('Failed to receive the order.');
-          }
-        }
+        } 
       } catch (error) {
         toast.error('An error occurred while placing the order. Please try again.');
         console.error('Order error:', error);

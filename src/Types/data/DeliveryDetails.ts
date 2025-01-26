@@ -10,4 +10,5 @@ export interface DeliverDetails {
   pinCode: string;
   phoneNumber: string;
   customerId: string;
+  email: string;
 }

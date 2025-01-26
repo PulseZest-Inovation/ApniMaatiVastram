@@ -1,22 +1,7 @@
 import { getDataByDocName } from "@/service/Firebase/getFirestore";
+import { EmailSettings } from "@/Types/data/EmailSettingType";
 
 // Define the expected structure of the Firestore document
-interface EmailSettings {
-  emailType: "custom" | "google";
-  smtpServer?: string;
-  port?: string;
-  customEmail?: string;
-  password?: string;
-  googleEmail?: string;
-  appPassword?: string;
-  isEnabled?: boolean;
-  emailList?: string[];
-  OrderCancelled? : string;
-  OrderConfirmed? : string;
-  OrderPending? : string;
-  OrderPlaced? : string;
-  OrderProcessing? : string;
-}
 
 export const fetchEmailDetails = async (): Promise<EmailSettings | null> => {
   try {
@@ -28,7 +13,6 @@ export const fetchEmailDetails = async (): Promise<EmailSettings | null> => {
       return null; // Return `null` if no data is found
     }
 
-    console.log(data);
     return data; // Return the entire object as is
   } catch (error) {
     console.error("Error fetching email settings:", error);

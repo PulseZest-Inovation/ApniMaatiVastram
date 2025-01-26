@@ -88,7 +88,7 @@ export default async function handler(req, res) {
       .replace(
         "{{orderDetails}}",
         cartItems
-          .map((item) => `<li>${item.name} (x${item.quantity}) - $${item.price}</li>`)
+          .map((item) => `<li>${item.productTitle} (x${item.quantity}) - $${item.price}</li>`)
           .join("")
       );
 

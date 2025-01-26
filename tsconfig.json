@@ -22,6 +22,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/components/Login/PhoneLoginModel.tsx", "src/app/(pages)/[pageId]/page.jsx", "src/pages/api/send-email.js", "src/pages/api/getemailtemplate.js", "src/pages/api/status/[transaction].ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/components/Login/PhoneLoginModel.tsx", "src/app/(pages)/[pageId]/page.jsx", "src/pages/api/send-email.js", "src/pages/api/getemailtemplate.js", "src/pages/api/status/[transaction].ts", "src/pages/api/order/gnerateEmailTemplate.ts"],
   "exclude": ["node_modules"]
 }
