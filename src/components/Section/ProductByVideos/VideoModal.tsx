@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ProductType } from '@/Types/data/ProductType';
-import { Divider, Image, Spinner } from '@nextui-org/react';
+import { Divider,  Spinner } from '@nextui-org/react';
 import { ShoppingCartOutlined } from '@ant-design/icons';
 import { getAuth } from 'firebase/auth';
 import CartDrawer from '@/components/Cart/page';
