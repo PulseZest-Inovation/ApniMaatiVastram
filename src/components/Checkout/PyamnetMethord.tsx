@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { RadioGroup, Radio } from '@nextui-org/react';
 import { Typography } from 'antd';
 import Image from 'next/image';
 import { Button, Spinner } from '@nextui-org/react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useRouter } from 'next/navigation';  
+import { useRouter } from 'next/navigation';
 import { handleCodOrder } from './cod/cod';
 import { handleOnlineOrder } from './online/online';
 import { generateOrderId } from './genrateOrderId';
@@ -28,63 +28,53 @@ interface PaymentMethodProps {
   totalAmount: number;
 }
 
-const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData, totalAmount, }) => {
+const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData, totalAmount: initialTotalAmount }) => {
   const [paymentMethod, setPaymentMethod] = useState<string | null>('online');
-  const [loading, setLoading] = useState<boolean>(false); 
-  const router = useRouter(); 
+  const [loading, setLoading] = useState<boolean>(false);
+  const [totalAmount, setTotalAmount] = useState<number>(initialTotalAmount);
+  const [showDeliveryChargeMessage, setShowDeliveryChargeMessage] = useState<boolean>(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (paymentMethod === 'cod' && initialTotalAmount <= 499) {
+      setShowDeliveryChargeMessage(true);
+      setTotalAmount(initialTotalAmount + 49); // Add delivery charge
+    } else {
+      setShowDeliveryChargeMessage(false);
+      setTotalAmount(initialTotalAmount); // Reset total amount
+    }
+  }, [paymentMethod, initialTotalAmount]);
 
   const handlePaymentMethodChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPaymentMethod(e.target.value);
   };
 
-  const validateFields = () => {
-    const missingFields: string[] = [];
-
-    if (!formData.fullName) missingFields.push('Full Name');
-    if (!formData.country) missingFields.push('Country');
-    if (!formData.state) missingFields.push('State');
-    if (!formData.address) missingFields.push('Address');
-    if (!formData.city) missingFields.push('City');
-    if (!formData.pinCode) missingFields.push('Pin Code');
-    if (!formData.phoneNumber) missingFields.push('Phone Number');
-    if (!formData.email) missingFields.push('Email');
-    if (!paymentMethod) missingFields.push('Payment Method');
-
-    if (missingFields.length > 0) {
-      toast.error(`Please fill the following fields: ${missingFields.join(', ')}`);
-      return false;
-    }
-    return true;
-  };
-
   const handleSubmitOrder = async () => {
-    const orderId = generateOrderId();  
-  
-    if (validateFields()) {
-      setLoading(true);
-      try {
-        let success = false;
-  
-        if (paymentMethod === 'online') {
-          success = await handleOnlineOrder(formData, totalAmount, orderId);
-          if (success) {
-            toast.success('Redirecting to payment page...');
-          } else {
-            toast.error('Online payment initiation failed.');
-          }
-        } else if (paymentMethod === 'cod') {
-          success = await handleCodOrder(formData, totalAmount, orderId, setLoading);
-          toast.success('COD order placed successfully!');
-          setTimeout(() => {
-            router.push('/orders'); // Redirect to /orders page
-          }, 2000);
-        } 
-      } catch (error) {
-        toast.error('An error occurred while placing the order. Please try again.');
-        console.error('Order error:', error);
-      } finally {
-        setLoading(false);
+    const orderId = generateOrderId();
+
+    setLoading(true);
+    try {
+      let success = false;
+
+      if (paymentMethod === 'online') {
+        success = await handleOnlineOrder(formData, totalAmount, orderId);
+        if (success) {
+          toast.success('Redirecting to payment page...');
+        } else {
+          toast.error('Online payment initiation failed.');
+        }
+      } else if (paymentMethod === 'cod') {
+        success = await handleCodOrder(formData, totalAmount, orderId, setLoading);
+        toast.success('COD order placed successfully!');
+        setTimeout(() => {
+          router.push('/orders'); // Redirect to /orders page
+        }, 2000);
       }
+    } catch (error) {
+      toast.error('An error occurred while placing the order. Please try again.');
+      console.error('Order error:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -123,13 +113,26 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData, totalAmount, })
             <Typography className="font-bold">Cash on Delivery (COD)</Typography>
           </Radio>
         </RadioGroup>
+
+        {showDeliveryChargeMessage && (
+          <Typography className="text-red-500 mt-2">
+            Your order value is less than ₹500. ₹49 delivery charges will be added to the total.
+          </Typography>
+        )}
+
         <Button
           color={paymentMethod === 'cod' ? 'primary' : 'success'}
           className="mt-4 text-white"
           onPress={handleSubmitOrder}
-          disabled={loading} // Disable button while loading
+          disabled={loading}
         >
-          {loading ? <Spinner color='success' /> : paymentMethod === 'cod' ? 'Place Order' : `Pay Online Safe & Secure ₹${totalAmount}`}
+          {loading ? (
+            <Spinner color="success" />
+          ) : paymentMethod === 'cod' ? (
+            `Place Order ₹${totalAmount}`
+          ) : (
+            `Pay Online Safe & Secure ₹${totalAmount}`
+          )}
         </Button>
       </div>
 
@@ -167,6 +170,12 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData, totalAmount, })
               <Typography className="font-bold">Cash on Delivery (COD)</Typography>
             </Radio>
           </RadioGroup>
+
+          {showDeliveryChargeMessage && (
+            <Typography className="text-red-500 mt-2">
+              Your order value is less than ₹500. ₹49 delivery charges will be added to the total.
+            </Typography>
+          )}
         </div>
 
         {/* Sticky Button */}
@@ -175,9 +184,15 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData, totalAmount, })
             color={paymentMethod === 'cod' ? 'primary' : 'success'}
             className="w-full text-white"
             onPress={handleSubmitOrder}
-            disabled={loading} // Disable button while loading
+            disabled={loading}
           >
-            {loading ? <Spinner color='success' /> : paymentMethod === 'cod' ? 'Place Order' : `Pay Online Safe & Secure ₹${totalAmount}`}
+            {loading ? (
+              <Spinner color="success" />
+            ) : paymentMethod === 'cod' ? (
+              `Place Order ₹${totalAmount}`
+            ) : (
+              `Pay Online Safe & Secure ₹${totalAmount}`
+            )}
           </Button>
         </div>
       </div>
