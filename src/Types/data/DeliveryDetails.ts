@@ -5,7 +5,6 @@ export interface DeliverDetails {
   state: string;
   address: string;
   apartment: string;
-  houseNumber: string;
   city: string;
   pinCode: string;
   phoneNumber: string;

@@ -1,4 +1,6 @@
+'use client'
 import { ProductType } from '@/Types/data/ProductType';
+import { useRouter } from 'next/navigation';
 import { Spinner } from '@nextui-org/react';
 import { ShoppingCartOutlined } from '@ant-design/icons';
 import Image from 'next/image';
@@ -10,9 +12,12 @@ interface MobileVideoProduct {
 }
 
 export default function MobileVideoModel({product,   handleCartClick,loading,}: MobileVideoProduct) {
+  const Router = useRouter();
   return (
     <div className="absolute bottom-4 left-0 w-full md:hidden flex flex-col items-center justify-between px-4">
-    <div className="flex items-center space-x-3 mb-4 w-full max-w-[380px] rounded-md py-3 bg-white shadow-md">
+    <div className="flex items-center space-x-3 mb-4 w-full max-w-[380px] rounded-md py-3 bg-white shadow-md"
+    onClick={()=>{Router.push( `/collection/${product.categories[0]}/product/${product.id}`)}}
+    >
       {product.galleryImages.slice(0, 1).map((image, index) => (
         <Image
           key={index}

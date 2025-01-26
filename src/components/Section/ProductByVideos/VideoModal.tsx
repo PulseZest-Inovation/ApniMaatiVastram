@@ -9,6 +9,7 @@ import OtpModal from '@/components/Login/PhoneLoginModel';
 import { useRouter } from 'next/navigation';
 import ExpandableSection from '@/components/Product/ExpandableSection';
 import MobileVideoModel from './MobileVideoModel';
+import ModelGallery from './ModelGallery';
 
 type ProductModalProps = {
   product: ProductType;
@@ -74,23 +75,10 @@ const ProductViewModal: React.FC<ProductModalProps> = ({
   </div>
 
   {/* Right Section: Product Details */}
-  <div className="hidden md:flex w-1/2 h-full p-6 flex-col overflow-y-auto">
+  <div className="hidden md:flex w-1/2 h-full pl-4 pr-4 flex-col overflow-y-auto">
+
     {/* Product Features */}
-    <div className="mt-6">
-      <h4 className="text-lg font-semibold mt-2"></h4>
-      <div className="flex gap-2 mt-2 mb-0 overflow-x-auto scrollbar-hidden">
-        {product.galleryImages.map((galleryImage, index) => (
-          <Image
-            key={index}
-            src={galleryImage}
-            alt={product.productTitle}
-            height={150}
-            width={150}
-            className="rounded"
-          />
-        ))}
-      </div>
-    </div>
+    <ModelGallery product={product}/>
 
     <Divider className="mt-2" />
 

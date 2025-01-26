@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useEffect, useState,  useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   fetchProductsGroupedByTags,
   ProductsByTag,
 } from "./fetchProductByTags";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import {  Spinner } from "@nextui-org/react";
+import { Spinner } from "@nextui-org/react";
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
@@ -22,18 +22,18 @@ export default function DisplayProductByTags() {
       setLoading(true);
       const data = await fetchProductsGroupedByTags();
 
-      // Only include tags with 4 or more products and slice to show up to 4 products
+      // Only include tags with 4 or more products and slice to show up to 10 products
       const filteredData = data
         .map(({ tagName, products }) => {
           if (products.length >= 4) {
             return {
               tagName,
-              products: products.slice(0, 10), // Fetch more for scrolling
+              products: products.slice(0, 10), // Show up to 10 products
             };
           }
           return null;
         })
-        .filter((tag): tag is ProductsByTag => tag !== null);
+        .filter((tag): tag is ProductsByTag => tag !== null); // Filter out null and assert the correct type
 
       setProductsByTags(filteredData);
       setLoading(false);
@@ -42,7 +42,7 @@ export default function DisplayProductByTags() {
     fetchProducts();
   }, []);
 
-  const scrollContainerRef = useRef<Record<string, HTMLDivElement | null>>({});
+  const scrollContainerRef = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
   const handleScroll = (tagName: string, direction: "left" | "right") => {
     const container = scrollContainerRef.current[tagName];
@@ -63,20 +63,18 @@ export default function DisplayProductByTags() {
   return (
     <div className="p-4 sm:p-6">
       {productsByTags.map(({ tagName, products }) => (
-        <div key={tagName} className="mb-12 ">
-  
+        <div key={tagName} className="mb-12">
           <div className="flex justify-center mb-6">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 uppercase relative inline-block px-4 py-2 bg-gray-200 rounded-md shadow-md">
-            {tagName}
-          </h2>
-        </div>
-
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 uppercase relative inline-block px-4 py-2 bg-gray-200 rounded-md shadow-md">
+              {tagName}
+            </h2>
+          </div>
 
           <div className="relative">
             {/* Scrollable Container */}
             <div
               ref={(el) => {
-                (scrollContainerRef.current[tagName] = el)
+                scrollContainerRef.current[tagName] = el;
               }}
               className="flex space-x-4 overflow-x-auto scrollbar-hide p-2"
             >
@@ -86,7 +84,7 @@ export default function DisplayProductByTags() {
                   className="flex-shrink-0 w-48 rounded-lg hover:shadow-lg transition-shadow p-2 sm:p-4 relative cursor-pointer"
                   onClick={() =>
                     Router.push(
-                      `/collection/${product.categories[0]}`
+                      `/collection/${product.categories[0]}/product/${product.id}`
                     )
                   }
                 >
@@ -140,6 +138,17 @@ export default function DisplayProductByTags() {
             </button>
           </div>
 
+          {/* View All Button */}
+          {products.length > 4 && (
+            <div className="text-center mt-4">
+              <button
+                onClick={() => Router.push(`/tags/${tagName}`)}
+                className="text-blue-500 font-semibold"
+              >
+                View All
+              </button>
+            </div>
+          )}
         </div>
       ))}
     </div>

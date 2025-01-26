@@ -91,7 +91,7 @@ const ProductView: React.FC<ProductViewProps> = ({ slug }) => {
           {/* Left Section: Gallery and Main Image */}
           <Col xs={24} md={12} lg={14} className=" lg:sticky lg:top-20">
             <div className="flex gap-4">
-              <ImageGallery galleryImages={combinedImages} initialSelectedImage={combinedImages[0]} />
+              <ImageGallery galleryImages={combinedImages} initialSelectedImage={combinedImages[0]} videoUrl={product.videoUrl} videoCoverImage={combinedImages[0]}/>
             </div>
           </Col>
 
