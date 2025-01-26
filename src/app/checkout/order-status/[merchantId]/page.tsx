@@ -62,7 +62,7 @@ const OrderStatus = () => {
               orderId: combinedOrderData.orderId,
               customerEmail: combinedOrderData.email,
               totalAmount: combinedOrderData.totalAmount,
-              cartItems: [], // Add cart items if available
+              cartItems: cartDetails, // Add cart items if available
               fullName: combinedOrderData.fullName,
               phoneNumber: combinedOrderData.phoneNumber,
               address: combinedOrderData.address,
