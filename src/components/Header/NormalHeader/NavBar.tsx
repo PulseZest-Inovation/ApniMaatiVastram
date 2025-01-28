@@ -99,7 +99,7 @@ const NavBar: React.FC = () => {
           </div>
 
           {/* Center: Application Logo */}
-          <div className="w-1/3 flex justify-center pl-32">
+          <div className="w-1/3 flex justify-center">
             <ApplicationLogo />
           </div>
 
