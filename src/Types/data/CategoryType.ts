@@ -6,4 +6,5 @@ export interface CategoryType {
     name: string;
     slug: string;
     isVisible: boolean
+    isHeaderVisible: boolean
 }

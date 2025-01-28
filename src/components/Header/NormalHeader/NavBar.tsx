@@ -16,21 +16,22 @@ import { SearchIcon } from "lucide-react";
 interface Category {
   name: string;
   slug: string;
+  isHeaderVisible: boolean;
 }
 
 export const ApplicationLogo = React.memo(() => (
   <Link href="/">
     <Image
       src={ApplicationConfig.applicationLogo}
-      height={150}
-      width={150}
+      height={200}
+      width={200}
       alt={ApplicationConfig.applicationName}
-      className="rounded"
+      className="rounded items-center"
     />
   </Link>
 ));
 
-ApplicationLogo.displayName = "Apni Maati Vastram"; // Adding display name
+ApplicationLogo.displayName = "Apni Maati Vastram";
 
 const NavBar: React.FC = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -40,7 +41,6 @@ const NavBar: React.FC = () => {
   const [isUserLoggedInState, setIsUserLoggedInState] = useState(false);
   const router = useRouter();
 
-  // Fetch categories and user status on component mount
   useEffect(() => {
     const loadCategories = async () => {
       try {
@@ -60,8 +60,10 @@ const NavBar: React.FC = () => {
     checkUserStatus();
   }, []);
 
-  // Memoize categories
-  const memoizedCategories = useMemo(() => categories, [categories]);
+  const memoizedCategories = useMemo(
+    () => categories.filter((category) => category.isHeaderVisible),
+    [categories]
+  );
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -79,29 +81,30 @@ const NavBar: React.FC = () => {
 
   return (
     <nav className="bg-white border-b border-gray-200">
-      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-0">
-        {/* Top Row */}
-        <div className="flex  justify-between py-2">
-          {/* Logo */}
-          <div className="flex items-center">
+      {/* First Row */}
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center">
+          {/* Left: Search Field */}
+          <div className="hidden sm:block w-1/3 max-w-[250px]">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search..."
+                className="w-full border border-gray-300 rounded-md pl-10 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600"
+              />
+              <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+                <SearchIcon size={18} />
+              </span>
+            </div>
+          </div>
+
+          {/* Center: Application Logo */}
+          <div className="w-1/3 flex justify-center pl-32">
             <ApplicationLogo />
           </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden sm:flex items-center space-x-4 flex-1">
-            {memoizedCategories.map((category) => (
-              <Link
-                key={category.slug}
-                href={`/collection/${category.slug}`}
-                className="text-gray-700 hover:text-black font-medium uppercase tracking-wide text-sm leading-tight"
-              >
-                {category.name}
-              </Link>
-            ))}
-          </div>
-
-          {/* Right Icons */}
-          <div className="flex items-center space-x-4">
+          {/* Right: Icons */}
+          <div className="flex justify-end items-center space-x-4 w-1/3">
             <FaUser
               className="text-lg cursor-pointer"
               onClick={handleUserIconClick}
@@ -110,25 +113,43 @@ const NavBar: React.FC = () => {
               className="text-lg cursor-pointer"
               onClick={openCartDrawer}
             />
-            {/* Mobile Menu Toggle */}
             <FaBars
               className="text-lg cursor-pointer sm:hidden"
               onClick={toggleDrawer}
             />
           </div>
         </div>
+      </div>
 
-        {/* Search Input */}
-        <div className="relative sm:hidden mb-2">
-          <input
-            type="text"
-            placeholder="Search..."
-            className="w-full border border-gray-300 rounded-md pl-10 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600"
-          />
-          {/* Search Icon */}
-          <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
-            <SearchIcon size={18} />
-          </span>
+      {/* Second Row (Desktop: Categories | Mobile: Search Field) */}
+      <div className="py-2">
+        <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Desktop: Categories */}
+          <div className="hidden sm:flex justify-center space-x-6">
+            {memoizedCategories.map((category) => (
+              <Link
+                key={category.slug}
+                href={`/collection/${category.slug}`}
+                className="text-gray-700 hover:text-black font-bold uppercase tracking-wide text-xl leading-tight"
+              >
+                {category.name}
+              </Link>
+            ))}
+          </div>
+
+          {/* Mobile: Search Field */}
+          <div className="sm:hidden">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search..."
+                className="w-full border border-gray-300 rounded-md pl-10 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600"
+              />
+              <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+                <SearchIcon size={18} />
+              </span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -148,6 +169,6 @@ const NavBar: React.FC = () => {
   );
 };
 
-NavBar.displayName = "Apni Maati Vastram"; // Adding display name
+NavBar.displayName = "Apni Maati Vastram";
 
 export default NavBar;

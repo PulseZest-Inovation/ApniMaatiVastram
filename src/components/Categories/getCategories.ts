@@ -5,9 +5,10 @@ import { CategoryType } from "@/Types/data/CategoryType";
 export const fetchCategories = async (): Promise<CategoryType[]> => {
   try {
     const categories = await getAllDocsFromCollection<CategoryType>("categories");
-    return categories.map(({ cid, count, image, isPosition, name, slug, isVisible }) => ({
+    return categories.map(({ cid, count, image, isPosition, name, slug, isVisible, isHeaderVisible }) => ({
       cid,
       count,
+      isHeaderVisible,
       image,
       isPosition,
       name,

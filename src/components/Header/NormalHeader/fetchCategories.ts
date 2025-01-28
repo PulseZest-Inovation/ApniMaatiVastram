@@ -1,10 +1,21 @@
 import { getAllDocsFromCollection } from "@/service/Firebase/getFirestore";
-interface Category {
-    name: string;
-    slug: string;
+import { CategoryType } from "@/Types/data/CategoryType";
+
+export const fetchCategories = async (): Promise<Array<CategoryType>> => {
+  try {
+    const categories = await getAllDocsFromCollection<CategoryType>("categories");
+    return categories.map((category) => ({
+      cid: category.cid ?? "",
+      count: category.count ?? 0,
+      image: category.image ?? "",
+      isPosition: category.isPosition ?? "",
+      name: category.name ?? "",
+      slug: category.slug ?? "",
+      isVisible: category.isVisible ?? false,
+      isHeaderVisible: category.isHeaderVisible ?? false,
+    }));
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    return [];
   }
-  
-  export const fetchCategories = async (): Promise<Array<Category>> => {
-    const categories = await getAllDocsFromCollection<Category>("categories");
-    return categories.map(({ name, slug }) => ({ name, slug }));
-  };
+};
