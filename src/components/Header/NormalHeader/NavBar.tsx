@@ -104,7 +104,7 @@ const NavBar: React.FC = () => {
           </div>
 
           {/* Right: Icons */}
-          <div className="flex justify-end items-center space-x-4 w-1/3">
+          <div className="flex justify-end items-center space-x-4 w-1/4">
             <FaUser
               className="text-lg cursor-pointer"
               onClick={handleUserIconClick}
