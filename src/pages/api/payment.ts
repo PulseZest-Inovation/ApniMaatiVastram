@@ -31,7 +31,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         merchantUserId: 'MUID' + user_id,
         name,
         amount: price * 100, // Price in paise
-        redirectUrl: `${ApplicationConfig.baseUrl}/checkout/order-status/${merchantTransactionId}`, // Callback URL for status
+        redirectUrl: `${ApplicationConfig.baseUrl}/api/status${merchantTransactionId}`, // Callback URL for status
         redirectMode: 'POST',
         mobileNumber: phone,
         paymentInstrument: {
