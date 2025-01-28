@@ -1,10 +1,9 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
+import { Spinner } from '@nextui-org/react';
 import axios from 'axios';
 import { placeOrder } from '@/components/Checkout/placeOrder';
-import { Spinner } from '@nextui-org/react';
-import { useRouter } from 'next/navigation';
 import { fetchEmailDetails } from '@/utils/getSendingEmail';
 import { toast } from 'react-toastify';
 import { getAllDocsFromSubCollection } from '@/service/Firebase/getFirestore';
@@ -24,7 +23,7 @@ const OrderStatus = () => {
           setLoading(true);
           setError(null);
 
-          // Fetch payment status
+          // Fetch payment status from server-side API
           const response = await axios.get(`/api/status/${merchantId}`);
           if (!response.data.success) {
             throw new Error('Payment failed. Please try again.');
@@ -53,8 +52,8 @@ const OrderStatus = () => {
             toast.error('Email service is disabled or email details are missing.');
             return;
           }
-          const cartDetails = await getAllDocsFromSubCollection('customers', combinedOrderData.customerId ,"cart");
-          
+
+          const cartDetails = await getAllDocsFromSubCollection('customers', combinedOrderData.customerId, 'cart');
 
           // Prepare email request body
           const emailRequestBody = {
@@ -68,7 +67,7 @@ const OrderStatus = () => {
               address: combinedOrderData.address,
             },
             emailDetails: emailDetail,
-            emailType: 'Confirmed', // Match the backend handler's logic
+            emailType: 'Confirmed',
           };
 
           // Send email
@@ -93,7 +92,7 @@ const OrderStatus = () => {
             throw new Error('Order placement failed.');
           }
 
-            // If the order is placed successfully, remove the order details from localStorage
+          // Remove order details from localStorage
           localStorage.removeItem('orderDetails');
 
           // Navigate to the order confirmation page

@@ -28,7 +28,7 @@ export default function DisplayProductByTags() {
           if (products.length >= 4) {
             return {
               tagName,
-              products: products.slice(0, 10), // Show up to 10 products
+              products: products.slice(0, 10),
             };
           }
           return null;
