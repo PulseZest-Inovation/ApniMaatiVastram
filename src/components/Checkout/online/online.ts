@@ -18,6 +18,7 @@ export const handleOnlineOrder = async (
       status: 'Confirmed',
       orderId: orderId,
       totalAmount: totalAmount,
+      type: 'online'
     };
 
     console.log(newOrderData);
