@@ -7,14 +7,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (req.method === 'GET') {
     try {
-      // Example: Fetching payment status from some external API
-      const response = await axios.get(`${ApplicationConfig.baseUrl}/api/payment-status/${merchantId}`);
-      
+      // Fetch payment status from the actual payment service (PhonePe or other service)
+      const response = await axios.get(`${ApplicationConfig.baseUrl}/api/status/${merchantId}`);
+
+      // Check if payment was successful
       if (!response.data.success) {
         return res.status(400).json({ success: false, message: 'Payment failed' });
       }
 
-      return res.status(200).json({ success: true, data: response.data });
+      // If payment is successful, redirect to the order status page
+      // Note: You can append any necessary parameters to this URL
+      return res.redirect(302, `/checkout/order-status/${merchantId}`);
 
     } catch (error) {
       console.error('Error fetching payment status:', error);

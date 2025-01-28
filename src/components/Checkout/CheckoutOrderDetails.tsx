@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { indianStates } from '@/utils/indiastate';
 import { getDataByDocName } from '@/service/Firebase/getFirestore';
 import { getAuth } from 'firebase/auth';
-import PaymentMethod from './PyamnetMethord';
+import PaymentMethod from './PaymnetMethordButton/PyamnetMethord';
 
 interface CheckoutOrderDetailsProps {
   totalAmount: number;
