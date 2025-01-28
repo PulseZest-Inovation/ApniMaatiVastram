@@ -6,7 +6,7 @@ import { ProductType } from "@/Types/data/ProductType";
 import ProductDetails from "./ProductDetails";
 import CustomerReviews from "./CustomerReviews";
 import { Col, Row } from "antd";
-import ImageGallery from "./ProductImages";
+import ImageGallery from "./ProductImageGallery/ProductImages";
 import Head from "next/head"; // Import the Head component for SEO
 import Image from "next/image";
 import { Divider, Spinner } from "@nextui-org/react";

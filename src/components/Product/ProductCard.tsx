@@ -22,7 +22,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       ) : (
         <div className="flex items-center gap-3 mb-4">
           <FaGift className="text-xl" />
-          <p className="text-gray-600">Free shipping on domestic orders above Rs. 1,499</p>
+          <p className="text-gray-600">Free shipping on domestic orders above Rs. 499</p>
         </div>
       )}
 
