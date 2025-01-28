@@ -76,12 +76,12 @@ export default function DisplayProductByTags() {
               ref={(el) => {
                 scrollContainerRef.current[tagName] = el;
               }}
-              className="flex space-x-4 overflow-x-auto scrollbar-hide p-2"
+              className="flex space-x-2 overflow-x-auto scrollbar-hide p-2"
             >
               {products.map((product) => (
                 <div
                   key={product.slug}
-                  className="flex-shrink-0 w-48 rounded-lg hover:shadow-lg transition-shadow p-2 sm:p-4 relative cursor-pointer"
+                  className="flex-shrink-0 rounded-lg hover:shadow-lg transition-shadow p-2 sm:p-4 relative cursor-pointer"
                   onClick={() =>
                     Router.push(
                       `/collection/${product.categories[0]}/product/${product.id}`
@@ -89,7 +89,7 @@ export default function DisplayProductByTags() {
                   }
                 >
                   {/* Image Container */}
-                  <div className="relative w-full overflow-hidden rounded-md">
+                  <div className="overflow-hidden rounded-md w-56 h-64 ">
                     <Image
                       src={product.featuredImage}
                       alt={product.slug}

@@ -1,10 +1,11 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { ProductType } from "@/Types/data/ProductType";
-import { getAllDocsFromCollection } from "@/service/Firebase/getFirestore"; // Assume this is the helper function for fetching data
+import { getAllDocsFromCollection } from "@/service/Firebase/getFirestore";
 import { CategoryType } from "@/Types/data/CategoryType";
 import { Spinner } from "@nextui-org/react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export interface ProductsByCategory {
   categoryName: string;
@@ -18,41 +19,36 @@ export default function DisplayProductByCategories() {
 
   const fetchProductsGroupedByCategories = async (): Promise<ProductsByCategory[]> => {
     try {
-      // Fetch all categories from the categories collection
       const categories: Array<CategoryType & { id: string }> = await getAllDocsFromCollection<CategoryType>("categories");
-  
-      // Filter categories where isVisible and isPosition are true, then sort by isPosition in ascending order
+
       const visibleCategories = categories
         .filter((category) => category.isVisible && category.isPosition)
         .sort((a, b) => {
-          const positionA = Number(a.isPosition); // Convert to number
-          const positionB = Number(b.isPosition); // Convert to number
-          return positionA - positionB; // Now this will work since positionA and positionB are numbers
+          const positionA = Number(a.isPosition);
+          const positionB = Number(b.isPosition);
+          return positionA - positionB;
         });
 
       if (visibleCategories.length === 0) {
         return [];
       }
-  
-      // Fetch all products from the products collection
+
       const products: Array<ProductType & { id: string }> = await getAllDocsFromCollection<ProductType>("products");
-  
-      // Group products by category name
+
       const productsByCategories: ProductsByCategory[] = visibleCategories
         .map((category) => {
-          const productsForCategory = products.filter((product) => product.categories.includes(category.cid)); // Check if the category id exists in the product's categories array
-  
-          // Only include categories with 4 or more products
+          const productsForCategory = products.filter((product) => product.categories.includes(category.cid));
+
           if (productsForCategory.length >= 4) {
             return {
               categoryName: category.name,
-              products: productsForCategory.slice(0, 10), // Show up to 10 products
+              products: productsForCategory.slice(0, 10),
             };
           }
-          return null; // Exclude categories with fewer than 4 products
+          return null;
         })
-        .filter((category): category is ProductsByCategory => category !== null); // Filter out null and assert the correct type
-  
+        .filter((category): category is ProductsByCategory => category !== null);
+
       return productsByCategories;
     } catch (error) {
       console.error("Error fetching products grouped by categories:", error);
@@ -71,6 +67,11 @@ export default function DisplayProductByCategories() {
     fetchProducts();
   }, []);
 
+  const scrollContainer = (container: HTMLDivElement, direction: "left" | "right") => {
+    const scrollAmount = direction === "left" ? -300 : 300;
+    container.scrollBy({ left: scrollAmount, behavior: "smooth" });
+  };
+
   const memoizedProductsByCategories = useMemo(() => productsByCategories, [productsByCategories]);
 
   if (loading) {
@@ -82,7 +83,7 @@ export default function DisplayProductByCategories() {
   }
 
   return (
-    <div className=" sm:p-6">
+    <div className="sm:p-6">
       {memoizedProductsByCategories.map(({ categoryName, products }) => (
         <div key={categoryName} className="mb-12">
           <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-gray-800 uppercase text-center">
@@ -90,13 +91,28 @@ export default function DisplayProductByCategories() {
           </h2>
 
           <div className="relative">
-            {/* Desktop - Horizontal Scroll for more than 5 products */}
-            <div className="hidden sm:block overflow-x-auto h-80 scrollbar-hide">
-              <div className="flex space-x-4">
+            {/* Desktop - Horizontal Scroll with Arrows */}
+            <div className="hidden sm:block relative">
+              <button
+                className="absolute top-1/2 -left-6 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full z-10 hover:bg-gray-700"
+                onClick={(e) => {
+                  const container = e.currentTarget.nextSibling as HTMLDivElement;
+                  if (container) scrollContainer(container, "left");
+                }}
+              >
+                <ChevronLeft size={24} />
+              </button>
+
+              <div
+                className="overflow-x-auto h-80 scrollbar-hide flex space-x-4"
+                ref={(div) => {
+                  if (div) div.classList.add("scroll-snap-x");
+                }}
+              >
                 {products.map((product) => (
                   <div
                     key={product.slug}
-                    className="rounded-lg hover:shadow-lg transition-shadow p-4 w-60 h-60 cursor-pointer" // Fixed size container for desktop
+                    className="rounded-lg hover:shadow-lg transition-shadow p-4 w-64 h-64 flex-none cursor-pointer bg-white"
                     onClick={() =>
                       Router.push(`/collection/${product.categories[0]}/product/${product.slug}`)
                     }
@@ -106,11 +122,11 @@ export default function DisplayProductByCategories() {
                         src={product.featuredImage}
                         alt={product.slug}
                         layout="fill"
-                        objectFit="cover" // Ensures the image fills the space without distortion
+                        objectFit="cover"
                         className="transition-transform transform hover:scale-110 duration-300"
                       />
                     </div>
-                    <h3 className="text-sm sm:text-base text-gray-800 truncate mb-0 capitalize text-center mt-4">
+                    <h3 className="text-sm sm:text-base text-gray-800 truncate mb-0 capitalize text-center">
                       {product.productTitle}
                     </h3>
                     <div className="flex flex-col sm:flex-row items-center justify-center text-xs sm:text-sm mt-1">
@@ -128,6 +144,16 @@ export default function DisplayProductByCategories() {
                   </div>
                 ))}
               </div>
+
+              <button
+                className="absolute top-1/2 -right-6 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full z-10 hover:bg-gray-700"
+                onClick={(e) => {
+                  const container = e.currentTarget.previousSibling as HTMLDivElement;
+                  if (container) scrollContainer(container, "right");
+                }}
+              >
+                <ChevronRight size={24} />
+              </button>
             </div>
 
             {/* Mobile - Grid for 2 products per row, show "View All" if more than 4 */}
@@ -146,7 +172,7 @@ export default function DisplayProductByCategories() {
                         src={product.featuredImage}
                         alt={product.slug}
                         layout="fill"
-                        objectFit="cover" // Keeps image ratio consistent without stretching
+                        objectFit="cover"
                         className="transition-transform transform hover:scale-110 duration-300"
                       />
                     </div>
