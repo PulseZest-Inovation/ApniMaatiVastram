@@ -16,6 +16,7 @@ import ExpandableSection from "./ExpandableSection";
 import ProductCard from "./ProductCard";
 import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
 import ReadyToPrePlated from "./ReadyToPreplated";
+import ProductGuide from "./ProductGuide";
 
 interface ProductDetailsProps {
   product: ProductType;
@@ -110,7 +111,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
   const shouldShowRating = !isNaN(rating) && rating > 0;
 
   return (
-    <div className="relative flex flex-col md:space-y-2">
+    <div className="relative flex flex-col md:space-y-1">
       {/* Product title */}
       <h1
         className="text-4xl font-bold capitalize break-words font-sans"
@@ -153,7 +154,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
       )}
 
       {/* Price Section */}
-      <div className="mt-2 mb-2">
+      <div className="mt-2">
         <div className="flex items-center space-x-4">
           {product.regularPrice && (
             <span className="text-xl text-gray-500 line-through">
@@ -174,6 +175,8 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
           Inclusive of All Taxes
         </p>
       </div>
+
+      <ProductGuide  Product={product} />
 
       <ReadyToWear
         product={product}

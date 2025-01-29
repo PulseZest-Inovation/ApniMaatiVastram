@@ -63,6 +63,9 @@ export interface ProductType {
   attributes: AttributeType[];
   menuOrder: number;
   metaData: MetaDataType[];
+
+  // added the guide
+  guides: { guideId: string; enabled: boolean }[];
 }
 
 export interface VariationType {

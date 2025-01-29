@@ -11,7 +11,7 @@ interface ProductCardProps {
 
 export default function ProductCard({ product }: ProductCardProps) {
   return (
-    <div className="bg-gray-50 p-6 rounded-lg font-sans">
+    <div className="bg-gray-50 p-2 rounded-lg font-sans">
 
       {/* Shipping Details */}
       {product.isShippingCharge ? (

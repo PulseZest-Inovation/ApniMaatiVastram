@@ -36,7 +36,7 @@ const ReadyToWear: React.FC<CustomFieldsProps> = ({ product, onFieldsChange, onR
   };
 
   return (
-    <div className="mt-4">
+    <div className="">
       {product.isReadyToWear && (
         <div>
           <label className="flex items-center space-x-2 w-full">
