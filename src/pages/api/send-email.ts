@@ -5,8 +5,21 @@ import { ApplicationConfig } from "@/config/ApplicationConfig";
 import Cors from "cors";
 
 // Initialize CORS middleware
+
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://ecommerce-with-pulsezest.vercel.app",
+  "https://ecommerce.pulsezest.com",
+];
+
 const cors = Cors({
-  origin: "http://localhost:3000", // Allow frontend requests
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   methods: ["POST"],
   allowedHeaders: ["Content-Type"],
 });
