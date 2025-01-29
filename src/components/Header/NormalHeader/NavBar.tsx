@@ -122,7 +122,7 @@ const NavBar: React.FC = () => {
               <Link
                 key={category.slug}
                 href={`/collection/${category.slug}`}
-                className="text-gray-700 hover:text-black font-bold uppercase tracking-wide text-xl leading-tight"
+                className="text-gray-700 hover:text-black font-bold uppercase tracking-wide text-2sm leading-tight"
               >
                 {category.name}
               </Link>
