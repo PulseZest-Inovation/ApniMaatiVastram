@@ -12,6 +12,7 @@ import { isUserLoggedIn } from "@/service/isUserLogin";
 import MobileDrawer from "./MobileDrawer";
 import Link from "next/link";
 import { SearchIcon } from "lucide-react";
+import SearchBar from "./SearchBar";
 
 interface Category {
   name: string;
@@ -85,17 +86,8 @@ const NavBar: React.FC = () => {
       <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
           {/* Left: Search Field */}
-          <div className="hidden sm:block w-1/3 max-w-[250px]">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search..."
-                className="w-full border border-gray-300 rounded-md pl-10 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600"
-              />
-              <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
-                <SearchIcon size={18} />
-              </span>
-            </div>
+          <div className="hidden sm:block w-1/3">
+            <SearchBar />
           </div>
 
           {/* Center: Application Logo */}
