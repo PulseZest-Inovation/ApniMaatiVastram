@@ -254,7 +254,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
         "Description ",
         "Shipping",
         "Return & Exchange",
-        "Manufacturing Information ",
+        "Manufacturing Information ",
         "Support"
       ].map((section) => (
         <ExpandableSection
