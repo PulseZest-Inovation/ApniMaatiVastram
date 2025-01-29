@@ -31,15 +31,16 @@ const ImageDisplay: React.FC<ImageDisplayProps> = ({
 
   if (selectedImage) {
     return (
-      <Image
-        className="rounded-lg shadow-lg"
-        src={selectedImage}
-        alt="Selected Product"
-        layout="responsive"
-        width={1000}
-        height={800}
-        objectFit="contain"
-      />
+      <div className="relative w-full h-auto">
+        <Image
+          className="rounded-lg shadow-lg"
+          src={selectedImage}
+          alt="Selected Product"
+          width={1000} // Adjust as needed
+          height={800} // Adjust as needed
+          style={{ objectFit: "contain", width: "100%", height: "auto" }}
+        />
+      </div>
     );
   }
 
