@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Button, List, message } from 'antd';
 import { getDataByDocName } from '@/service/Firebase/getFirestore';
 import { Spinner } from '@nextui-org/react';
+import Image from 'next/image';
 
 interface Guide {
   id: string;
@@ -31,9 +32,7 @@ export default function ProductGuide({ Product }: ProductGuideProps) {
       } else {
         message.error('Guide not found.');
       }
-    } catch (error) {
-      message.error('Failed to load guide.');
-    } finally {
+    }   finally {
       setLoading(false);
     }
   };
@@ -70,9 +69,11 @@ export default function ProductGuide({ Product }: ProductGuideProps) {
                 <Spinner color="warning" />
               </div>
             ) : selectedGuide?.type === 'image' ? (
-              <img
+              <Image
                 src={selectedGuide.fileUrl}
                 alt={selectedGuide.title}
+                height={100}
+                width={100}
                 className="w-full"
               />
             ) : selectedGuide?.type === 'video' ? (
