@@ -167,3 +167,4 @@ export default function CartDrawer({ isOpen, onOpenChange }: CartDrawerProps) {
     </Drawer>
   );
 }
+
