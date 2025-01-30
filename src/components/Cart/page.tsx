@@ -157,7 +157,7 @@ export default function CartDrawer({ isOpen, onOpenChange }: CartDrawerProps) {
                   Router.push("/checkout");
                   onClose();
                 }}
-                style={{ backgroundColor: 'blue',
+                style={{ backgroundColor: 'black',
                   color:'white'
                  }} 
               >
