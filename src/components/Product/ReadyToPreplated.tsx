@@ -1,6 +1,8 @@
 'use client';
 import React, { useState } from 'react';
 import SparklesText from '../ui/sparkles-text';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
 
 interface Product {
   isPrePlated: boolean;
@@ -74,6 +76,13 @@ const ReadyToPrePlated: React.FC<ReadyToPrePlatedProps> = ({ product, onFieldsCh
                   onChange={handleFieldChange}
                 />
               </div>
+              <Card >
+              <p className='py-6 px-6'>Note: As this pre-pleated saree is made with care and love especially for you, 
+                we are confident that your choice will give you a moment of sheer elegance, showcasing beautiful craftsmanship! 
+                The dispatch time for ready-to-wear sarees is 7 days.For your 1 min saree,
+                 only prepaid payment option are available with no returns and exchange.
+              </p>
+             </Card>
             </div>
           )}
         </div>
