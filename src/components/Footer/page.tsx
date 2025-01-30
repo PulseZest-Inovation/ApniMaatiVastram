@@ -72,8 +72,11 @@ export function Footer() {
         
         </Link>
         <p className="mt-4 text-gray-600 text-justify leading-relaxed tracking-wide font-bold">
-        Every stitch tells a story—welcome to Apni Maati Vastram! 🌟
-        We’re here to revolutionize saree-wearing with ready-to-wear, pre-pleated sarees that blend elegance, comfort, and empowerment.
+        Welcome to Apni Maati Vastram! We are a trusted fashion brand that harmoniously blends 
+        tradition with contemporary flair—perfect for work and celebrations. Our exquisite creations, 
+        from ready-to-wear and pre-pleated sarees to traditional drapes, along with stylish blouses & accessories, 
+        elevate everyday elegance, comfort, and empowerment.
+
 
         </p>
         <ul className="mt-4 space-y-2 text-gray-600">
