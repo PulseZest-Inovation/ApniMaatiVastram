@@ -150,13 +150,16 @@ export default function CartDrawer({ isOpen, onOpenChange }: CartDrawerProps) {
                 </div>
               </div>
               <Button
-                color="warning"
+                
                 variant="flat"
                 className="w-full mt-4"
                 onPress={() => {
                   Router.push("/checkout");
                   onClose();
                 }}
+                style={{ backgroundColor: 'black',
+                  color:'white'
+                 }} 
               >
                 Place Order
               </Button>
