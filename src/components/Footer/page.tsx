@@ -59,9 +59,9 @@ export function Footer() {
    <footer className="bg-gray-100 py-8 ml-5 mr-5 mb-5">
   <div className="container mx-auto px-4">
     {/* Top Section */}
-    <div className="flex flex-wrap justify-between items-start gap-8 mt-6">
+    <div className="flex flex-wrap justify-between items-start gap-4 mt-6">
       {/* Brand Section */}
-      <div className="w-full md:w-1/4 ml-20">
+      <div className=" w-50 md:w-1/4 ">
         <Link href={ApplicationConfig.baseUrl} className="flex items-center">
           <Image
             src={ApplicationConfig.applicationLogo}
@@ -71,7 +71,7 @@ export function Footer() {
           />
         
         </Link>
-        <p className="mt-4  text-gray-600 text-justify leading-relaxed tracking-wide font-bold">
+        <p className="mt-4  text-gray-600 text-justify leading-relaxed tracking-wide font-bold w-100">
         Welcome to Apni Maati Vastram! We are a trusted fashion brand that harmoniously blends 
         tradition with contemporary flair—perfect for work and celebrations. Our exquisite creations, 
         from ready-to-wear and pre-pleated sarees to traditional drapes, along with stylish blouses & accessories, 
@@ -121,6 +121,7 @@ export function Footer() {
           ))}
         </ul>
       </div>
+      <div></div>
 
    
     </div>
