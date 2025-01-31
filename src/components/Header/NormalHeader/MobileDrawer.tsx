@@ -50,7 +50,7 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose, categories
               <div key={parentCategory.slug}>
                 {/* Parent Category Link */}
                 <button
-                  className="flex items-center text-gray-700 text-2xl hover:text-black font-medium uppercase tracking-wide w-full text-left"
+                  className="flex items-center text-gray-700 text-sm hover:text-black font-medium uppercase tracking-wide w-full text-left"
                   onClick={() =>
                     setOpenCategory(
                       openCategory === parentCategory.cid ? null : parentCategory.cid
