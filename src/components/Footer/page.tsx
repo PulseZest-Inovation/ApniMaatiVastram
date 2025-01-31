@@ -60,8 +60,9 @@ export function Footer() {
   <div className="container mx-auto px-4">
     {/* Top Section */}
     <div className="flex flex-wrap justify-between items-start gap-8 mt-6">
+
       {/* Brand Section */}
-      <div className="w-full md:w-1/4">
+      <div className="w-full md:w-1/3">
         <Link href={ApplicationConfig.baseUrl} className="flex items-center">
           <Image
             src={ApplicationConfig.applicationLogo}
