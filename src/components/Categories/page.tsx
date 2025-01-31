@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React, { useEffect, useState, useRef, useMemo } from "react";
 import { fetchCategories } from "./getCategories";
@@ -15,7 +15,9 @@ export default function CategoriesDisplay() {
   useEffect(() => {
     const loadCategories = async () => {
       const fetchedCategories = await fetchCategories();
-      setCategories(fetchedCategories);
+      // Sort categories by 'isPosition' field in ascending order
+      const sortedCategories = fetchedCategories.sort((a, b) => a.isPosition - b.isPosition);
+      setCategories(sortedCategories);
     };
 
     loadCategories();
@@ -37,7 +39,7 @@ export default function CategoriesDisplay() {
 
   return (
     <div className="relative flex py-6 bg-gray-50 w-full">
-      <div className="relative w-full   mx-auto px-0"> {/* Remove horizontal padding */}
+      <div className="relative w-full mx-auto px-0"> {/* Remove horizontal padding */}
         {/* Left Arrow */}
         <button
           className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white shadow-lg rounded-full p-3 z-10 hover:scale-105"
