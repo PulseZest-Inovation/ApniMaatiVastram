@@ -64,6 +64,16 @@ export interface ProductType {
   menuOrder: number;
   metaData: MetaDataType[];
 
+
+  gstRate: string;
+  HSN: string;
+
+  // delivery details
+  length: number;
+  height: number;
+  breadth: number;
+  weight: number;
+
   // added the guide
   guides: { guideId: string; enabled: boolean }[];
 }
