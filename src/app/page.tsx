@@ -9,9 +9,11 @@ import ProductByVideos from "@/components/Section/ProductByVideos/page";
 import Testimonials from "@/components/Testimonials/page";
 import DisplayProductByCategories from "@/components/Section/ProductByCategoires/DisplayProductByCategories";
 
+
 export default function Home() {
   return (
     <div>
+    
       {/* Image Carousel */}
       <motion.div
         initial={{ opacity: 0, x: -50 }} // Start slightly left

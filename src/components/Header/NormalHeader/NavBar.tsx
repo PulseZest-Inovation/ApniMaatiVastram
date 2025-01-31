@@ -117,7 +117,7 @@ const NavBar: React.FC = () => {
       <div className="py-2">
         <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Desktop: Categories */}
-          <div className="hidden sm:flex justify-center space-x-6">
+      {/*    <div className="hidden sm:flex justify-center space-x-6">
             {memoizedCategories.map((category) => (
               <Link
                 key={category.slug}
@@ -127,7 +127,43 @@ const NavBar: React.FC = () => {
                 {category.name}
               </Link>
             ))}
+          </div>*/}
+          <div className="relative">
+          <div className="hidden sm:flex justify-center space-x-6">
+              {memoizedCategories.map((category) => (
+      <div key={category.slug} className="relative group">
+        <button className="text-gray-700 hover:text-black font-bold uppercase tracking-wide text-2sm leading-tight">
+          {category.name}
+        </button>
+        <div className="absolute left-0 hidden group-hover:block bg-white shadow-lg rounded-md mt-2 w-48">
+          <ul className="py-2">
+            <li>
+              <Link
+                href={`/collection/${category.slug}`}
+                className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+              >
+                View {category.name}
+              </Link>
+            </li>
+
+            <li>
+              <Link
+                href={`/collection/${category.slug}`}
+                className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+              >
+                View {category.name}
+              </Link>
+            </li>
+            
+
+            {/* Add more links here if needed */}
+          </ul>
+        </div>
+      </div>
+    ))}
+  </div>
           </div>
+
 
           {/* Mobile: Search Field */}
           <div className="sm:hidden">
