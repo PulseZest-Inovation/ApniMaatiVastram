@@ -30,7 +30,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
     length: number;
     waist: number;
     hip: number;
-  }>( {
+  }>({
     waist: 0,
     length: 0,
     hip: 0,
@@ -43,7 +43,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
   const handleCustomizationChange = (
     fields: { waist: number } | { waist: number; length: number; hip: number }
   ) => {
-    if ('length' in fields && 'hip' in fields) {
+    if ("length" in fields && "hip" in fields) {
       // Handle full customization (ReadyToWear)
       setReadyToWear((prevState) => ({
         ...prevState,
@@ -57,7 +57,6 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
       }));
     }
   };
-  
 
   const handleReadyToWearChange = (isReadyToWear: boolean) => {
     setIsReadyToWear(isReadyToWear);
@@ -147,7 +146,9 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
           {rating % 1 >= 0.5 && <FaStarHalfAlt className="text-yellow-400" />}
 
           {/* Empty stars */}
-          {Array.from({ length: 5 - Math.floor(rating) - (rating % 1 >= 0.5 ? 1 : 0) }).map((_, index) => (
+          {Array.from({
+            length: 5 - Math.floor(rating) - (rating % 1 >= 0.5 ? 1 : 0),
+          }).map((_, index) => (
             <FaRegStar key={`empty-${index}`} className="text-yellow-400" />
           ))}
         </div>
@@ -161,29 +162,26 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
               ₹{product.regularPrice}
             </span>
           )}
-          <span className="text-3xl font-bold ">
-            ₹{product.price}
-          </span>
+          <span className="text-3xl font-bold ">₹{product.price}</span>
         </div>
-        <p
-          className="text-1xl text-gray-500 capitalize break-words font-thin"
-          style={{
-            wordBreak: "break-word",
-            whiteSpace: "normal",
-          }}
-        >
+        <p className="text-1xl text-gray-500 capitalize font-thin">
           Inclusive of All Taxes
         </p>
+
+        {/* Out of Stock Message */}
+        {product.stockQuantity <= 0 && (
+          <p className="text-red-600 font-bold mt-2">Out of Stock</p>
+        )}
       </div>
 
-      <ProductGuide  Product={product} />
+      <ProductGuide Product={product} />
 
       <ReadyToWear
         product={product}
         onFieldsChange={handleCustomizationChange}
         onReadyToWearChange={handleReadyToWearChange}
       />
-       <ReadyToPrePlated
+      <ReadyToPrePlated
         product={product}
         onFieldsChange={handleCustomizationChange}
         onPrePlatedChange={handlePrePlateToChange}
@@ -194,60 +192,62 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
       <DiscountCard />
 
       {/* Sticky Footer for Action Buttons (Mobile Only) */}
-      <div className="p-4 bg-white flex flex-col md:flex-row md:space-x-2 space-y-4 md:space-y-0 md:items-center md:static fixed bottom-0 left-0 right-0 z-10">
-        <Button
-          endContent={
-            loading.cart ? (
-              <Spinner color="white" size="sm" />
-            ) : (
-              <ShoppingCartOutlined />
-            )
-          }
-          className="px-6 py-2 text-white hover:opacity-90"
-          style={{
-            backgroundColor: "#FF6A00",
-            color: "#000000",
-            border: "2px solid #000",
-            borderRadius: "4px",
-            transition: "background-color 0.3s, transform 0.2s",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = "#D35400";
-            e.currentTarget.style.transform = "scale(1.05)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = "#FF6A00";
-            e.currentTarget.style.transform = "scale(1)";
-          }}
-          onPress={handleCartClick}
-          disabled={loading.cart} // Disable button while loading
-        >
-          <p className="capitalize" style={{ letterSpacing: "0.2em" }}>
-            {loading.cart ? "Processing..." : "ADD TO CART"}
-          </p>
-        </Button>
+      {product.stockQuantity > 0 && (
+        <div className="p-4 bg-white flex flex-col md:flex-row md:space-x-2 space-y-4 md:space-y-0 md:items-center md:static fixed bottom-0 left-0 right-0 z-10">
+          <Button
+            endContent={
+              loading.cart ? (
+                <Spinner color="white" size="sm" />
+              ) : (
+                <ShoppingCartOutlined />
+              )
+            }
+            className="px-6 py-2 text-white hover:opacity-90"
+            style={{
+              backgroundColor: "#FF6A00",
+              color: "#000000",
+              border: "2px solid #000",
+              borderRadius: "4px",
+              transition: "background-color 0.3s, transform 0.2s",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "#D35400";
+              e.currentTarget.style.transform = "scale(1.05)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "#FF6A00";
+              e.currentTarget.style.transform = "scale(1)";
+            }}
+            onPress={handleCartClick}
+            disabled={loading.cart} // Disable button while loading
+          >
+            <p className="capitalize" style={{ letterSpacing: "0.2em" }}>
+              {loading.cart ? "Processing..." : "ADD TO CART"}
+            </p>
+          </Button>
 
-        <Button
-          endContent={
-            loading.wishlist ? (
-              <Spinner color="white" size="sm" />
-            ) : (
-              <HeartTwoTone twoToneColor="#eb2f96" />
-            )
-          }
-          className="px-6 py-2 text-white"
-          style={{
-            backgroundColor: "#c9c6bb",
-            color: "#000000",
-            borderRadius: "4px",
-            border: "none",
-          }}
-          onPress={handleWishlistClick}
-          disabled={loading.wishlist} // Disable button while loading
-        >
-          {loading.wishlist ? "Processing..." : "W h i s h l i s t"}
-        </Button>
-      </div>
+          <Button
+            endContent={
+              loading.wishlist ? (
+                <Spinner color="white" size="sm" />
+              ) : (
+                <HeartTwoTone twoToneColor="#eb2f96" />
+              )
+            }
+            className="px-6 py-2 text-white"
+            style={{
+              backgroundColor: "#c9c6bb",
+              color: "#000000",
+              borderRadius: "4px",
+              border: "none",
+            }}
+            onPress={handleWishlistClick}
+            disabled={loading.wishlist} // Disable button while loading
+          >
+            {loading.wishlist ? "Processing..." : "W h i s h l i s t"}
+          </Button>
+        </div>
+      )}
 
       {[
         "Details",
@@ -255,7 +255,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
         "Shipping",
         "Return & Exchange",
         "Manufacturing Information ",
-        "Support"
+        "Support",
       ].map((section) => (
         <ExpandableSection
           key={section}
