@@ -61,7 +61,7 @@ export const handleCodOrder = async (
       status: 'Pending',
       orderId: orderId,
       totalAmount: totalAmount,
-      type: 'cod'
+      type: 'COD'
     };
 
     const orderPlacedSuccessfully = await placeOrder(newOrderData);
