@@ -13,6 +13,7 @@ export const fetchCategories = async (): Promise<Array<CategoryType>> => {
       slug: category.slug ?? "",
       isVisible: category.isVisible ?? false,
       isHeaderVisible: category.isHeaderVisible ?? false,
+      parent: category.parent ?? "none"
     }));
   } catch (error) {
     console.error("Error fetching categories:", error);
