@@ -1,6 +1,8 @@
 'use client';
 import React, { useState } from 'react';
 import SparklesText from '../ui/sparkles-text';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
 
 // Define the type for the product object
 interface Product {
@@ -103,6 +105,13 @@ const ReadyToWear: React.FC<CustomFieldsProps> = ({ product, onFieldsChange, onR
                   onChange={handleFieldChange}
                 />
               </div>
+             <Card >
+              <p className='py-6 px-6'>Note: As this ready-to-wear saree is made with care and love especially for you, 
+                  we are confident that your choice will give you a moment of sheer elegance, showcasing beautiful craftsmanship! 
+                  The dispatch time for ready-to-wear sarees is 7 days.
+                   For your 1 min saree, only prepaid payment option are available with no returns and exchange.
+              </p>
+             </Card>
             </div>
           )}
         </div>
