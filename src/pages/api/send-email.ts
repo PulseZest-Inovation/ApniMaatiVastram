@@ -8,6 +8,7 @@ import Cors from "cors";
 
 const allowedOrigins = [
   "http://localhost:3000",
+  "https://apnimaativastram.com",
   "https://ecommerce-with-pulsezest.vercel.app",
   "https://ecommerce.pulsezest.com",
 ];
