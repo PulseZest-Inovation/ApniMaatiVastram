@@ -31,13 +31,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         merchantUserId: 'MUID' + user_id,
         name,
         amount: price * 100, // Price in paise
-        redirectUrl: `${ApplicationConfig.baseUrl}/api/payment-status/${merchantTransactionId}`, // Callback URL for status
-        redirectMode: 'GET',
+        redirectUrl: `${ApplicationConfig.baseUrl}/payment-status?transactionId=${merchantTransactionId}`, // Still needed for UI
+        postRedirectUrl: `${ApplicationConfig.baseUrl}/api/payment-webhook`, // This is the webhook
+        redirectMode: 'POST',
         mobileNumber: phone,
         paymentInstrument: {
           type: 'PAY_PAGE',
         },
       };
+      
+      
 
       console.log('Payment Data:', data); // Log payment data for debugging
 

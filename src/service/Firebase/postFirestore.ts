@@ -30,6 +30,28 @@ export const createDocWithAutoId = async <T extends Record<string, unknown>>(
   }
 };
 
+
+export const setDocWithCustomId = async <T>(
+  collectionName: string,
+  docName: string,
+  data: Record<string, any>
+): Promise<boolean> => {
+  try {
+    
+    // Reference to the document
+    const docRef = doc(db, 'app_name', ApplicationConfig.secretKey, collectionName, docName);
+
+    // Set the data to the document with merge option
+    await setDoc(docRef, data, { merge: true }); // Use merge: true to avoid overwriting the document
+    console.log(`Document with ID '${docName}' successfully written in '${collectionName}'.`);
+    return true;
+  } catch (error) {
+    console.error('Error setting document with custom ID:', error);
+    return false;
+  }
+};
+
+
 export const createDataWithCustomId = async <T extends Record<string, unknown>>(
   collectionName: string, // Collection name (e.g., 'customers')
   documentId: string, // Document ID (e.g., user ID)
