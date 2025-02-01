@@ -24,9 +24,10 @@ interface PaymentMethodProps {
     customerId: string;
   };
   totalAmount: number;
+  isFormValid : boolean;
 }
 
-const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData, totalAmount: initialTotalAmount }) => {
+const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData, totalAmount: initialTotalAmount,isFormValid}) => {
   const [paymentMethod, setPaymentMethod] = useState<string | null>('online');
   const [loading, setLoading] = useState<boolean>(false);
   const [totalAmount, setTotalAmount] = useState<number>(initialTotalAmount);
@@ -78,6 +79,8 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData, totalAmount: in
 
   return (
     <div>
+      type="submit"
+      disabled={!isFormValid}
       <ToastContainer />
       <DesktopPaymentMethod
         paymentMethod={paymentMethod}

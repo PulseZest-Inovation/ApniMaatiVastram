@@ -67,10 +67,18 @@ export default function CheckoutOrderDetails({ totalAmount }: CheckoutOrderDetai
   const validateEmail = (email: string) =>
     /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email);
 
- 
-
   const validatePinCode = (pinCode: string) =>
     /^[1-9][0-9]{5}$/.test(pinCode);
+
+  const isFormValid = () => {
+    return (
+      formData.address !== '' &&
+      formData.phoneNumber !== '' &&
+      formData.email !== '' &&
+      validateEmail(formData.email) &&
+      validatePinCode(formData.pinCode)
+    );
+  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -155,7 +163,7 @@ export default function CheckoutOrderDetails({ totalAmount }: CheckoutOrderDetai
             className="w-full p-2 border border-gray-300 rounded"
           />
         </div>
- 
+
         <div>
           <label className="block text-sm font-semibold mb-2">PIN Code</label>
           <input
@@ -178,12 +186,11 @@ export default function CheckoutOrderDetails({ totalAmount }: CheckoutOrderDetai
             required
             disabled
             className="w-full p-2 border border-gray-300 rounded"
-
           />
         </div>
 
         <div>
-          <label className="block text-sm font-semibold mb-2">Alternative Phone </label>
+          <label className="block text-sm font-semibold mb-2">Alternative Phone</label>
           <input
             type="text"
             placeholder="+91 Enter your alternative phone number"
@@ -191,7 +198,6 @@ export default function CheckoutOrderDetails({ totalAmount }: CheckoutOrderDetai
             onChange={(e) => setFormData({ ...formData, altPhoneNumber: e.target.value })}
             required
             className="w-full p-2 border border-gray-300 rounded"
-
           />
         </div>
 
@@ -208,7 +214,8 @@ export default function CheckoutOrderDetails({ totalAmount }: CheckoutOrderDetai
         </div>
       </form>
 
-      <PaymentMethod formData={formData} totalAmount={totalAmount} />
+      {/* Disable payment button if form is invalid */}
+      <PaymentMethod formData={formData} totalAmount={totalAmount} isFormValid={isFormValid()} />
     </div>
   );
 }

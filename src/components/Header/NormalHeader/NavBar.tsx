@@ -128,6 +128,9 @@ const NavBar: React.FC = () => {
               </Link>
             ))}
           </div>
+         
+          
+
 
           {/* Mobile: Search Field */}
           <div className="sm:hidden">
