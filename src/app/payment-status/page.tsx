@@ -1,10 +1,20 @@
-"use client"; // Agar app router (app directory) use kar rahe ho
+// "use client"; ensures that this is a client-side rendered component
+"use client"; // This ensures it's client-side rendered
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 
-export default function PaymentStatus() {
+// Wrap PaymentStatus component in Suspense
+export default function PaymentStatusPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <PaymentStatus />
+    </Suspense>
+  );
+}
+
+function PaymentStatus() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const transactionId = searchParams?.get("transactionId") || ""; // ✅ Null safety handle
@@ -42,4 +52,3 @@ export default function PaymentStatus() {
     </div>
   );
 }
-
