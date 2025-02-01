@@ -49,12 +49,11 @@ const OrderStatus = () => {
         // Combine order details with payment response
         const combinedOrderData = { ...orderFromLocalStorage, ...data };
 
-        // Fetch email details
-        const emailDetail = await fetchEmailDetails();
-        if (!emailDetail?.isEnabled) {
-          toast.error('Email service is disabled or email details are missing.');
-          return;
-        }
+          // Fetch email details
+          const emailDetail = await fetchEmailDetails();
+          if (!emailDetail || !emailDetail.isEnabled) {
+            toast.error('Email service is disabled or email details are missing.');
+          }
 
         // Fetch cart details
         const cartDetails = await getAllDocsFromSubCollection('customers', combinedOrderData.customerId, 'cart');
@@ -81,12 +80,12 @@ const OrderStatus = () => {
           body: JSON.stringify(emailRequestBody),
         });
 
-        if (!emailResponse.ok) {
-          const error = await emailResponse.json();
-          console.error('Email sending failed:', error);
-          toast.error(`Failed to send email: ${error.message}`);
-          return;
-        }
+          if (!emailResponse.ok) {
+            const error = await emailResponse.json();
+            console.error('Email sending failed:', error);
+            toast.error(`Failed to send email: ${error.message}`);
+            
+          }
 
         // Place the order
         const orderPlaced = await placeOrder(combinedOrderData);
