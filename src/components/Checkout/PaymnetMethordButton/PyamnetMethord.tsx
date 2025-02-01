@@ -48,6 +48,25 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData, totalAmount: in
   };
 
   const handleSubmitOrder = async () => {
+
+    const requiredFields = [
+      'fullName',
+      'country',
+      'state',
+      'address',
+      'city',
+      'pinCode',
+      'phoneNumber',
+      'email',
+    ];
+  
+    for (let field of requiredFields) {
+      if (!formData[field as keyof typeof formData]) {
+        toast.error(`${field} is required.`);
+        return;
+      }
+    }
+
     const orderId = generateOrderId();
 
     setLoading(true);
@@ -78,7 +97,6 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData, totalAmount: in
 
   return (
     <div>
-      <ToastContainer />
       <DesktopPaymentMethod
         paymentMethod={paymentMethod}
         handlePaymentMethodChange={handlePaymentMethodChange}
