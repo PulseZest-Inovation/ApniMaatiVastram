@@ -32,7 +32,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         name,
         amount: price * 100, // Price in paise
         redirectUrl: `${ApplicationConfig.baseUrl}/api/payment-status/${merchantTransactionId}`, // Callback URL for status
-        redirectMode: 'POST',
+        redirectMode: 'GET',
         mobileNumber: phone,
         paymentInstrument: {
           type: 'PAY_PAGE',
