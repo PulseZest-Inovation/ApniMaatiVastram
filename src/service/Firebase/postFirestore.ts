@@ -31,7 +31,7 @@ export const createDocWithAutoId = async <T extends Record<string, unknown>>(
 };
 
 
-export const setDocWithCustomId = async <T>(
+export const setDocWithCustomId = async (
   collectionName: string,
   docName: string,
   data: Record<string, any>
