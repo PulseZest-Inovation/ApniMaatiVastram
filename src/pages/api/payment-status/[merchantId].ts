@@ -5,7 +5,7 @@ import { ApplicationConfig } from '@/config/ApplicationConfig';
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { merchantId } = req.query;
 
-  if (req.method === 'GET') {
+  if (req.method === 'POST') {
     try {
       // Fetch payment status from the actual payment service (PhonePe or other service)
       const response = await axios.get(`${ApplicationConfig.baseUrl}/api/status/${merchantId}`);
