@@ -7,11 +7,11 @@ export default async function handler(req, res) {
       console.log('Received Shiprocket webhook data:', data);
 
       // Extract relevant data from the webhook payload
-      const { order_id, status, customer_email, customer_name, message } = data;
-
+      const { order_id, status,  } = data;
+// customer_email, customer_name, message
       // Define the email subject and message based on the order status
-      let emailSubject = `Your Order #${order_id} Status Update`;
-      let emailMessage = `Hello ${customer_name},\n\n${message}\n\nStatus: ${status}\nOrder ID: ${order_id}`;
+    //   let emailSubject = `Your Order #${order_id} Status Update`;
+    //   let emailMessage = `Hello ${customer_name},\n\n${message}\n\nStatus: ${status}\nOrder ID: ${order_id}`;
     
       // Check status and set custom messages
       switch (status) {

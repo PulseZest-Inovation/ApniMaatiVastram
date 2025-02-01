@@ -1,6 +1,8 @@
+'use client'
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { CategoryType } from "@/Types/data/CategoryType";
+import { Image } from "antd";
 
 const DesktopCategories: React.FC<{ categories: CategoryType[] }> = ({ categories }) => {
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
@@ -56,7 +58,9 @@ const DesktopCategories: React.FC<{ categories: CategoryType[] }> = ({ categorie
 
                     {/* Subcategory Image */}
                     {subCategory.image && (
-                      <img
+                      <Image
+                      height={50}
+                      width={50}
                         src={subCategory.image}
                         alt={subCategory.name}
                         className="w-8 h-8 object-cover rounded-full"

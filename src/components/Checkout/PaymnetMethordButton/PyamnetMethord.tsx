@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/navigation';
 import { handleOnlineOrder } from '../online/online';
@@ -60,7 +60,7 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData, totalAmount: in
       'email',
     ];
   
-    for (let field of requiredFields) {
+    for (const field of requiredFields) {
       if (!formData[field as keyof typeof formData]) {
         toast.error(`${field} is required.`);
         return;

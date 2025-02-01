@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import SparklesText from '../ui/sparkles-text';
 import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
 
 interface Product {
   isPrePlated: boolean;
