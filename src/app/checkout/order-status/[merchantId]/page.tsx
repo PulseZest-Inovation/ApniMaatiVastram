@@ -50,7 +50,6 @@ const OrderStatus = () => {
           const emailDetail = await fetchEmailDetails();
           if (!emailDetail || !emailDetail.isEnabled) {
             toast.error('Email service is disabled or email details are missing.');
-            return;
           }
 
           const cartDetails = await getAllDocsFromSubCollection('customers', combinedOrderData.customerId, 'cart');
@@ -83,7 +82,7 @@ const OrderStatus = () => {
             const error = await emailResponse.json();
             console.error('Email sending failed:', error);
             toast.error(`Failed to send email: ${error.message}`);
-            return;
+            
           }
 
           // Place the order
