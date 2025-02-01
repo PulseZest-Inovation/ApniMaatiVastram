@@ -6,6 +6,7 @@ import { placeOrder } from '@/components/Checkout/placeOrder';
 import { fetchEmailDetails } from '@/utils/getSendingEmail';
 import { toast } from 'react-toastify';
 import { getAllDocsFromSubCollection } from '@/service/Firebase/getFirestore';
+import { ApplicationConfig } from '@/config/ApplicationConfig';
 
 const OrderStatus = () => {
   const params = useParams();
@@ -27,10 +28,10 @@ const OrderStatus = () => {
         setError(null);
         const transactionId = merchantId;
         // Fetch payment status
-        const response = await fetch(`/api/status/${transactionId}`);
+        const response = await fetch(`${ApplicationConfig.baseUrl}/api/status/${transactionId}`);
         const data = await response.json();
         
-        if (!response.ok || !data.success) {
+        if (!response.ok) {
           throw new Error('Payment failed. Please try again.');
         }
 
