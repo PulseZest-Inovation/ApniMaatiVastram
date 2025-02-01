@@ -50,11 +50,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       console.log('Base64 Payload:', payloadMain); // Log base64 encoded payload
 
       // Generate checksum
-      const keyIndex = 1;
-      const string = payloadMain + '/pg/v1/pay' +  "89952abe-9680-447b-9dcf-18f2b31d923b";
+      const string = payloadMain + '/pg/v1/pay' + "89952abe-9680-447b-9dcf-18f2b31d923b";
       const sha256 = crypto.createHash('sha256').update(string).digest('hex');
-      const checksum = `${sha256}###${keyIndex}`;
-      console.log('Checksum:', checksum); // Log checksum for debugging
+      const checksum = `${sha256}###1`;
+      
 
       // API call to PhonePe (ensure using correct URL for environment)
       const prod_URL = "https://api.phonepe.com/apis/hermes/pg/v1/pay"; // For sandbox
