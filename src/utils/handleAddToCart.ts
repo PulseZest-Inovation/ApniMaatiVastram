@@ -47,6 +47,15 @@ export const handleAddToCart = async (
       isPrePlated: product.isPrePlated ?? null, // Ensure a valid value (null if undefined)
       prePlated: product.prePlated ?? null, // Ensure prePlated is not undefined
       prePlatedCharges: product.prePlatedCharges ?? 0, // Default to 0 if undefined
+      
+      sku: product.sku ?? '',
+      tax: product.gstRate ?? '',
+      hsn: product.HSN ?? '',
+
+      length: product.length ?? 0,
+      breadth: product.breadth ?? 0,
+      height: product.height ?? 0,
+      weight: product.weight ?? 0,
     };
 
     // Use the collection name to create a document in the cart subcollection

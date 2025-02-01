@@ -36,3 +36,20 @@ export const updateDocField = async (
       return false; // Indicate failure
     }
   };
+
+
+  export const updateDocWithCustomId = async (
+    collectionName: string,
+    docId: string,
+    updatedData: Record<string, any>
+  ): Promise<boolean> => {
+    try {
+    
+      const docRef = doc(db,'app_name',ApplicationConfig.secretKey, collectionName, docId); // Reference to the document with the custom ID
+      await updateDoc(docRef, updatedData); // Update the document with the new data
+      return true; // Return true if the update was successful
+    } catch (error) {
+      console.error('Error updating document: ', error); // Handle errors
+      return false; // Return false if an error occurred
+    }
+  };

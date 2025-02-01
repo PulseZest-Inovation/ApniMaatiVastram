@@ -10,7 +10,7 @@ export interface EmailSettings {
   emailList?: string[];
   OrderCancelled? : string;
   OrderConfirmed? : string;
-  OrderPending? : string;
+  OrderDelivered? : string;
   OrderPlaced? : string;
   OrderProcessing? : string;
 }

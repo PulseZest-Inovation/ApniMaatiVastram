@@ -57,11 +57,10 @@ export const handleCodOrder = async (
     // Proceed to place the order
     const newOrderData = {
       ...deliveryDetails,
-      ...cartDetails,
       status: 'Pending',
       orderId: orderId,
       totalAmount: totalAmount,
-      type: 'cod'
+      type: 'COD'
     };
 
     const orderPlacedSuccessfully = await placeOrder(newOrderData);

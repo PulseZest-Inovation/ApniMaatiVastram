@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/navigation';
 import { handleOnlineOrder } from '../online/online';
@@ -48,6 +48,25 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData, totalAmount: in
   };
 
   const handleSubmitOrder = async () => {
+
+    const requiredFields = [
+      'fullName',
+      'country',
+      'state',
+      'address',
+      'city',
+      'pinCode',
+      'phoneNumber',
+      'email',
+    ];
+  
+    for (const field of requiredFields) {
+      if (!formData[field as keyof typeof formData]) {
+        toast.error(`${field} is required.`);
+        return;
+      }
+    }
+
     const orderId = generateOrderId();
 
     setLoading(true);
@@ -78,7 +97,6 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData, totalAmount: in
 
   return (
     <div>
-      <ToastContainer />
       <DesktopPaymentMethod
         paymentMethod={paymentMethod}
         handlePaymentMethodChange={handlePaymentMethodChange}

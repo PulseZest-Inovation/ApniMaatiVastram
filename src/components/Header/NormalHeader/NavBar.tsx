@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import { FaUser, FaShoppingCart, FaBars } from "react-icons/fa";
 import Image from "next/image";
 import OtpModal from "@/components/Login/PhoneLoginModel";
@@ -13,12 +13,8 @@ import MobileDrawer from "./MobileDrawer";
 import Link from "next/link";
 import { SearchIcon } from "lucide-react";
 import SearchBar from "./SearchBar";
-
-interface Category {
-  name: string;
-  slug: string;
-  isHeaderVisible: boolean;
-}
+import DesktopCategories from "./DesktopCategories";
+import { CategoryType } from "@/Types/data/CategoryType"; // Use correct import
 
 export const ApplicationLogo = React.memo(() => (
   <Link href="/">
@@ -32,11 +28,11 @@ export const ApplicationLogo = React.memo(() => (
   </Link>
 ));
 
-ApplicationLogo.displayName = "Apni Maati Vastram";
+ApplicationLogo.displayName = "ApplicationLogo"; // Corrected displayName
 
 const NavBar: React.FC = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [categories, setCategories] = useState<CategoryType[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   const [isUserLoggedInState, setIsUserLoggedInState] = useState(false);
@@ -61,14 +57,12 @@ const NavBar: React.FC = () => {
     checkUserStatus();
   }, []);
 
-  const memoizedCategories = useMemo(
-    () => categories.filter((category) => category.isHeaderVisible),
-    [categories]
-  );
+  
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
   const openCartDrawer = () => setIsCartDrawerOpen(true);
+  const closeCartDrawer = () => setIsCartDrawerOpen(false); // Fix state handling
 
   const handleUserIconClick = async () => {
     if (isUserLoggedInState) {
@@ -97,18 +91,9 @@ const NavBar: React.FC = () => {
 
           {/* Right: Icons */}
           <div className="flex justify-end items-center space-x-4 w-1/4">
-            <FaUser
-              className="text-lg cursor-pointer"
-              onClick={handleUserIconClick}
-            />
-            <FaShoppingCart
-              className="text-lg cursor-pointer"
-              onClick={openCartDrawer}
-            />
-            <FaBars
-              className="text-lg cursor-pointer sm:hidden"
-              onClick={toggleDrawer}
-            />
+            <FaUser className="text-lg cursor-pointer" onClick={handleUserIconClick} />
+            <FaShoppingCart className="text-lg cursor-pointer" onClick={openCartDrawer} />
+            <FaBars className="text-lg cursor-pointer sm:hidden" onClick={toggleDrawer} />
           </div>
         </div>
       </div>
@@ -117,17 +102,7 @@ const NavBar: React.FC = () => {
       <div className="py-2">
         <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Desktop: Categories */}
-          <div className="hidden sm:flex justify-center space-x-6">
-            {memoizedCategories.map((category) => (
-              <Link
-                key={category.slug}
-                href={`/collection/${category.slug}`}
-                className="text-gray-700 hover:text-black font-bold uppercase tracking-wide text-2sm leading-tight"
-              >
-                {category.name}
-              </Link>
-            ))}
-          </div>
+          <DesktopCategories  categories={categories} />
 
           {/* Mobile: Search Field */}
           <div className="sm:hidden">
@@ -146,21 +121,14 @@ const NavBar: React.FC = () => {
       </div>
 
       {/* Mobile Drawer */}
-      <MobileDrawer
-        isOpen={isDrawerOpen}
-        onClose={toggleDrawer}
-        categories={memoizedCategories}
-      />
+      <MobileDrawer isOpen={isDrawerOpen} onClose={toggleDrawer} categories={categories} />
 
       <OtpModal isOpen={isModalOpen} onOpenChange={closeModal} />
-      <CartDrawer
-        isOpen={isCartDrawerOpen}
-        onOpenChange={setIsCartDrawerOpen}
-      />
+      <CartDrawer isOpen={isCartDrawerOpen} onOpenChange={closeCartDrawer} />
     </nav>
   );
 };
 
-NavBar.displayName = "Apni Maati Vastram";
+NavBar.displayName = "NavBar";
 
 export default NavBar;

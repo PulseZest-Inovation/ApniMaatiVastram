@@ -20,7 +20,7 @@ export const getEmailTemplate = async (emailType) => {
       case "Pending":
         return data.OrderPending || null;
       case "Delivered":
-        return data.OrderPlaced || null;
+        return data.OrderDelivered || null;
       case "Processing":
         return data.OrderProcessing || null;
       default:

@@ -18,7 +18,7 @@ export const handleOnlineOrder = async (
       status: 'Confirmed',
       orderId: orderId,
       totalAmount: totalAmount,
-      type: 'online'
+      type: 'Prepaid'
     };
 
     console.log(newOrderData);

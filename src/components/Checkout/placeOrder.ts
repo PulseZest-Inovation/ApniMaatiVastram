@@ -3,6 +3,7 @@ import { createDataWithCustomId, placeOrderFiresotre } from "@/service/Firebase/
 import { Timestamp } from "firebase/firestore";
 import { deleteDocFromSubCollection } from "@/service/Firebase/deleteDocFromSubCollection";
 import { fetchEmailDetails } from "@/utils/getSendingEmail";
+import { decreaseStockValue } from "@/utils/decressaseTheStock";
 
 interface CartItem {
   id: string;
@@ -18,91 +19,77 @@ interface CartItem {
 
 export const placeOrder = async (orderData: any): Promise<boolean> => {
   try {
-    // Get the current user's UID from Firebase Auth
-
     if (!orderData.customerId) {
       throw new Error("No customer Id Found");
     }
 
-    // Fetch all the cart items from the 'cart' collection of the current user
-    const cartItems = await getAllDocsFromCollection<CartItem>(`customers/${orderData.customerId}/cart`);
+    // Fetch cart items in parallel with email details
+    const [cartItems, emailDetails] = await Promise.all([
+      getAllDocsFromCollection<CartItem>(`customers/${orderData.customerId}/cart`),
+      fetchEmailDetails(),
+    ]);
+
     if (!cartItems || cartItems.length === 0) {
       throw new Error("Cart is empty. Cannot place an order.");
     }
 
-    console.log(cartItems);
-
-    // Prepare the order data to be set in the 'orders' collection of the current user
-    const orderDataWithCartItems = {
-      ...orderData,
-      orderDetails: cartItems, // Add the cart items to the order details
-      createdAt: Timestamp.fromDate(new Date()), // Add a creation timestamp
-    };
-
-    // Use the custom function to create a new order in the 'orders' collection of the current user
-    const success = await createDataWithCustomId(
-      "customers", // Collection name
-      orderData.customerId, // Use current user's UID for the document
-      "orders", // Subcollection name
-      orderData.orderId, // Custom document ID (orderId)
-      orderDataWithCartItems // Data to save
-    );
-
-    // Save data to the global 'orders' collection
-    await placeOrderFiresotre("orders", orderData.orderId, orderDataWithCartItems);
-
-    // Fetch email configuration details
-    const emailDetails = await fetchEmailDetails();
     if (!emailDetails) {
       throw new Error("Failed to fetch email configuration details.");
     }
 
-    // After clearing the cart, send data to the API
+    console.log(cartItems);
+
+    // Prepare order data
+    const orderDataWithCartItems = {
+      ...orderData,
+      orderDetails: cartItems,
+      createdAt: Timestamp.fromDate(new Date()),
+    };
+
+    // Create the order in parallel in both collections
+    await Promise.all([
+      createDataWithCustomId("customers", orderData.customerId, "orders", orderData.orderId, orderDataWithCartItems),
+      placeOrderFiresotre("orders", orderData.orderId, orderDataWithCartItems),
+    ]);
+
+    console.log("Order placed successfully with ID:", orderData.orderId);
+
+    // Decrease stock for each product in parallel
+    const stockUpdates = cartItems.map((item) => decreaseStockValue(item.id, item.quantity));
+    
+    // Delete all cart items in parallel
+    const cartDeletions = cartItems.map((item) =>
+      deleteDocFromSubCollection("customers", orderData.customerId, "cart", item.id)
+    );
+
+    // Execute stock updates and cart deletions concurrently
+    await Promise.all([...stockUpdates, ...cartDeletions]);
+
+    console.log("Stock updated and cart items deleted successfully.");
+
+    // Send order confirmation API request
     const apiResponse = await fetch("/api/order/recive-order", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        cartItems, // Send cart items
-        emailDetails, // Send email configuration details
-        orderId: orderData.orderId, // Include the order ID for reference
-        customerEmail: orderData.email, // Include customer email
+        cartItems,
+        emailDetails,
+        orderId: orderData.orderId,
+        customerEmail: orderData.email,
         totalAmount: orderData.totalAmount,
       }),
     });
 
     if (!apiResponse.ok) {
       const errorDetails = await apiResponse.json();
-      throw new Error(
-        `Failed to call the API. Status: ${apiResponse.status}, Message: ${errorDetails.message}`
-      );
+      throw new Error(`Failed to call the API. Status: ${apiResponse.status}, Message: ${errorDetails.message}`);
     }
 
-    const apiResult = await apiResponse.json();
-    console.log("API Response:", apiResult);
+    console.log("Order confirmation email sent successfully.");
 
-    if (success) {
-      console.log("Order placed successfully with ID:", orderData.orderId);
-
-      // Delete all documents in the 'cart' subcollection after order placement
-      for (const item of cartItems) {
-        await deleteDocFromSubCollection(
-          "customers", // Main collection
-          orderData.customerId, // Document ID (current user's UID)
-          "cart", // Subcollection name
-          item.id // Subdocument ID (cart item ID)
-        );
-      }
-      console.log("Cart items deleted successfully after placing the order.");
-
-      return true; // Resolve to true if everything succeeds
-    } else {
-      console.error("Failed to create order.");
-      return false; // Resolve to false if order creation fails
-    }
+    return true;
   } catch (error) {
     console.error("Error placing order:", error);
-    return false; // Resolve to false in case of any error
+    return false;
   }
 };
