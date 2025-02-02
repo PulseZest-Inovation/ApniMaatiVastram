@@ -6,17 +6,9 @@ import { Image } from "antd";
 
 const DesktopCategories: React.FC<{ categories: CategoryType[] }> = ({ categories }) => {
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
-
-  useEffect(() => {
-    console.log("Categories received in DesktopCategories:", categories);
-  }, [categories]);
-
-  // Filtering only parent categories that should be visible in the header
   const parentCategories = categories.filter(
     (category) => category.parent === "none" && category.isHeaderVisible
   );
-
-  console.log("Parent Categories:", parentCategories); // Debugging
 
   return (
     <div className="hidden sm:flex justify-center space-x-6 relative">
