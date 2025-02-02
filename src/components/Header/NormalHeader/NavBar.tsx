@@ -30,12 +30,18 @@ export const ApplicationLogo = React.memo(() => (
 
 ApplicationLogo.displayName = "ApplicationLogo"; // Corrected displayName
 
-const NavBar: React.FC = () => {
+
+interface NavBarProps {
+  onSearchQueryChange: (query: string) => void;
+}
+
+const NavBar: React.FC<NavBarProps> = ({onSearchQueryChange }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [categories, setCategories] = useState<CategoryType[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   const [isUserLoggedInState, setIsUserLoggedInState] = useState(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const router = useRouter();
 
   useEffect(() => {
@@ -75,13 +81,20 @@ const NavBar: React.FC = () => {
   const toggleDrawer = () => setIsDrawerOpen(!isDrawerOpen);
 
   return (
-    <nav className="bg-white border-b border-gray-200">
+    <nav className="bg-white border-b border-gray-200">      
+
       {/* First Row */}
       <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
           {/* Left: Search Field */}
           <div className="hidden sm:block w-1/3">
-            <SearchBar />
+            <SearchBar 
+            onQueryChange={(query) => {
+            setSearchQuery(query);
+            onSearchQueryChange(query);  
+          }}
+            
+            />
           </div>
 
           {/* Center: Application Logo */}
