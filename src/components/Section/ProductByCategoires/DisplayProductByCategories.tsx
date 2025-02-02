@@ -23,11 +23,7 @@ export default function DisplayProductByCategories() {
 
       const visibleCategories = categories
         .filter((category) => category.isVisible && category.isPosition)
-        .sort((a, b) => {
-          const positionA = Number(a.isPosition);
-          const positionB = Number(b.isPosition);
-          return positionA - positionB;
-        });
+        .sort((a, b) => Number(a.isPosition) - Number(b.isPosition));
 
       if (visibleCategories.length === 0) {
         return [];
@@ -103,12 +99,7 @@ export default function DisplayProductByCategories() {
                 <ChevronLeft size={24} />
               </button>
 
-              <div
-                className="overflow-x-auto h-80 scrollbar-hide flex space-x-4"
-                ref={(div) => {
-                  if (div) div.classList.add("scroll-snap-x");
-                }}
-              >
+              <div className="overflow-x-auto h-80 scrollbar-hide flex space-x-4">
                 {products.map((product) => (
                   <div
                     key={product.slug}
@@ -121,8 +112,8 @@ export default function DisplayProductByCategories() {
                       <Image
                         src={product.featuredImage}
                         alt={product.slug}
-                        layout="fill"
-                        objectFit="cover"
+                        fill={true}
+                        style={{ objectFit: "cover" }}
                         className="transition-transform transform hover:scale-110 duration-300"
                       />
                     </div>
@@ -156,7 +147,7 @@ export default function DisplayProductByCategories() {
               </button>
             </div>
 
-            {/* Mobile - Grid for 2 products per row, show "View All" if more than 4 */}
+            {/* Mobile - Grid for 2 products per row */}
             <div className="block sm:hidden">
               <div className="grid grid-cols-2 gap-4">
                 {products.slice(0, 4).map((product) => (
@@ -167,30 +158,18 @@ export default function DisplayProductByCategories() {
                       Router.push(`/collection/${product.categories[0]}/product/${product.slug}`)
                     }
                   >
-                    <div className="relative w-full h-40 mb-2">
+                    <div className="relative w-full h-40">
                       <Image
                         src={product.featuredImage}
                         alt={product.slug}
-                        layout="fill"
-                        objectFit="cover"
+                        fill={true}
+                        style={{ objectFit: "cover" }}
                         className="transition-transform transform hover:scale-110 duration-300"
                       />
                     </div>
                     <h3 className="text-sm sm:text-base text-gray-800 truncate mb-0 capitalize text-center">
                       {product.productTitle}
                     </h3>
-                    <div className="flex flex-col sm:flex-row items-center justify-center text-xs sm:text-sm mt-1">
-                      <div className="flex justify-center">
-                        {product.salePrice ? (
-                          <div className="flex space-x-1 sm:space-x-2 items-center justify-center">
-                            <div className="font-bold">₹ {product.salePrice}</div>
-                            <div className="line-through text-gray-500">₹ {product.regularPrice}</div>
-                          </div>
-                        ) : (
-                          <div className="text-gray-800 font-bold">₹ {product.regularPrice || "N/A"}</div>
-                        )}
-                      </div>
-                    </div>
                   </div>
                 ))}
               </div>

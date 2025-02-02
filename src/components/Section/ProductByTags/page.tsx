@@ -93,7 +93,6 @@ export default function DisplayProductByTags() {
                     <Image
                       src={product.featuredImage}
                       alt={product.slug}
-                      layout="responsive"
                       width={500}
                       height={800}
                       objectFit="cover"
