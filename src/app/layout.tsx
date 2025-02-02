@@ -5,6 +5,7 @@ import Header from "@/components/Header/NormalHeader/page";
 import { Footer } from "@/components/Footer/page";
 import 'react-toastify/dist/ReactToastify.css';  // Add this line to include the Toastify styles globally
 import { ToastContainer } from "react-toastify";
+import HomeLayout from "./home/layout";
 
 export const metadata: Metadata = {
   title: "Apni Maati Vastram - Modern Comfort in Traditional Sarees & Accessories",
@@ -28,8 +29,9 @@ export default function RootLayout({
       <body className={`font-sans`}>
         <ToastContainer/>
         <TopHeader />
-        <Header />
-        {children}
+        <HomeLayout>
+          {children}
+        </HomeLayout>
         <Footer />
       </body>
     </html>

@@ -8,13 +8,17 @@ import DisplayProductByTags from "@/components/Section/ProductByTags/page";
 import ProductByVideos from "@/components/Section/ProductByVideos/page";
 import Testimonials from "@/components/Testimonials/page";
 import DisplayProductByCategories from "@/components/Section/ProductByCategoires/DisplayProductByCategories";
+import HomeLayout from "./home/layout";
 
 
 export default function Home() {
   return (
     <div>
-    
-      {/* Image Carousel */}
+      
+   
+
+
+         {/* Image Carousel */}
       <motion.div
         initial={{ opacity: 0, x: -50 }} // Start slightly left
         animate={{ opacity: 1, x: 0 }} // Slide to original position
@@ -67,6 +71,8 @@ export default function Home() {
       >
         <Testimonials />
       </motion.div>
+      
+     
     </div>
   );
 }
