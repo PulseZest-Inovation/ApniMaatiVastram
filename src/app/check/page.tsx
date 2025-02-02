@@ -21,11 +21,9 @@ export default function GetCartItemAndShow() {
         }
 
         const userId = currentUser.uid;
-        console.log("Current user ID:", userId);
 
         // Fetch cart items for the current user
         const cartDetails = await getAllDocsFromSubCollection("customers", userId, "cart");
-        console.log(cartDetails);
         setCartItems(cartDetails);
       } catch (err) {
         console.error("Error fetching cart items:", err);

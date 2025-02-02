@@ -15,7 +15,6 @@ export const handleCodOrder = async (
   try {
     // Fetch cart details
     const cartDetails = await getAllDocsFromSubCollection('customers', deliveryDetails.customerId ,"cart");
-    console.log(cartDetails);
 
     // Prepare email request data
     const emailDetail = await fetchEmailDetails();

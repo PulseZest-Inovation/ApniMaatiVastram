@@ -44,7 +44,6 @@ const ProductViewModal: React.FC<ProductModalProps> = ({
     setLoading(false);
 
     if (success) {
-      console.log('Product added to cart successfully');
       setIsCartDrawerOpen(true);
     } else {
       console.error('Failed to add product to cart');

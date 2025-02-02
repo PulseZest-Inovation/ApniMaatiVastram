@@ -1,7 +1,6 @@
 import { getAllDocsFromCollection } from '@/service/Firebase/getFirestore';
 import { toast } from 'react-toastify';
 import { DeliverDetails } from '@/Types/data/DeliveryDetails';
-import { fetchPaymentDetails } from '@/utils/fetchPaymentSetting';
 
 // Handle the Online Order
 export const handleOnlineOrder = async (
@@ -21,7 +20,6 @@ export const handleOnlineOrder = async (
       type: 'Prepaid'
     };
 
-    console.log(newOrderData);
 
     // Store the order data in localStorage before navigating
     localStorage.setItem('orderDetails', JSON.stringify(newOrderData));
@@ -34,8 +32,6 @@ export const handleOnlineOrder = async (
       name: deliveryDetails.fullName,
     };
 
-    const paymentDetails = await fetchPaymentDetails();
-    console.log(paymentDetails);
 
     const response = await fetch('/api/payment', {
       method: 'POST',

@@ -50,7 +50,6 @@ const UserProfilePage: React.FC = () => {
 
     try {
       await signOut(auth); // Sign the user out
-      console.log("User logged out successfully");
 
       // Redirect to login page or homepage after logout
       window.location.reload();
@@ -64,8 +63,7 @@ const UserProfilePage: React.FC = () => {
 
   // If user is not logged in, show the phone login modal
   if (isUserLoggedInState === false) {
-    console.log(isPhoneLoginModalOpen)
-    return <PhoneLoginModel isOpen={true} onOpenChange={() => setIsPhoneLoginModalOpen(false)} />;
+    return <PhoneLoginModel isOpen={isPhoneLoginModalOpen} onOpenChange={() => setIsPhoneLoginModalOpen(false)} />;
   }
 
   // If login status is unknown (still loading), we can return null or a loading indicator

@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import Link from "next/link";
 import { CategoryType } from "@/Types/data/CategoryType";
 import { Image } from "antd";
@@ -18,7 +18,6 @@ const DesktopCategories: React.FC<{ categories: CategoryType[] }> = ({ categorie
           (subCategory) => subCategory.parent === parentCategory.cid
         );
 
-        console.log(`Subcategories for ${parentCategory.name}:`, subCategories); // Debugging
 
         return (
           <div

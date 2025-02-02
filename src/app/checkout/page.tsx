@@ -41,7 +41,6 @@ export default function CheckoutPage() {
         const docId = auth.currentUser?.uid;
 
         if (!docId) {
-          console.error('User not authenticated');
           setIsUserLoggedInState(false);
           return;
         }

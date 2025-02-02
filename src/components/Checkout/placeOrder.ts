@@ -37,7 +37,6 @@ export const placeOrder = async (orderData: any): Promise<boolean> => {
       throw new Error("Failed to fetch email configuration details.");
     }
 
-    console.log(cartItems);
 
     // Prepare order data
     const orderDataWithCartItems = {
@@ -52,7 +51,6 @@ export const placeOrder = async (orderData: any): Promise<boolean> => {
       placeOrderFiresotre("orders", orderData.orderId, orderDataWithCartItems),
     ]);
 
-    console.log("Order placed successfully with ID:", orderData.orderId);
 
     // Decrease stock for each product in parallel
     const stockUpdates = cartItems.map((item) => decreaseStockValue(item.id, item.quantity));
@@ -65,7 +63,6 @@ export const placeOrder = async (orderData: any): Promise<boolean> => {
     // Execute stock updates and cart deletions concurrently
     await Promise.all([...stockUpdates, ...cartDeletions]);
 
-    console.log("Stock updated and cart items deleted successfully.");
 
     // Send order confirmation API request
     const apiResponse = await fetch("/api/order/recive-order", {
