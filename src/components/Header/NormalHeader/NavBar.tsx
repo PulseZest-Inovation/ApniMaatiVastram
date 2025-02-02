@@ -11,7 +11,6 @@ import { fetchCategories } from "./fetchCategories";
 import { isUserLoggedIn } from "@/service/isUserLogin";
 import MobileDrawer from "./MobileDrawer";
 import Link from "next/link";
-import { SearchIcon } from "lucide-react";
 import SearchBar from "./SearchBar";
 import DesktopCategories from "./DesktopCategories";
 import { CategoryType } from "@/Types/data/CategoryType"; // Use correct import
