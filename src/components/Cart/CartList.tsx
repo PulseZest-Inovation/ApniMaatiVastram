@@ -1,8 +1,9 @@
 import { IndianRupee } from "lucide-react";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 import { handleIncrementQuantity } from "@/utils/handleIncrementQuantity";
 import { handleDecrementQuantity } from "@/utils/handleDecrementQuantity";
+import { getProductStock } from "@/utils/getProductStock";
 import SparklesText from "../ui/sparkles-text";
 
 interface CartItem {
@@ -14,7 +15,7 @@ interface CartItem {
   isReadyToWear: boolean;
   readyToWearCharges: number;
   isPrePlated: boolean;
-  prePlatedCharges: number; 
+  prePlatedCharges: number;
 }
 
 interface CartListProps {
@@ -30,10 +31,24 @@ const CartList: React.FC<CartListProps> = ({
   onRemoveItem,
   onUpdateQuantity,
 }) => {
+  const [stockMessage, setStockMessage] = useState<{ [key: string]: string }>({});
+
   const handleIncrement = async (id: string, currentQuantity: number) => {
+    // Get the product's available stock
+    const availableStock = await getProductStock(id);
+
+    if (availableStock !== null && currentQuantity >= availableStock) {
+      setStockMessage((prev) => ({
+        ...prev,
+        [id]: "Stock limit reached!",
+      }));
+      return;
+    }
+
     const success = await handleIncrementQuantity(id, userId);
     if (success) {
       onUpdateQuantity(id, currentQuantity + 1);
+      setStockMessage((prev) => ({ ...prev, [id]: "" })); // Clear message on success
     }
   };
 
@@ -89,15 +104,31 @@ const CartList: React.FC<CartListProps> = ({
                   +
                 </button>
               </div>
+
+              {/* Stock Limit Message */}
+              {stockMessage[item.id] && (
+                <p className="text-red-500 text-sm mt-1">{stockMessage[item.id]}</p>
+              )}
+
               {/* Ready-to-Wear Charges */}
               {item.isReadyToWear && (
                 <div className="flex">
-               <SparklesText text="Ready to Wear " sparklesCount={3} className="text-sm font-light text-orange-400 fill-content4-foreground"></SparklesText> <span className=" pl-2 text-sm"> ₹{item.readyToWearCharges}</span>
+                  <SparklesText
+                    text="Ready to Wear "
+                    sparklesCount={3}
+                    className="text-sm font-light text-orange-400 fill-content4-foreground"
+                  ></SparklesText>
+                  <span className="pl-2 text-sm"> ₹{item.readyToWearCharges}</span>
                 </div>
               )}
-                 {item.isPrePlated && (
+              {item.isPrePlated && (
                 <div className="flex">
-               <SparklesText text="Pre-Plated " sparklesCount={3} className="text-sm font-light text-orange-400 fill-content4-foreground"></SparklesText> <span className=" pl-2 text-sm"> ₹{item.prePlatedCharges}</span>
+                  <SparklesText
+                    text="Pre-Plated "
+                    sparklesCount={3}
+                    className="text-sm font-light text-orange-400 fill-content4-foreground"
+                  ></SparklesText>
+                  <span className="pl-2 text-sm"> ₹{item.prePlatedCharges}</span>
                 </div>
               )}
             </div>
