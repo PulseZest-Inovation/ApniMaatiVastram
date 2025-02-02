@@ -89,16 +89,16 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #ff4500; /* Orange color for the thumb */
+  background-color: #000000; /* Orange color for the thumb */
   border-radius: 4px; /* Optional: to make the thumb rounded */
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #ff6347; /* Lighter orange when hovered */
+  background-color: #000000; /* Lighter orange when hovered */
 }
 
 ::-webkit-scrollbar-track {
-  background-color: #000000; /* Black color for the track */
+  background-color: #f4f4f4; /* Black color for the track */
   border-radius: 4px; /* Optional: to make the track rounded */
 }
 

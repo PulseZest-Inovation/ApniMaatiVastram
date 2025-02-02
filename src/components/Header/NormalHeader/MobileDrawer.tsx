@@ -27,13 +27,14 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose, categories
 
   return (
     <div
-      className={`fixed inset-0 z-50 bg-black bg-opacity-50 transition-opacity duration-300 ${isOpen ? "opacity-100 visible" : "opacity-0 invisible"}`}
+      className={`fixed z-50 bg-black bg-opacity-50 transition-opacity duration-300 ${isOpen ? "opacity-100 visible" : "opacity-0 invisible"} overflow-y-auto`}
       onClick={onClose} // Close when clicking the overlay
     >
-      <div
-        className={`fixed top-0 right-0 h-full w-3/4 bg-white shadow-lg p-4 transform transition-transform duration-300 ${isOpen ? "translate-x-0" : "translate-x-full"}`}
-        onClick={(e) => e.stopPropagation()} // Prevent close when clicking inside the drawer
-      >
+    <div
+  className={`fixed top-0 right-0 h-full w-3/4 bg-white shadow-lg p-4 transform transition-transform duration-300 ${isOpen ? "translate-x-0" : "translate-x-full"} overflow-y-auto`}
+  onClick={(e) => e.stopPropagation()} // Prevent close when clicking inside the drawer
+>
+
         {/* Close Button */}
         <div className="flex justify-between items-center mb-4">
           <ApplicationLogo />
@@ -57,8 +58,11 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose, categories
                     )
                   }
                 >
-                  {/* Show arrow only if there are subcategories */}
-                  {subCategories.length > 0 && (
+                
+
+                  <Link href={`/collection/${parentCategory.slug}`} > {parentCategory.name}</Link>
+                    {/* Show arrow only if there are subcategories */}
+                    {subCategories.length > 0 && (
                     <span className="mr-2">
                       {openCategory === parentCategory.cid ? (
                         <MdKeyboardArrowDown />
@@ -67,23 +71,24 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose, categories
                       )}
                     </span>
                   )}
-                  <Link href={`/collection/${parentCategory.slug}`} > {parentCategory.name}</Link>
+
                 </button>
 
                 {/* Dropdown for Subcategories */}
                 {openCategory === parentCategory.cid && subCategories.length > 0 && (
-                  <div className="pl-4 mt-2 space-y-2">
-                    {subCategories.map((subCategory) => (
-                      <a
-                        key={subCategory.slug}
-                        href={`/collection/${subCategory.slug}`}
-                        className="text-gray-600 text-sm hover:text-black font-sans tracking-wide"
-                      >
-                        {subCategory.name}
-                      </a>
-                    ))}
-                  </div>
-                )}
+  <div className="pl-4 mt-2 space-y-2 flex flex-col">
+    {subCategories.map((subCategory) => (
+      <Link
+        key={subCategory.slug}
+        href={`/collection/${subCategory.slug}`}
+        className="block text-gray-600 text-sm hover:text-black font-sans tracking-wide"
+      >
+        {subCategory.name}
+      </Link>
+    ))}
+  </div>
+)}
+
               </div>
             );
           })}

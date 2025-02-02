@@ -45,7 +45,7 @@ const DesktopCategories: React.FC<{ categories: CategoryType[] }> = ({ categorie
 
             {/* Dropdown for Subcategories (always visible) */}
             {subCategories.length > 0 && hoveredCategory === parentCategory.cid && (
-              <div className="absolute left-0 top-full bg-white border shadow-lg rounded-md w-64 py-2 z-50 min-w-max">
+              <div className="absolute left-0 top-full bg-white border shadow-lg rounded-md w-64  z-50 min-w-max">
                 {subCategories.map((subCategory) => (
                   <div key={subCategory.slug} className="flex items-center space-x-2 px-4 py-2 text-gray-700 hover:bg-gray-200">
                     {/* Subcategory Link */}
@@ -59,8 +59,8 @@ const DesktopCategories: React.FC<{ categories: CategoryType[] }> = ({ categorie
                     {/* Subcategory Image */}
                     {subCategory.image && (
                       <Image
-                      height={50}
-                      width={50}
+                      height={20}
+                      width={20}
                         src={subCategory.image}
                         alt={subCategory.name}
                         className="w-8 h-8 object-cover rounded-full"
