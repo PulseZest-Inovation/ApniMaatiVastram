@@ -8,7 +8,6 @@ import DisplayProductByTags from "@/components/Section/ProductByTags/page";
 import ProductByVideos from "@/components/Section/ProductByVideos/page";
 import Testimonials from "@/components/Testimonials/page";
 import DisplayProductByCategories from "@/components/Section/ProductByCategoires/DisplayProductByCategories";
-import HomeLayout from "./home/layout";
 
 
 export default function Home() {

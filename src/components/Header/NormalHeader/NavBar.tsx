@@ -63,7 +63,7 @@ const NavBar: React.FC<NavBarProps> = ({onSearchQueryChange }) => {
     checkUserStatus();
   }, []);
 
-  
+  console.log(searchQuery)
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -119,16 +119,13 @@ const NavBar: React.FC<NavBarProps> = ({onSearchQueryChange }) => {
 
           {/* Mobile: Search Field */}
           <div className="sm:hidden">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search..."
-                className="w-full border border-gray-300 rounded-md pl-10 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600"
-              />
-              <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
-                <SearchIcon size={18} />
-              </span>
-            </div>
+          <SearchBar 
+            onQueryChange={(query) => {
+            setSearchQuery(query);
+            onSearchQueryChange(query);  
+          }}
+            
+            />
           </div>
         </div>
       </div>

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import TopHeader from "@/components/Header/TopHeader/page";
-import Header from "@/components/Header/NormalHeader/page";
 import { Footer } from "@/components/Footer/page";
 import 'react-toastify/dist/ReactToastify.css';  // Add this line to include the Toastify styles globally
 import { ToastContainer } from "react-toastify";
