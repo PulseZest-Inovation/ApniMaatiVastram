@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import CheckoutProductReview from '@/components/Checkout/CheckoutProductReview';
 import CheckoutOrderDetails from '@/components/Checkout/CheckoutOrderDetails';
 import { isUserLoggedIn } from '@/service/isUserLogin';
-import { getAllDocsFromSubCollection } from '@/service/Firebase/getFirestore';
+import { getAllDocsFromSubCollection, getAllDocsFromCollection } from '@/service/Firebase/getFirestore';
 import { getAuth } from 'firebase/auth';
 import { Spinner } from '@nextui-org/react';
 import PhoneLoginModel from '@/components/Login/PhoneLoginModel';
@@ -11,6 +11,7 @@ import { CartItem } from '@/Types/data/CartItemType';
 import CouponCode from '@/components/Checkout/CouponCode';
 import { handleApplyCoupon } from '@/components/Checkout/handleCouponCode';
 import Confetti from 'react-confetti';
+import { CouponsType } from '@/Types/data/CouponsType';
 
 export default function CheckoutPage() {
   const [isUserLoggedInState, setIsUserLoggedInState] = useState<boolean | null>(null);
@@ -21,6 +22,7 @@ export default function CheckoutPage() {
   const [discountMessage, setDiscountMessage] = useState<string>('');
   const [price, setPrice] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [validCoupons, setValidCoupons] = useState<CouponsType[]>([]); // Added validCoupons state
   const containerRef = useRef<HTMLDivElement | null>(null); // Ref for the confetti container
 
   useEffect(() => {
@@ -57,10 +59,20 @@ export default function CheckoutPage() {
       }
     };
 
+    const fetchCoupons = async () => {
+      try {
+        const fetchedCoupons = await getAllDocsFromCollection<CouponsType>('coupons');
+        setValidCoupons(fetchedCoupons);
+      } catch (error) {
+        console.error('Error fetching coupons:', error);
+      }
+    };
+
     const initialize = async () => {
       setIsLoading(true);
       await checkLoginStatus();
       await fetchCartItems();
+      await fetchCoupons(); // Fetch valid coupons
       setIsLoading(false);
     };
 
@@ -107,14 +119,15 @@ export default function CheckoutPage() {
       {/* Mobile */}
       <div className="block md:hidden">
         <div className="flex flex-col">
-          <CheckoutOrderDetails  totalAmount={price} />
+          <CheckoutOrderDetails totalAmount={price} />
+
           <CouponCode
             totalAmount={price}
             couponCode={couponCode}
             setCouponCode={setCouponCode}
             isCouponApplied={isCouponApplied}
             handleApplyCoupon={(code, amount) =>
-              handleApplyCoupon(code, amount, setIsCouponApplied, setDiscountMessage, setPrice)
+              handleApplyCoupon(code, amount, validCoupons, setIsCouponApplied, setDiscountMessage, setPrice)
             }
             discountMessage={discountMessage}
           />
@@ -138,7 +151,7 @@ export default function CheckoutPage() {
             setCouponCode={setCouponCode}
             isCouponApplied={isCouponApplied}
             handleApplyCoupon={(code, amount) =>
-              handleApplyCoupon(code, amount, setIsCouponApplied, setDiscountMessage, setPrice)
+              handleApplyCoupon(code, amount, validCoupons, setIsCouponApplied, setDiscountMessage, setPrice)
             }
             discountMessage={discountMessage}
           />
