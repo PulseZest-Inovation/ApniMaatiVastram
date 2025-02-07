@@ -5,7 +5,7 @@ import ProductView from '@/components/Product/page';
 
 export default function ProductViewPage() {
     const params = useParams() as Record<string, string>;
-    const slug = params.productId;
+    const slug = params.slug;
   return (
     <div>
         <ProductView slug={slug}/>

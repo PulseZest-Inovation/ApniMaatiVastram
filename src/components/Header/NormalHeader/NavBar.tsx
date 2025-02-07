@@ -40,7 +40,6 @@ const NavBar: React.FC<NavBarProps> = ({onSearchQueryChange }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   const [isUserLoggedInState, setIsUserLoggedInState] = useState(false);
-  const [searchQuery, setSearchQuery] = useState<string>("");
   const router = useRouter();
 
   useEffect(() => {
@@ -62,7 +61,6 @@ const NavBar: React.FC<NavBarProps> = ({onSearchQueryChange }) => {
     checkUserStatus();
   }, []);
 
-  console.log(searchQuery)
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -89,7 +87,6 @@ const NavBar: React.FC<NavBarProps> = ({onSearchQueryChange }) => {
           <div className="hidden sm:block w-1/3">
             <SearchBar 
             onQueryChange={(query) => {
-            setSearchQuery(query);
             onSearchQueryChange(query);  
           }}
             
@@ -120,7 +117,6 @@ const NavBar: React.FC<NavBarProps> = ({onSearchQueryChange }) => {
           <div className="sm:hidden">
           <SearchBar 
             onQueryChange={(query) => {
-            setSearchQuery(query);
             onSearchQueryChange(query);  
           }}
             
