@@ -7,6 +7,7 @@ import { placeOrder } from '@/components/Checkout/placeOrder';
 import { fetchEmailDetails } from '@/utils/getSendingEmail';
 import { toast } from 'react-toastify';
 import { getAllDocsFromSubCollection } from '@/service/Firebase/getFirestore';
+import { handleConfirmedStatusUpdate } from '@/service/shiprocket/handleConfirmedStatusUpdate';
 
 const OrderStatus = () => {
   const params = useParams();
@@ -46,13 +47,24 @@ const OrderStatus = () => {
             ...response.data,
           };
 
+          // Place the order in Firestore
+          const orderPlaced = await placeOrder(combinedOrderData);
+          if (!orderPlaced) {
+            throw new Error('Order placement failed.');
+          }
+
+          // Fetch cart details from Firebase
+          const cartDetails = await getAllDocsFromSubCollection(
+            'customers',
+            combinedOrderData.customerId,
+            'cart'
+          );
+
           // Fetch email details
           const emailDetail = await fetchEmailDetails();
           if (!emailDetail || !emailDetail.isEnabled) {
             toast.error('Email service is disabled or email details are missing.');
           }
-
-          const cartDetails = await getAllDocsFromSubCollection('customers', combinedOrderData.customerId, 'cart');
 
           // Prepare email request body
           const emailRequestBody = {
@@ -60,7 +72,7 @@ const OrderStatus = () => {
               orderId: combinedOrderData.orderId,
               customerEmail: combinedOrderData.email,
               totalAmount: combinedOrderData.totalAmount,
-              cartItems: cartDetails, // Add cart items if available
+              cartItems: cartDetails,
               fullName: combinedOrderData.fullName,
               phoneNumber: combinedOrderData.phoneNumber,
               address: combinedOrderData.address,
@@ -69,7 +81,7 @@ const OrderStatus = () => {
             emailType: 'Confirmed',
           };
 
-          // Send email
+          // Send email notification
           const emailResponse = await fetch('/api/send-email', {
             method: 'POST',
             headers: {
@@ -82,21 +94,21 @@ const OrderStatus = () => {
             const error = await emailResponse.json();
             console.error('Email sending failed:', error);
             toast.error(`Failed to send email: ${error.message}`);
-            
           }
 
-          // Place the order
-          const orderPlaced = await placeOrder(combinedOrderData);
-          if (!orderPlaced) {
-            throw new Error('Order placement failed.');
+          // **Call Shiprocket API to insert order details**
+          const shiprocketOrderCreated = await handleConfirmedStatusUpdate(combinedOrderData);
+          if (!shiprocketOrderCreated) {
+            throw new Error('Failed to create Shiprocket order.');
           }
+
+          toast.success('Order successfully placed and sent to Shiprocket!');
 
           // Remove order details from localStorage
           localStorage.removeItem('orderDetails');
 
           // Navigate to the order confirmation page
-          const orderId = combinedOrderData.orderId;
-          Router.push(`/orders/${orderId}`);
+          Router.push(`/orders/${combinedOrderData.orderId}`);
         } catch (err: any) {
           console.error('Error:', err.message || err);
           setError(err.message || 'An unknown error occurred.');
@@ -125,4 +137,3 @@ const OrderStatus = () => {
 };
 
 export default OrderStatus;
-
