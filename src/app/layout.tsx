@@ -5,6 +5,7 @@ import { Footer } from "@/components/Footer/page";
 import 'react-toastify/dist/ReactToastify.css';  // Add this line to include the Toastify styles globally
 import { ToastContainer } from "react-toastify";
 import HomeLayout from "./home/layout";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Apni Maati Vastram - Modern Comfort in Traditional Sarees & Accessories",
@@ -20,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link
+        <Link
           href="https://fonts.googleapis.com/css2?family=Yrsa:ital,wght@0,300..700;1,300..700&display=swap"
           rel="stylesheet"
         />

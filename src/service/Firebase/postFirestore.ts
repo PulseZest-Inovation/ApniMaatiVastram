@@ -70,7 +70,7 @@ export const createDataWithCustomId = async <T extends Record<string, unknown>>(
  * @param data - The data to be stored in the document.
  * @returns A boolean indicating success or failure.
  */
-export const setDocWithCustomId = async <T>(
+export const setDocWithCustomId = async(
   collectionName: string,
   docName: string,
   data: Record<string, any>
