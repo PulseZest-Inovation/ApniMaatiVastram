@@ -145,7 +145,7 @@ const handleConfirmedStatusUpdate = async (order: OrderType): Promise<boolean> =
   } catch (error) {
     console.error("Error:", error);
     message.error("Failed to create Shiprocket order.");
-    return false;
+    return true;
   }
 };
 
