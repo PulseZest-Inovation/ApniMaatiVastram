@@ -29,7 +29,7 @@ const DesktopCategories: React.FC<{ categories: CategoryType[] }> = ({ categorie
             {/* Parent Category Link */}
             <Link
               href={`/collection/${parentCategory.slug}`}
-              className="text-gray-700 hover:text-black font-bold uppercase tracking-wide text-2sm leading-tight"
+              className="text-gray-700 hover:text-black font-bold uppercase tracking-wide text-[12px] leading-tight"
             >
               {parentCategory.name}
             </Link>

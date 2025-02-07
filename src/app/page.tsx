@@ -13,9 +13,6 @@ import DisplayProductByCategories from "@/components/Section/ProductByCategoires
 export default function Home() {
   return (
     <div>
-      
-   
-
 
          {/* Image Carousel */}
       <motion.div

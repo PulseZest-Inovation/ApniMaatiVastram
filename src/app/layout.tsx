@@ -15,25 +15,23 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
       <head>
-        <Link
-          href="https://fonts.googleapis.com/css2?family=Yrsa:ital,wght@0,300..700;1,300..700&display=swap"
+        {/* Correct way to include Google Fonts */}
+        <link
+          href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100..900&display=swap"
           rel="stylesheet"
         />
       </head>
-      <body className={`font-sans`}>
-        <ToastContainer/>
+      <body className="font-serif"> {/* Apply font globally */}
+        <ToastContainer />
         <TopHeader />
-        <HomeLayout>
-          {children}
-        </HomeLayout>
+        <HomeLayout>{children}</HomeLayout>
         <Footer />
       </body>
     </html>
   );
 }
+
