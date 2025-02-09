@@ -5,6 +5,7 @@ import { Footer } from "@/components/Footer/page";
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from "react-toastify";
 import HomeLayout from "./home/layout";
+import FacebookPixel from "@/components/FacebookPixel/FacebookPixel";
 
 const metadata: Metadata = {
   title: "Apni Maati Vastram - Modern Comfort in Traditional Sarees & Accessories",
@@ -26,7 +27,8 @@ export default function RootLayout({
         <meta charSet="UTF-8" />
       </head>
 
-      <body className="font-serif"> {/* Apply font globally */}
+      <body className="font-serif">
+        <FacebookPixel/>
         <ToastContainer />
         <TopHeader />
         <HomeLayout>{children}</HomeLayout>

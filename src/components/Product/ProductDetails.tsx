@@ -87,7 +87,18 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
 
     if (success) {
       console.log("Product added to cart successfully");
-      setIsCartDrawerOpen(true); // Open CartDrawer if the product is added
+      setIsCartDrawerOpen(true); 
+
+      
+    // **Track "Purchase" event in Facebook Pixel**
+    if (typeof window !== "undefined" && window.fbq) {
+      window.fbq("track", "Purchase", {
+        value: product.price || 100, // Ensure you're tracking the actual price
+        currency: "INR", // Change this based on your store's currency
+      });
+    }
+
+
     } else {
       console.error("Failed to add product to cart");
     }

@@ -48,17 +48,21 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData, totalAmount: in
   };
 
   const handleSubmitOrder = async () => {
-
     const requiredFields = [
-      'fullName',
-      'country',
-      'state',
-      'address',
-      'city',
-      'pinCode',
-      'phoneNumber',
-      'email',
+      "fullName",
+      "country",
+      "state",
+      "address",
+      "city",
+      "pinCode",
+      "phoneNumber",
+      "email",
     ];
+  
+    // Track Facebook Pixel "InitiateCheckout" event
+    if (typeof window !== "undefined" && window.fbq) {
+      window.fbq("track", "InitiateCheckout");
+    }
   
     for (const field of requiredFields) {
       if (!formData[field as keyof typeof formData]) {
@@ -66,34 +70,47 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData, totalAmount: in
         return;
       }
     }
-
+  
     const orderId = generateOrderId();
-
     setLoading(true);
+  
     try {
       let success = false;
-
-      if (paymentMethod === 'online') {
+  
+      if (paymentMethod === "online") {
         success = await handleOnlineOrder(formData, totalAmount, orderId);
         if (success) {
-          toast.success('Redirecting to payment page...');
+          toast.success("Redirecting to payment page...");
         } else {
-          toast.error('Online payment initiation failed.');
+          toast.error("Online payment initiation failed.");
         }
-      } else if (paymentMethod === 'cod') {
+      } else if (paymentMethod === "cod") {
         success = await handleCodOrder(formData, totalAmount, orderId, setLoading);
-        toast.success('COD order placed successfully!');
+      }
+  
+      if (success) {
+        // ✅ Track Facebook Pixel "Purchase" Event (for both COD & Online)
+        if (typeof window !== "undefined" && window.fbq) {
+          window.fbq("track", "Purchase", {
+            value: totalAmount, // Use totalAmount since order is not defined
+            currency: "INR",
+            content_type: "product",
+          });
+        }
+  
+        toast.success("Order placed successfully!");
         setTimeout(() => {
-          router.push('/orders'); // Redirect to /orders page
+          router.push("/orders"); // Redirect to /orders page
         }, 2000);
       }
     } catch (error) {
-      toast.error('An error occurred while placing the order. Please try again.');
-      console.error('Order error:', error);
+      toast.error("An error occurred while placing the order. Please try again.");
+      console.error("Order error:", error);
     } finally {
       setLoading(false);
     }
   };
+  
 
   return (
     <div>
