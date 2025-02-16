@@ -15,9 +15,13 @@ export default function CategoriesDisplay() {
   useEffect(() => {
     const loadCategories = async () => {
       const fetchedCategories = await fetchCategories();
-      // Sort categories by 'isPosition' field in ascending order
-      const sortedCategories = fetchedCategories.sort((a, b) => a.isPosition - b.isPosition);
-      setCategories(sortedCategories);
+      
+      // Filter categories where parent is 'none' and sort by 'isPosition'
+      const filteredCategories = fetchedCategories
+        .filter(category => category.parent === "none")
+        .sort((a, b) => a.isPosition - b.isPosition);
+
+      setCategories(filteredCategories);
     };
 
     loadCategories();
@@ -39,7 +43,7 @@ export default function CategoriesDisplay() {
 
   return (
     <div className="relative flex py-6 bg-gray-50 w-full">
-      <div className="relative w-full mx-auto px-0"> {/* Remove horizontal padding */}
+      <div className="relative w-full mx-auto px-0">
         {/* Left Arrow */}
         <button
           className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white shadow-lg rounded-full p-3 z-10 hover:scale-105"
@@ -60,8 +64,8 @@ export default function CategoriesDisplay() {
             >
               <div className="w-32 h-32 sm:w-36 sm:h-36 lg:w-44 lg:h-44 bg-gray-200 rounded-full overflow-hidden cursor-pointer transform transition-transform duration-300 hover:scale-110">
                 <Image
-                  height={120} // Match the height to the size of the container
-                  width={120} // Match the width to the size of the container
+                  height={120}
+                  width={120}
                   src={category.image}
                   alt={category.name}
                   className="w-full h-full object-cover"
