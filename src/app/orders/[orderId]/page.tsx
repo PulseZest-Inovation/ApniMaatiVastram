@@ -4,13 +4,16 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { getDataFromSubCollection } from '@/service/Firebase/getFirestore';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';  
-import { Spin, Timeline } from 'antd';
+import { Button, Modal, Select, Spin, Timeline, Upload } from 'antd';
+import OrderReturnModal from './returnOrder';
 
 export default function OrderId() {
   const params = useParams();
   const orderId = params?.orderId as string;
+  const [orderReturnModel, setOrderReturnModel] = useState<boolean>(false);
   const [orderData, setOrderData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState<null| string>('')
 
   useEffect(() => {
     const fetchOrderData = async (userUid: string) => {
@@ -36,6 +39,7 @@ export default function OrderId() {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         fetchOrderData(user.uid); // Fetch data after authentication is resolved
+        setUserId(user.uid);
       } else {
         console.error('No authenticated user found.');
         setLoading(false);
@@ -74,6 +78,11 @@ export default function OrderId() {
   if (orderData.status === 'Cancelled') {
     filteredTimeline = statusTimeline.filter((step) => step.label === 'Pending' || step.label === 'Confirmed');
   }
+
+  const orderDate = new Date(orderData.createdAt.seconds * 1000);
+  const todayDate = new Date();
+  const diffInDays = Math.floor((todayDate.getTime() - orderDate.getTime())/(1000 * 60 *60 *24));
+  const isReturnButtonActive = diffInDays <= 4 && orderData.status === 'Delivered';
 
   return (
     <div className="p-4 max-w-4xl mx-auto">
@@ -117,6 +126,14 @@ export default function OrderId() {
           </li>
         ))}
       </ul>
+ 
+      {isReturnButtonActive && (
+        <div className='p-3 flex justify-end'>
+          <Button onClick={() => setOrderReturnModel(true)}>Return</Button>
+        </div>
+      )}
+
+       <OrderReturnModal open={orderReturnModel} onClose={ ()=> setOrderReturnModel(false)} orderId={orderId} userUid={userId || ''} ></OrderReturnModal>
     </div>
   );
 }
