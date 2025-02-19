@@ -54,7 +54,7 @@ export function Footer() {
         <div className="flex flex-wrap justify-between items-start gap-8 mt-6">
           <BrandSection footerData={footerData} />
           <InstantLinks pages={footerCategories.pages} />
-          <PopularCategories categories={footerCategories.categories} />
+          <PopularCategories  />
         </div>
 
         {/* Email Subscription and Social Media */}
