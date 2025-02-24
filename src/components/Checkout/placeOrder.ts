@@ -71,6 +71,7 @@ export const placeOrder = async (orderData: any): Promise<boolean> => {
       body: JSON.stringify({
         cartItems,
         emailDetails,
+        orderType: orderDataWithCartItems.type,
         orderId: orderData.orderId,
         customerEmail: orderData.email,
         totalAmount: orderData.totalAmount,

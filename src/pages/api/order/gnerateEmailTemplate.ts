@@ -11,9 +11,16 @@ interface EmailTemplateProps {
   customerEmail: string;
   cartItems: CartItem[];
   totalAmount: number;
+  orderType: string;
 }
 
-export const generateOrderEmailTemplate = ({ orderId, customerEmail, cartItems, totalAmount }: EmailTemplateProps): string => {
+export const generateOrderEmailTemplate = ({
+  orderId,
+  customerEmail,
+  cartItems,
+  totalAmount,
+  orderType,
+}: EmailTemplateProps): string => {
   return `
     <html>
       <head>
@@ -49,21 +56,35 @@ export const generateOrderEmailTemplate = ({ orderId, customerEmail, cartItems, 
             font-size: 14px;
             line-height: 1.6;
           }
-          ul {
-            list-style: none;
-            padding: 0;
+          .table-container {
+            margin-top: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
           }
-          li {
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
+          table {
+            width: 100%;
+            border-collapse: collapse;
           }
-          strong {
+          th, td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+          }
+          th {
+            background-color: #f8f8f8;
             font-weight: bold;
           }
           .total {
             font-size: 16px;
             font-weight: bold;
             color: #f15b5b;
+            margin-top: 10px;
+          }
+          .status {
+            font-size: 14px;
+            font-weight: bold;
+            color: ${orderType === "COD" ? "#f15b5b" : "#28a745"};
           }
           .button {
             display: inline-block;
@@ -92,24 +113,39 @@ export const generateOrderEmailTemplate = ({ orderId, customerEmail, cartItems, 
       </head>
       <body>
         <div class="container">
-          <h1>Recived New Order 🎉</h1>
+          <h1>New Order Received 🎉</h1>
           <p><strong>Order ID:</strong> ${orderId}</p>
           <p><strong>Customer Email:</strong> ${customerEmail}</p>
-          <h2>Cart Items:</h2>
-          <ul>
-            ${cartItems
-              .map(
-                (item) => `
-              <li>
-                <strong>${item.productTitle}</strong><br>
-                <strong>Price:</strong> ₹${item.price} <br>
-                <strong>Quantity:</strong> ${item.quantity}<br>
-                <strong>Total:</strong> ₹${(item.price * item.quantity).toFixed(2)}<br>
-              </li>`
-              )
-              .join("")}
-          </ul>
-          <p class="total">Total: ₹${totalAmount}</p>
+
+          <h2>Order Details:</h2>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Quantity</th>
+                  <th>Price</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${cartItems
+                  .map(
+                    (item) => `
+                  <tr>
+                    <td>${item.productTitle}</td>
+                    <td>${item.quantity}</td>
+                    <td>₹${item.price}</td>
+                    <td>₹${(item.price * item.quantity).toFixed(2)}</td>
+                  </tr>`
+                  )
+                  .join("")}
+              </tbody>
+            </table>
+          </div>
+
+          <p class="total">Total: ₹${totalAmount.toFixed(2)}</p>
+          <p><strong>Payment Status:</strong> <span class="status">${orderType === "COD" ? "Not Paid" : "Paid"}</span></p>
           <p><strong>Status:</strong> Pending</p>
           <p><strong>Created At:</strong> ${new Date().toLocaleString()}</p>
           
@@ -117,9 +153,11 @@ export const generateOrderEmailTemplate = ({ orderId, customerEmail, cartItems, 
             View Order Details
           </a>
         </div>
+
         <div class="footer">
-          <p>&copy; ${new Date().getFullYear()}  ${ApplicationConfig.applicationName} . All rights reserved.</p>
+          <p>&copy; ${new Date().getFullYear()} ${ApplicationConfig.applicationName}. All rights reserved.</p>
         </div>
+
         <div class="credit">
           <p>PulseZest 🚀 Notification System</p>
           <p>support@pulsezest.com</p>

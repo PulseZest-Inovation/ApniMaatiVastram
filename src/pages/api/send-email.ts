@@ -51,7 +51,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ message: "Missing required fields" });
     }
 
-    const { orderId, customerEmail, totalAmount, cartItems, fullName, phoneNumber, address } =
+    const { orderId, customerEmail, totalAmount, cartItems, fullName, phoneNumber, address, orderType } =
       orderDetails;
 
     if (!orderId || !customerEmail || !totalAmount || !cartItems || !fullName || !phoneNumber) {
@@ -106,21 +106,43 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Replace placeholders in the email template
     const emailContent = emailTemplate
-      .replace("{{orderId}}", orderId)
-      .replace("{{customerName}}", fullName)
-      .replace("{{companyEmail}}", ApplicationConfig.email)
-      .replace("{{companyNumber}}", ApplicationConfig.phoneNumber)
-      .replace("{{customerNumber}}", phoneNumber)
-      .replace("{{Customeraddress}}", address)
-      .replace("{{customerEmail}}", customerEmail)
-      .replace("{{totalAmount}}", totalAmount.toString())
-      .replace(
-        "{{orderDetails}}",
-        cartItems
-          .map((item: any) => `<li>${item.productTitle} (x${item.quantity}) - $${item.price}</li>`)
-          .join("")
-      );
-
+    .replace("{{orderId}}", orderId)
+    .replace("{{customerName}}", fullName)
+    .replace("{{companyEmail}}", ApplicationConfig.email)
+    .replace("{{companyNumber}}", ApplicationConfig.phoneNumber)
+    .replace("{{customerNumber}}", phoneNumber)
+    .replace("{{Customeraddress}}", address)
+    .replace("{{customerEmail}}", customerEmail)
+    .replace("{{totalAmount}}", totalAmount.toString())
+    .replace("{{orderType}}", orderType === 'COD'? 'Not Paid' : 'Paid')
+    .replace(
+      "{{orderDetails}}",
+      `
+      <table style="width:100%; border-collapse: collapse; margin-top: 10px;">
+        <thead>
+          <tr style="background-color: #f8f8f8; border-bottom: 2px solid #ddd;">
+            <th style="padding: 8px; text-align: left;">Product</th>
+            <th style="padding: 8px; text-align: center;">Quantity</th>
+            <th style="padding: 8px; text-align: right;">Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${cartItems
+            .map(
+              (item: any) => `
+            <tr style="border-bottom: 1px solid #ddd;">
+              <td style="padding: 8px;">${item.productTitle}</td>
+              <td style="padding: 8px; text-align: center;">x${item.quantity}</td>
+              <td style="padding: 8px; text-align: right;">₹${item.price}</td>
+            </tr>
+          `
+            )
+            .join("")}
+        </tbody>
+      </table>
+      `
+    );
+  
     const mailOptions = {
       from: emailProvider === "google" ? googleEmail : customEmail,
       to: customerEmail,
