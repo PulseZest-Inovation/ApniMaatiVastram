@@ -76,6 +76,7 @@ const OrderStatus = () => {
               fullName: combinedOrderData.fullName,
               phoneNumber: combinedOrderData.phoneNumber,
               address: combinedOrderData.address,
+              orderType: 'Prepaid'
             },
             emailDetails: emailDetail,
             emailType: 'Confirmed',

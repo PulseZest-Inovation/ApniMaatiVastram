@@ -32,6 +32,7 @@ export const handleCodOrder = async (
         fullName: deliveryDetails.fullName,
         phoneNumber: deliveryDetails.phoneNumber,
         address: deliveryDetails.address,
+        orderType: 'COD'
       },
       emailDetails: emailDetail,
       emailType: 'Pending', // Email type must match the backend handler's logic
