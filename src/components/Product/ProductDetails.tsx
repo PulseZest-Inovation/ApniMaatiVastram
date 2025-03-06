@@ -17,7 +17,6 @@ import ProductCard from "./ProductCard";
 import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
 import ReadyToPrePlated from "./ReadyToPreplated";
 import ProductGuide from "./ProductGuide";
-import { toast } from "react-toastify";
 
 interface ProductDetailsProps {
   product: ProductType;
