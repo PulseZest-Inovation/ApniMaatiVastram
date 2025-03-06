@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import { ApplicationConfig } from '@/config/ApplicationConfig';
 import { ProductType } from '@/Types/data/ProductType';
 import { Spinner } from '@nextui-org/react';
+import { handleAddToWishlist } from '@/utils/handleAddToWishlist';
 
 export default function CollectionPage() {
   const params = useParams() as Record<string, string>;
@@ -90,6 +91,9 @@ export default function CollectionPage() {
                   alt="Love Icon"
                   width={24}
                   height={24}
+                  onClick={()=>{
+                   handleAddToWishlist(product);
+                  }}
                 />
               </div>
             </div>

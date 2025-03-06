@@ -2,7 +2,6 @@ import { ProductType } from "@/Types/data/ProductType";
 import { createDataWithCustomId } from "@/service/Firebase/postFirestore";
 import { getAuth } from "firebase/auth";
 import { app } from "@/config/FirebaseConfig";
-import { toast } from "react-toastify";
 
 // Function to handle adding a product to the wishlist
 export const handleAddToWishlist = async (product: ProductType): Promise<boolean> => {
@@ -41,7 +40,7 @@ export const handleAddToWishlist = async (product: ProductType): Promise<boolean
     );
 
     if (wishlistDocId) {
-      toast.success("Added To Wishlist");
+      console.log(`Product added to wishlist with document ID: ${wishlistDocId}`);
       return true; // Indicate success
     } else {
       console.error("Failed to add product to wishlist");

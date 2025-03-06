@@ -17,6 +17,7 @@ import ProductCard from "./ProductCard";
 import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
 import ReadyToPrePlated from "./ReadyToPreplated";
 import ProductGuide from "./ProductGuide";
+import { toast } from "react-toastify";
 
 interface ProductDetailsProps {
   product: ProductType;
@@ -106,14 +107,32 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
 
   const handleWishlistClick = async () => {
     setLoading((prev) => ({ ...prev, wishlist: true }));
+  
     const success = await handleAddToWishlist(product);
+  
     setLoading((prev) => ({ ...prev, wishlist: false }));
+  
     if (success) {
       console.log("Product added to wishlist successfully");
+      // **Track "AddToWishlist" event in Facebook Pixel**
+      try {
+        if (typeof window !== "undefined" && window.fbq) {
+          window.fbq("track", "AddToWishlist", {
+            content_name: product.productTitle,
+            content_ids: [product.id],
+            value: product.price || 100, // Ensure correct price
+            currency: "INR",
+          });
+        }
+      } catch (err) {
+        console.error("Facebook Pixel tracking failed:", err);
+      }
+  
     } else {
       console.error("Failed to add product to wishlist");
     }
   };
+  
 
   const rating = parseFloat(product.averageRating);
 
