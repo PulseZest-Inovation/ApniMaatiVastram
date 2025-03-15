@@ -75,8 +75,10 @@ export const placeOrder = async (orderData: any): Promise<boolean> => {
         orderId: orderData.orderId,
         customerEmail: orderData.email,
         totalAmount: orderData.totalAmount,
+        orderData: orderData,
       }),
     });
+    // console.log(orderData);
 
     if (!apiResponse.ok) {
       const errorDetails = await apiResponse.json();

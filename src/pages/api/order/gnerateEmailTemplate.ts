@@ -12,6 +12,11 @@ interface EmailTemplateProps {
   cartItems: CartItem[];
   totalAmount: number;
   orderType: string;
+  orderData: {
+    fullName: string;
+    phoneNumber: string;
+    address: string;
+  };
 }
 
 export const generateOrderEmailTemplate = ({
@@ -20,6 +25,7 @@ export const generateOrderEmailTemplate = ({
   cartItems,
   totalAmount,
   orderType,
+  orderData, // added orderData here
 }: EmailTemplateProps): string => {
   return `
     <html>
@@ -117,6 +123,11 @@ export const generateOrderEmailTemplate = ({
           <p><strong>Order ID:</strong> ${orderId}</p>
           <p><strong>Customer Email:</strong> ${customerEmail}</p>
 
+          <h2>Customer Information:</h2>
+          <p><strong>Full Name:</strong> ${orderData.fullName}</p>
+          <p><strong>Phone Number:</strong> ${orderData.phoneNumber}</p>
+          <p><strong>Address:</strong> ${orderData.address}</p>
+
           <h2>Order Details:</h2>
           <div class="table-container">
             <table>
@@ -131,7 +142,7 @@ export const generateOrderEmailTemplate = ({
               <tbody>
                 ${cartItems
                   .map(
-                    (item) => `
+                    (item) => ` 
                   <tr>
                     <td>${item.productTitle}</td>
                     <td>${item.quantity}</td>
