@@ -11,6 +11,7 @@ const allowedOrigins = [
   "https://apnimaativastram.com",
   "https://ecommerce-with-pulsezest.vercel.app",
   "https://ecommerce.pulsezest.com",
+  "https://nexshop.pulsezest.com"
 ];
 
 const cors = Cors({
@@ -79,6 +80,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       transporterConfig = {
         service: "gmail",
         auth: { user: googleEmail, pass: appPassword },
+        tls: {
+          rejectUnauthorized: false
+        }
       };
     } else if (emailProvider === "custom") {
       if (!smtpServer || !customEmail || !password || !port) {
@@ -89,6 +93,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         port: parseInt(port, 10),
         secure: port === "465",
         auth: { user: customEmail, pass: password },
+        tls: {
+          rejectUnauthorized: false
+        }
       };
     } else {
       return res.status(400).json({ message: "Invalid email provider type" });

@@ -8,7 +8,9 @@ export const handleCodOrder = async (
   deliveryDetails: DeliverDetails,
   totalAmount: number,
   orderId: string,
-  setLoading: (loading: boolean) => void
+  setLoading: (loading: boolean) => void,
+  isCouponeApplied: boolean,
+  couponCode: string | undefined
 ): Promise<boolean> => {
   setLoading(true); // Start loading state immediately
 
@@ -60,7 +62,9 @@ export const handleCodOrder = async (
       status: 'Pending',
       orderId: orderId,
       totalAmount: totalAmount,
-      type: 'COD'
+      type: 'COD',
+      isCouponeApplied: isCouponeApplied, 
+      couponCode: couponCode,
     };
 
     const orderPlacedSuccessfully = await placeOrder(newOrderData);

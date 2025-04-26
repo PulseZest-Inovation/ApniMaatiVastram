@@ -8,9 +8,11 @@ import PaymentMethod from './PaymnetMethordButton/PyamnetMethord';
 
 interface CheckoutOrderDetailsProps {
   totalAmount: number;
+  isCouponApplied: boolean;
+  couponCode?: string;
 }
 
-export default function CheckoutOrderDetails({ totalAmount }: CheckoutOrderDetailsProps) {
+export default function CheckoutOrderDetails({ totalAmount, isCouponApplied, couponCode }: CheckoutOrderDetailsProps) {
   const [formData, setFormData] = useState({
     fullName: '',
     country: 'India',
@@ -208,7 +210,7 @@ export default function CheckoutOrderDetails({ totalAmount }: CheckoutOrderDetai
         </div>
       </form>
 
-      <PaymentMethod formData={formData} totalAmount={totalAmount} />
+      <PaymentMethod formData={formData} totalAmount={totalAmount} isCouponApplied ={isCouponApplied} couponCode={couponCode} />
     </div>
   );
 }

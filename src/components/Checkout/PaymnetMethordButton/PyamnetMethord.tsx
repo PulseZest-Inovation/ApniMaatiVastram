@@ -24,9 +24,12 @@ interface PaymentMethodProps {
     customerId: string;
   };
   totalAmount: number;
+  isCouponApplied: boolean;
+  couponCode?: string;
 }
 
-const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData, totalAmount: initialTotalAmount }) => {
+
+const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData, totalAmount: initialTotalAmount, isCouponApplied, couponCode }) => {
   const [paymentMethod, setPaymentMethod] = useState<string | null>('online');
   const [loading, setLoading] = useState<boolean>(false);
   const [totalAmount, setTotalAmount] = useState<number>(initialTotalAmount);
@@ -78,14 +81,14 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData, totalAmount: in
       let success = false;
   
       if (paymentMethod === "online") {
-        success = await handleOnlineOrder(formData, totalAmount, orderId);
+        success = await handleOnlineOrder(formData, totalAmount, orderId, isCouponApplied, couponCode);
         if (success) {
           toast.success("Redirecting to payment page...");
         } else {
           toast.error("Online payment initiation failed.");
         }
       } else if (paymentMethod === "cod") {
-        success = await handleCodOrder(formData, totalAmount, orderId, setLoading);
+        success = await handleCodOrder(formData, totalAmount, orderId, setLoading, isCouponApplied, couponCode);
       }
   
       if (success) {

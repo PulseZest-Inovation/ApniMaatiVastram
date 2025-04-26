@@ -39,7 +39,7 @@ export default function DesktopProductList({ products, categoryId, categoryName 
       </button>
 
       <div className="overflow-x-auto h-80 scrollbar-hide flex space-x-4">
-        {products.map((product) => (
+        {products.map((product: ProductType) => (
           <div
             key={product.slug}
             className="rounded-lg hover:shadow-lg transition-shadow p-4 w-64 h-64 flex-none cursor-pointer bg-white"
@@ -47,7 +47,7 @@ export default function DesktopProductList({ products, categoryId, categoryName 
           >
             <div className="relative w-full h-full overflow-hidden mb-2">
               <Image
-                src={product.featuredImage}
+                src={product.featuredImage ? product.featuredImage : "/images/placeholder.png"}
                 alt={product.slug}
                 fill={true}
                 style={{ objectFit: "cover" }}

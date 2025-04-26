@@ -40,6 +40,9 @@ export default async function handler(req, res) {
           user: googleEmail,
           pass: appPassword,
         },
+        tls: {
+          rejectUnauthorized: false
+        }
       };
     } else if (emailType === "custom") {
       if (!smtpServer || !customEmail || !password || !port) {
@@ -53,6 +56,9 @@ export default async function handler(req, res) {
           user: customEmail,
           pass: password,
         },
+        tls: {
+          rejectUnauthorized: false
+        }
       };
     } else {
       return res.status(400).json({ message: "Invalid email type" });

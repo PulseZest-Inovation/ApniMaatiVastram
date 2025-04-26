@@ -6,7 +6,9 @@ import { DeliverDetails } from '@/Types/data/DeliveryDetails';
 export const handleOnlineOrder = async (
   deliveryDetails: DeliverDetails,
   totalAmount: number,
-  orderId: string
+  orderId: string,
+  isCouponeApplied: boolean,
+  couponCode: string | undefined
 ): Promise<boolean> => {
   try {
     const cartDetails = await getAllDocsFromCollection('carts');
@@ -17,7 +19,9 @@ export const handleOnlineOrder = async (
       status: 'Confirmed',
       orderId: orderId,
       totalAmount: totalAmount,
-      type: 'Prepaid'
+      type: 'Prepaid',
+      isCouponeApplied: isCouponeApplied,
+      couponCode: couponCode,
     };
 
 
