@@ -6,8 +6,15 @@ export const handleApplyCoupon = (
   validCoupons: CouponsType[],
   setIsCouponApplied: (value: boolean) => void,
   setDiscountMessage: (value: string) => void,
-  setPrice: (value: number) => void
+  setPrice: (value: number) => void,
+  isCouponApplied: boolean // Added parameter to check if coupon is already applied
 ) => {
+  // Prevent reapplying the coupon
+  if (isCouponApplied) {
+    setDiscountMessage("Coupon already applied!");
+    return;
+  }
+
   // Early return if no valid coupons exist
   if (!validCoupons || validCoupons.length === 0) {
     setDiscountMessage("No available coupons at the moment.");
@@ -39,7 +46,7 @@ export const handleApplyCoupon = (
 
   // Calculate the discount
   const discount =
-    coupon.discountType === 'percentage'
+    coupon.discountType === "percentage"
       ? (totalAmount * coupon.amount) / 100
       : coupon.amount;
 
@@ -51,4 +58,3 @@ export const handleApplyCoupon = (
   setDiscountMessage(`Coupon applied! You saved ₹${discount.toFixed(2)}.`);
   setPrice(discountedPrice);
 };
-

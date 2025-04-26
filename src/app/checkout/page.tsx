@@ -127,7 +127,7 @@ export default function CheckoutPage() {
             setCouponCode={setCouponCode}
             isCouponApplied={isCouponApplied}
             handleApplyCoupon={(code, amount) =>
-              handleApplyCoupon(code, amount, validCoupons, setIsCouponApplied, setDiscountMessage, setPrice)
+              handleApplyCoupon(code, amount, validCoupons, setIsCouponApplied, setDiscountMessage, setPrice,  isCouponApplied)
             }
             discountMessage={discountMessage}
           />
@@ -151,7 +151,7 @@ export default function CheckoutPage() {
             setCouponCode={setCouponCode}
             isCouponApplied={isCouponApplied}
             handleApplyCoupon={(code, amount) =>
-              handleApplyCoupon(code, amount, validCoupons, setIsCouponApplied, setDiscountMessage, setPrice)
+              handleApplyCoupon(code, amount, validCoupons, setIsCouponApplied, setDiscountMessage, setPrice,  isCouponApplied)
             }
             discountMessage={discountMessage}
           />
