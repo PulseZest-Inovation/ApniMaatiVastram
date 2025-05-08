@@ -46,7 +46,16 @@ const NavBar: React.FC<NavBarProps> = ({onSearchQueryChange }) => {
     const loadCategories = async () => {
       try {
         const fetchedCategories = await fetchCategories();
-        setCategories(fetchedCategories);
+        const rearrangedCategories = [...fetchedCategories].sort((a, b) => {
+          if (a.isPosition && b.isPosition) {
+            return String(a.isPosition).localeCompare(String(b.isPosition));  
+          }
+          return 0; 
+        });
+        console.log("Rearranged Categories:", rearrangedCategories);
+        const restoredCategories = [...fetchedCategories];
+        console.log("Restored Categories:", restoredCategories);
+        setCategories(rearrangedCategories);  
       } catch (error) {
         console.error("Error fetching categories: ", error);
       }
@@ -65,7 +74,7 @@ const NavBar: React.FC<NavBarProps> = ({onSearchQueryChange }) => {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
   const openCartDrawer = () => setIsCartDrawerOpen(true);
-  const closeCartDrawer = () => setIsCartDrawerOpen(false); // Fix state handling
+  const closeCartDrawer = () => setIsCartDrawerOpen(false);
 
   const handleUserIconClick = async () => {
     if (isUserLoggedInState) {
