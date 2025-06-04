@@ -32,15 +32,6 @@ export default function Home() {
         <CategoriesDisplay />
       </motion.div>
 
-      {/* DispalyProductByCategories */}
-      <motion.div
-        initial={{ opacity: 0, y: -50 }} // Start slightly above
-        animate={{ opacity: 1, y: 0 }} // Slide to original position
-        transition={{ duration: 0.5 }}
-      >
-        <DisplayProductByCategories />
-      </motion.div>
-
       {/* Products by Videos */}
       <motion.div
         initial={{ opacity: 0, y: 50 }} // Start slightly below
@@ -50,6 +41,17 @@ export default function Home() {
         <ProductByVideos />
       </motion.div>
 
+
+      {/* DispalyProductByCategories */}
+      <motion.div
+        initial={{ opacity: 0, y: -50 }} // Start slightly above
+        animate={{ opacity: 1, y: 0 }} // Slide to original position
+        transition={{ duration: 0.5 }}
+      >
+        <DisplayProductByCategories />
+      </motion.div>
+
+      
       {/* Products by Tags */}
       <motion.div
         initial={{ opacity: 0, x: 50 }} // Start slightly right
