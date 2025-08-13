@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { MdClose, MdKeyboardArrowDown, MdKeyboardArrowRight } from "react-icons/md";
 import { ApplicationLogo } from "./NavBar";
 import { CategoryType } from "@/Types/data/CategoryType";
@@ -15,6 +15,23 @@ interface MobileDrawerProps {
 const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose, categories }) => {
   const [openCategory, setOpenCategory] = useState<string | null>(null);
 
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleClick = (event: MouseEvent) => {
+      // If the click is outside the drawer, close it
+      const drawer = document.getElementById("mobile-drawer");
+      if (drawer && !drawer.contains(event.target as Node)) {
+        onClose();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClick);
+    return () => {
+      document.removeEventListener("mousedown", handleClick);
+    };
+  }, [isOpen, onClose]);
+
   const parentCategories = categories.filter((category) => category.parent === "none");
 
   const getSubCategories = (parentCid: string) => {
@@ -26,9 +43,9 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose, categories
       className={`fixed z-50 bg-black bg-opacity-50 transition-opacity duration-300 ${
         isOpen ? "opacity-100 visible" : "opacity-0 invisible"
       } overflow-y-auto`}
-      onClick={onClose}
     >
       <div
+        id="mobile-drawer"
         className={`fixed top-0 right-0 h-full w-3/4 bg-white shadow-lg p-4 transform transition-transform duration-300 ${
           isOpen ? "translate-x-0" : "translate-x-full"
         } overflow-y-auto`}
@@ -38,7 +55,10 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose, categories
         <div className="flex justify-between items-center mb-4">
           <ApplicationLogo />
           <MdClose className="text-2xl cursor-pointer" onClick={onClose} />
+         
         </div>
+
+      
 
         {/* Categories */}
         <div className="flex flex-col space-y-5 mt-10">

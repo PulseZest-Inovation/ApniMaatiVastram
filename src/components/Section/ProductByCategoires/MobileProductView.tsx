@@ -14,6 +14,8 @@ export default function MobileProductList({ products, categoryId, categoryName }
 
   return (
     <div className="block sm:hidden">
+       
+    
          <h2 
         className="text-2xl sm:text-3xl font-bold mb-6 text-gray-800 uppercase text-center" 
         onClick={() => Router.push(`/collection/${categoryId}`)}
