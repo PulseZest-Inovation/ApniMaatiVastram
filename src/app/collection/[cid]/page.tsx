@@ -95,17 +95,19 @@ export default function CollectionPage() {
                    handleAddToWishlist(product);
                   }}
                 />
+               
               </div>
+              
             </div>
-            <h2 className="font-light fontfma mt-2 text-center capitalize">{product.productTitle}</h2>
+            <h2 className="font-light fontfma mt-2 text-center capitalize"> </h2>
             <div className="text-center mt-2">
               {product.salePrice ? (
                 <div className="flex items-center justify-center">
-                  <p className="text-sm text-gray-500 line-through">₹{product.regularPrice}</p>
-                  <p className="text-sm text-black pl-2">₹{product.salePrice}</p>
+                  <p className="text-sm text-gray-500 line-through"></p>
+                  <p className="text-sm text-black pl-2"> </p>
                 </div>
               ) : (
-                <p className="text-sm text-black font-light">₹{product.regularPrice}</p>
+                <p className="text-sm text-black font-light"> </p>
               )}
             </div>
           </div>
