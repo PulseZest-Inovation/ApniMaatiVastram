@@ -57,6 +57,18 @@ export default function DesktopProductList({ products, categoryId, categoryName 
             <h3 className="text-sm sm:text-base text-gray-800 truncate mb-0 capitalize text-center">
               {product.productTitle}
             </h3>
+             <div className="flex items-center justify-center gap-2 mb-0">
+  {/* Regular Price with strike-through */}
+  <span className="text-sm sm:text-base text-gray-500 line-through">
+    ₹{product.regularPrice}
+  </span>
+
+  {/* Sale Price */}
+  <span className="text-sm sm:text-base text-gray-800 font-semibold">
+    ₹{product.salePrice}
+  </span>
+</div>
+
           </div>
         ))}
         
