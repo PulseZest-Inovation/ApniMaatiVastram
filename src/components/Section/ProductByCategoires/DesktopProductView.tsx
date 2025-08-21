@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -48,7 +48,7 @@ export default function DesktopProductList({
 
       {/* Products Row */}
       <div className="overflow-x-auto h-80 scrollbar-hide flex space-x-4">
-        {products.map((product: ProductType, index: number) => (
+        {products.map((product: ProductType) => (
           <div
             key={product.slug}
             className="relative rounded-lg hover:shadow-lg transition-shadow p-4 w-64 h-80 flex-none cursor-pointer bg-white flex flex-col"
@@ -58,6 +58,17 @@ export default function DesktopProductList({
           >
             {/* Product Image */}
             <div className="relative w-full h-56 overflow-hidden mb-2 rounded-md">
+              {/* 🔹 TagForImage Badge */}
+              {product.tagForImage && (
+                <div className="absolute top--1 left--3 z-10">
+                  <span className="relative inline-block bg-purple-600 text-white text-xs font-semibold px-3 py-1 rounded-md shadow-md">
+                    {product.tagForImage}
+                    {/* little triangle tail */}
+                    <span className="absolute -bottom-1 left-2 w-2 h-2 bg-purple-600 rotate-45"></span>
+                  </span>
+                </div>
+              )}
+
               <Image
                 src={
                   product.featuredImage
@@ -69,32 +80,10 @@ export default function DesktopProductList({
                 style={{ objectFit: "cover" }}
                 className="transition-transform transform hover:scale-110 duration-300"
               />
-
-              {/* Show Tag only on 1st and 2nd product */}
-              {index === 0 && (
-                <div className="absolute top-2 -left-10 transform -rotate-45 bg-yellow-500 text-white text-xs font-bold px-12 py-1 shadow-md">
-                  Best Seller
-                </div>
-              )}
-              {index === 1 && (
-                <div className="absolute top-2 -left-10 transform -rotate-45 bg-red-500 text-white text-xs font-bold px-12 py-1 shadow-md">
-                  Sale
-                </div>
-              )}
-               {index === 3 && (
-                <div className="absolute top-2 -left-10 transform -rotate-45 bg-red-500 text-white text-xs font-bold px-12 py-1 shadow-md">
-                  Sale
-                </div>
-              )}
-               {index === 2 && (
-                <div className="absolute top-2 -left-10 transform -rotate-45 bg-red-500 text-white text-xs font-bold px-12 py-1 shadow-md">
-                New Arrival
-                </div>
-              )}
             </div>
 
             {/* Product Title */}
-            <h3 className="text-sm sm:text-base text-gray-800 truncate mb-0 capitalize text-center">
+            <h3 className="text-sm sm:text-base text-gray-800 truncate mb-1 capitalize text-center">
               {product.productTitle}
             </h3>
           </div>
