@@ -92,7 +92,7 @@ export default function CollectionPage() {
                   width={24}
                   height={24}
                   onClick={()=>{
-                   handleAddToWishlist(product);
+                   handleAddToWishlist(product);  
                   }}
                 />
               </div>
