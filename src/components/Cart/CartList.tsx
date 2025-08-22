@@ -1,3 +1,4 @@
+"use client";
 import { IndianRupee } from "lucide-react";
 import Image from "next/image";
 import React, { useState } from "react";
@@ -5,6 +6,7 @@ import { handleIncrementQuantity } from "@/utils/handleIncrementQuantity";
 import { handleDecrementQuantity } from "@/utils/handleDecrementQuantity";
 import { getProductStock } from "@/utils/getProductStock";
 import SparklesText from "../ui/sparkles-text";
+import { useRouter } from "next/navigation";
 
 interface CartItem {
   id: string;
@@ -16,6 +18,7 @@ interface CartItem {
   readyToWearCharges: number;
   isPrePlated: boolean;
   prePlatedCharges: number;
+  category?: string;
 }
 
 interface CartListProps {
@@ -23,6 +26,7 @@ interface CartListProps {
   userId: string;
   onRemoveItem: (id: string) => void;
   onUpdateQuantity: (id: string, quantity: number) => void;
+  onCloseCart?: () => void; // 👈 prop from parent
 }
 
 const CartList: React.FC<CartListProps> = ({
@@ -30,11 +34,14 @@ const CartList: React.FC<CartListProps> = ({
   userId,
   onRemoveItem,
   onUpdateQuantity,
+  onCloseCart,
 }) => {
-  const [stockMessage, setStockMessage] = useState<{ [key: string]: string }>({});
+  const [stockMessage, setStockMessage] = useState<{ [key: string]: string }>(
+    {}
+  );
+  const router = useRouter();
 
   const handleIncrement = async (id: string, currentQuantity: number) => {
-    // Get the product's available stock
     const availableStock = await getProductStock(id);
 
     if (availableStock !== null && currentQuantity >= availableStock) {
@@ -48,7 +55,7 @@ const CartList: React.FC<CartListProps> = ({
     const success = await handleIncrementQuantity(id, userId);
     if (success) {
       onUpdateQuantity(id, currentQuantity + 1);
-      setStockMessage((prev) => ({ ...prev, [id]: "" })); // Clear message on success
+      setStockMessage((prev) => ({ ...prev, [id]: "" }));
     }
   };
 
@@ -61,6 +68,12 @@ const CartList: React.FC<CartListProps> = ({
     }
   };
 
+  // 👇 Helper to navigate + close cart
+  const goToProduct = (category: string | undefined, id: string) => {
+    router.push(`/collection/${category}/product/${id}`);
+    onCloseCart?.();
+  };
+
   return (
     <div className="space-y-6">
       {cartItems.length === 0 ? (
@@ -71,7 +84,8 @@ const CartList: React.FC<CartListProps> = ({
         cartItems.map((item) => (
           <div
             key={item.id}
-            className="bg-white shadow-lg rounded-lg p-6 mb-4 flex items-center space-x-4"
+            className="bg-white shadow-lg rounded-lg p-6 mb-4 flex items-center space-x-4 cursor-pointer hover:bg-gray-50 transition"
+            onClick={() => goToProduct(item.category, item.id)} // ✅ always close cart
           >
             {/* Product Image */}
             <Image
@@ -91,14 +105,20 @@ const CartList: React.FC<CartListProps> = ({
               <div className="flex items-center mt-2">
                 {/* Quantity Controls */}
                 <button
-                  onClick={() => handleDecrement(item.id, item.quantity)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDecrement(item.id, item.quantity);
+                  }}
                   className="px-2 py-1 bg-gray-200 rounded-md text-gray-700 hover:bg-gray-300 transition duration-200"
                 >
                   -
                 </button>
                 <p className="mx-2 text-lg">{item.quantity}</p>
                 <button
-                  onClick={() => handleIncrement(item.id, item.quantity)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleIncrement(item.id, item.quantity);
+                  }}
                   className="px-2 py-1 bg-gray-200 rounded-md text-gray-700 hover:bg-gray-300 transition duration-200"
                 >
                   +
@@ -107,7 +127,9 @@ const CartList: React.FC<CartListProps> = ({
 
               {/* Stock Limit Message */}
               {stockMessage[item.id] && (
-                <p className="text-red-500 text-sm mt-1">{stockMessage[item.id]}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {stockMessage[item.id]}
+                </p>
               )}
 
               {/* Ready-to-Wear Charges */}
@@ -117,8 +139,8 @@ const CartList: React.FC<CartListProps> = ({
                     text="Ready to Wear "
                     sparklesCount={3}
                     className="text-sm font-light text-orange-400 fill-content4-foreground"
-                  ></SparklesText>
-                  <span className="pl-2 text-sm"> ₹{item.readyToWearCharges}</span>
+                  />
+                  <span className="pl-2 text-sm">₹{item.readyToWearCharges}</span>
                 </div>
               )}
               {item.isPrePlated && (
@@ -127,15 +149,18 @@ const CartList: React.FC<CartListProps> = ({
                     text="Pre-Plated "
                     sparklesCount={3}
                     className="text-sm font-light text-orange-400 fill-content4-foreground"
-                  ></SparklesText>
-                  <span className="pl-2 text-sm"> ₹{item.prePlatedCharges}</span>
+                  />
+                  <span className="pl-2 text-sm">₹{item.prePlatedCharges}</span>
                 </div>
               )}
             </div>
             <div>
               {/* Remove Button */}
               <button
-                onClick={() => onRemoveItem(item.id)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onRemoveItem(item.id);
+                }}
                 className="py-2 px-4 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-300"
               >
                 Remove
