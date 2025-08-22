@@ -25,10 +25,7 @@ export default function RootLayout({
         <meta name="description" content={String(metadata.description || "")} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta charSet="UTF-8" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Yrsa:ital,wght@0,300..700;1,300..700&display=swap"
-          rel="stylesheet"
-        />
+        {/* Font link moved to _document.tsx as per Next.js best practices */}
       </head>
 
       <body className="font-sans">

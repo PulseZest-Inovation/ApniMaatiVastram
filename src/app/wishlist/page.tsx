@@ -1,8 +1,11 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { getAllDocsFromSubCollection } from "@/service/Firebase/getFirestore";
 import { auth } from "@/config/FirebaseConfig";
+import { Spinner } from "@nextui-org/react";
 
 // Wishlist item structure
 interface WishlistItem {
@@ -17,6 +20,7 @@ interface WishlistItem {
 const WishlistComponent = () => {
   const [wishlist, setWishlist] = useState<WishlistItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchWishlist = async () => {
@@ -60,7 +64,9 @@ const WishlistComponent = () => {
       <h2 className="text-2xl font-bold mb-6 text-center">My Wishlist ❤️</h2>
 
       {loading ? (
-        <p>Loading wishlist...</p>
+        <div className="flex justify-center items-center h-40">
+          <Spinner />
+        </div>
       ) : wishlist.length === 0 ? (
         <p>No items in your wishlist.</p>
       ) : (
@@ -69,23 +75,24 @@ const WishlistComponent = () => {
           {wishlist.map((item) => (
             <div
               key={item.id}
-              className="p-4 rounded-xl bg-white shadow-md border hover:shadow-lg transition"
+              className="p-4 rounded-xl bg-white shadow-md border hover:shadow-lg transition cursor-pointer"
+              onClick={() => router.push(`/collection/wishlist/product/${item.id}`)}
             >
-              <img
+              <Image
                 src={item.image}
                 alt={item.productTitle}
+                width={200}
+                height={192}
                 className="w-50 h-48 object-cover rounded-md mb-3"
               />
               <h3 className="text-lg font-semibold">{item.productTitle}</h3>
               <p className="text-gray-600 text-sm">
                 {truncateText(item.productSubtitle, 4)}
               </p>
-             <p className="text-gray-800 font-bold mt-1">
-  <span className="line-through text-gray-500 mr-2">₹{item.regularPrice}</span>
-  <span className="text-red-600">₹{item.salePrice}</span>
-</p>
-
-           
+              <p className="text-gray-800 font-bold mt-1">
+                <span className="line-through text-gray-500 mr-2">₹{item.regularPrice}</span>
+                <span className="text-red-600">₹{item.salePrice}</span>
+              </p>
             </div>
           ))}
         </div>

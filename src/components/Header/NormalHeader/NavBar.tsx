@@ -15,7 +15,6 @@ import Link from "next/link";
 import SearchBar from "./SearchBar";
 import DesktopCategories from "./DesktopCategories";
 import { CategoryType } from "@/Types/data/CategoryType";
-import { handleAddToWishlist } from "@/utils/handleAddToWishlist";
 import { Spinner } from "@nextui-org/react";
 import { ProductType } from "@/Types/data/ProductType";
 
@@ -35,16 +34,15 @@ ApplicationLogo.displayName = "ApplicationLogo";
 
 interface NavBarProps {
   onSearchQueryChange: (query: string) => void;
-  wishlistProduct?: ProductType; // Optional product to add to wishlist
 }
 
-const NavBar: React.FC<NavBarProps> = ({onSearchQueryChange, wishlistProduct }) => {
+const NavBar: React.FC<NavBarProps> = ({onSearchQueryChange}) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [categories, setCategories] = useState<CategoryType[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   const [isUserLoggedInState, setIsUserLoggedInState] = useState(false);
-  const [loading, setLoading] = useState({ wishlist: false });
+  // Removed unused loading state
   const router = useRouter();
 
   useEffect(() => {
@@ -58,8 +56,8 @@ const NavBar: React.FC<NavBarProps> = ({onSearchQueryChange, wishlistProduct }) 
           return 0;
         });
         setCategories(rearrangedCategories);
-      } catch (error) {
-        console.error("Error fetching categories: ", error);
+      } catch {
+        console.error("Error fetching categories");
       }
     };
 
@@ -123,15 +121,11 @@ const NavBar: React.FC<NavBarProps> = ({onSearchQueryChange, wishlistProduct }) 
       className="cursor-pointer flex items-center justify-center"
       onClick={handleWishlistClick}
     >
-      {loading.wishlist ? (
-        <Spinner color="primary" size="sm" />
-      ) : (
-        <HeartTwoTone
-          twoToneColor="#eb2f96"
-          style={{ fontSize: "1.2rem" }}
-          className="sm:!text-xl md:!text-2xl"
-        />
-      )}
+      <HeartTwoTone
+        twoToneColor="#eb2f96"
+        style={{ fontSize: "1.2rem" }}
+        className="sm:!text-xl md:!text-2xl"
+      />
     </div>
 
     {/* Cart */}
