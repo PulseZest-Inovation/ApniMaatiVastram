@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { FaUser, FaShoppingCart, FaBars } from "react-icons/fa";
+import { HeartTwoTone } from "@ant-design/icons";
 import Image from "next/image";
 import OtpModal from "@/components/Login/PhoneLoginModel";
 import CartDrawer from "@/components/Cart/page";
@@ -13,7 +14,10 @@ import MobileDrawer from "./MobileDrawer";
 import Link from "next/link";
 import SearchBar from "./SearchBar";
 import DesktopCategories from "./DesktopCategories";
-import { CategoryType } from "@/Types/data/CategoryType"; // Use correct import
+import { CategoryType } from "@/Types/data/CategoryType";
+import { handleAddToWishlist } from "@/utils/handleAddToWishlist";
+import { Spinner } from "@nextui-org/react";
+import { ProductType } from "@/Types/data/ProductType";
 
 export const ApplicationLogo = React.memo(() => (
   <Link href="/">
@@ -27,19 +31,20 @@ export const ApplicationLogo = React.memo(() => (
   </Link>
 ));
 
-ApplicationLogo.displayName = "ApplicationLogo"; // Corrected displayName
-
+ApplicationLogo.displayName = "ApplicationLogo";
 
 interface NavBarProps {
   onSearchQueryChange: (query: string) => void;
+  wishlistProduct?: ProductType; // Optional product to add to wishlist
 }
 
-const NavBar: React.FC<NavBarProps> = ({onSearchQueryChange }) => {
+const NavBar: React.FC<NavBarProps> = ({onSearchQueryChange, wishlistProduct }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [categories, setCategories] = useState<CategoryType[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   const [isUserLoggedInState, setIsUserLoggedInState] = useState(false);
+  const [loading, setLoading] = useState({ wishlist: false });
   const router = useRouter();
 
   useEffect(() => {
@@ -48,14 +53,11 @@ const NavBar: React.FC<NavBarProps> = ({onSearchQueryChange }) => {
         const fetchedCategories = await fetchCategories();
         const rearrangedCategories = [...fetchedCategories].sort((a, b) => {
           if (a.isPosition && b.isPosition) {
-            return String(a.isPosition).localeCompare(String(b.isPosition));  
+            return String(a.isPosition).localeCompare(String(b.isPosition));
           }
-          return 0; 
+          return 0;
         });
-        console.log("Rearranged Categories:", rearrangedCategories);
-        const restoredCategories = [...fetchedCategories];
-        console.log("Restored Categories:", restoredCategories);
-        setCategories(rearrangedCategories);  
+        setCategories(rearrangedCategories);
       } catch (error) {
         console.error("Error fetching categories: ", error);
       }
@@ -70,13 +72,12 @@ const NavBar: React.FC<NavBarProps> = ({onSearchQueryChange }) => {
     checkUserStatus();
   }, []);
 
-
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
   const openCartDrawer = () => setIsCartDrawerOpen(true);
   const closeCartDrawer = () => setIsCartDrawerOpen(false);
 
-  const handleUserIconClick = async () => {
+  const handleUserIconClick = async() => {
     if (isUserLoggedInState) {
       router.push("/account");
     } else {
@@ -86,50 +87,79 @@ const NavBar: React.FC<NavBarProps> = ({onSearchQueryChange }) => {
 
   const toggleDrawer = () => setIsDrawerOpen(!isDrawerOpen);
 
+  // Wishlist click handler
+  const handleWishlistClick = () => {
+    // Navigate to the wishlist page
+    router.push("/wishlist");
+  };
+
   return (
-    <nav className="bg-white border-b border-gray-200">      
- 
+    <nav className="bg-white border-b border-gray-200">
       {/* First Row */}
       <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
           {/* Left: Search Field */}
           <div className="hidden sm:block w-1/3">
-            <SearchBar 
-            onQueryChange={(query) => {
-            onSearchQueryChange(query);  
-          }}
-            
-            />
+            <SearchBar onQueryChange={onSearchQueryChange} />
           </div>
 
           {/* Center: Application Logo */}
-          <div className="w-1/3 flex justify-center">
-            <ApplicationLogo />
-          </div>
+         <div className="w-1/3 flex justify-center">
+  <ApplicationLogo />
+</div>
 
-          {/* Right: Icons */}
-          <div className="flex justify-end items-center space-x-4 w-1/4">
-            <FaUser className="text-lg cursor-pointer" onClick={handleUserIconClick} />
-            <FaShoppingCart className="text-lg cursor-pointer" onClick={openCartDrawer} />
-            <FaBars className="text-lg cursor-pointer sm:hidden" onClick={toggleDrawer} />
+{/* Right: Icons (User, Wishlist, Cart, Menu) */}
+<div className="flex items-center justify-end w-1/4">
+  {/* Icons Group */}
+  <div className="flex items-center space-x-3 sm:space-x-4">
+    {/* User Icon */}
+    <FaUser
+      className="cursor-pointer text-base sm:text-lg md:text-xl"
+      onClick={handleUserIconClick}
+    />
+
+    {/* Wishlist */}
+    <div
+      className="cursor-pointer flex items-center justify-center"
+      onClick={handleWishlistClick}
+    >
+      {loading.wishlist ? (
+        <Spinner color="primary" size="sm" />
+      ) : (
+        <HeartTwoTone
+          twoToneColor="#eb2f96"
+          style={{ fontSize: "1.2rem" }}
+          className="sm:!text-xl md:!text-2xl"
+        />
+      )}
+    </div>
+
+    {/* Cart */}
+    <FaShoppingCart
+      className="cursor-pointer text-base sm:text-lg md:text-xl"
+      onClick={openCartDrawer}
+    />
+  </div>
+
+  {/* Mobile Menu Icon */}
+  <FaBars
+    className="cursor-pointer text-base sm:text-lg md:hidden ml-3"
+    onClick={toggleDrawer}
+  />
+ 
+
+         
+         
           </div>
         </div>
       </div>
 
-      {/* Second Row (Desktop: Categories | Mobile: Search Field) */}
+      {/* Second Row */}
       <div className="py-2">
         <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Desktop: Categories */}
-          <DesktopCategories  categories={categories} />
-
-          {/* Mobile: Search Field */}
+          <DesktopCategories categories={categories} />
           <div className="sm:hidden">
-          <SearchBar 
-            onQueryChange={(query) => {
-            onSearchQueryChange(query);  
-          }}
-            
-            />
+            <SearchBar onQueryChange={onSearchQueryChange} />
           </div>
         </div>
       </div>
@@ -144,5 +174,4 @@ const NavBar: React.FC<NavBarProps> = ({onSearchQueryChange }) => {
 };
 
 NavBar.displayName = "NavBar";
-
 export default NavBar;

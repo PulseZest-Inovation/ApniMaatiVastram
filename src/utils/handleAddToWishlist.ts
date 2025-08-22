@@ -29,6 +29,10 @@ export const handleAddToWishlist = async (product: ProductType): Promise<boolean
       sku: product.sku ?? "",
       isReadyToWear: product.isReadyToWear ?? null,
       isPrePlated: product.isPrePlated ?? null,
+      price:product.price ?? 0,
+      salePrice: product.salePrice ?? 0,
+      regularPrice: product.regularPrice ?? 0,
+      
     };
 
     // Use Firestore to add product to the wishlist subcollection
