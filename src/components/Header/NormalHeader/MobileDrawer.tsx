@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { MdClose, MdKeyboardArrowDown, MdKeyboardArrowRight } from "react-icons/md";
 import { ApplicationLogo } from "./NavBar";
 import { CategoryType } from "@/Types/data/CategoryType";
@@ -15,23 +15,46 @@ interface MobileDrawerProps {
 const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose, categories }) => {
   const [openCategory, setOpenCategory] = useState<string | null>(null);
 
+  useEffect(() => {
+    // Lock scroll when drawer is open
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+
+    if (!isOpen) return;
+
+    // Close drawer on scroll
+    const handleScroll = () => {
+      onClose();
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      document.body.style.overflow = "auto";
+    };
+  }, [isOpen, onClose]);
+
   const parentCategories = categories.filter((category) => category.parent === "none");
 
   const getSubCategories = (parentCid: string) => {
     return categories.filter((category) => category.parent === parentCid);
   };
 
+  if (!isOpen) return null;
+
   return (
     <div
-      className={`fixed z-50 bg-black bg-opacity-50 transition-opacity duration-300 ${
-        isOpen ? "opacity-100 visible" : "opacity-0 invisible"
-      } overflow-y-auto`}
+      className="fixed inset-0 z-50 bg-black bg-opacity-50 transition-opacity duration-300 overflow-y-auto"
       onClick={onClose}
+      style={{ touchAction: "none" }}
     >
       <div
-        className={`fixed top-0 right-0 h-full w-3/4 bg-white shadow-lg p-4 transform transition-transform duration-300 ${
-          isOpen ? "translate-x-0" : "translate-x-full"
-        } overflow-y-auto`}
+        id="mobile-drawer"
+        className="fixed top-0 right-0 h-full w-3/4 bg-white shadow-lg p-4 transform transition-transform duration-300 overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
@@ -72,7 +95,7 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose, categories
                         key={subCategory.slug}
                         href={`/collection/${subCategory.slug}`}
                         className="block text-gray-600 text-sm hover:text-black font-sans tracking-wide"
-                        onClick={onClose} // Close drawer on subcategory click
+                        onClick={onClose}
                       >
                         {subCategory.name}
                       </Link>

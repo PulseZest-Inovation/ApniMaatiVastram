@@ -88,7 +88,7 @@ const NavBar: React.FC<NavBarProps> = ({onSearchQueryChange }) => {
 
   return (
     <nav className="bg-white border-b border-gray-200">      
-
+ 
       {/* First Row */}
       <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
