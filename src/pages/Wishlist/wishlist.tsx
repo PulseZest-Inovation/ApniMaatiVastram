@@ -30,7 +30,7 @@ const WishlistPage: React.FC = () => {
           "wishlist"
         );
         setWishlist(data);
-      } catch (err) {
+      } catch {
         setError("Failed to fetch wishlist");
       } finally {
         setLoading(false);

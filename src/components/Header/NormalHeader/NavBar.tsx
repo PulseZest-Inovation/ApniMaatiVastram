@@ -15,8 +15,6 @@ import Link from "next/link";
 import SearchBar from "./SearchBar";
 import DesktopCategories from "./DesktopCategories";
 import { CategoryType } from "@/Types/data/CategoryType";
-import { Spinner } from "@nextui-org/react";
-import { ProductType } from "@/Types/data/ProductType";
 
 export const ApplicationLogo = React.memo(() => (
   <Link href="/">
