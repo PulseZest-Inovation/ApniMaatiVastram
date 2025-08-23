@@ -60,9 +60,10 @@ const SearchBar: React.FC = () => {
   };
 
   // 🔹 Open product details page
-  const openProduct = (product: Product) => {
-    router.push(`collection/category/product/${product.id}`);
-  };
+const openProduct = (product: Product) => {
+  router.push(`/collection/category/product/${product.id}`);
+};
+
 
   return (
     <div className="relative w-full max-w-sm">
