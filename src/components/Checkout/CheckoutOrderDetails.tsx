@@ -15,7 +15,6 @@ interface CheckoutOrderDetailsProps {
 export default function CheckoutOrderDetails({ totalAmount, isCouponApplied, couponCode }: CheckoutOrderDetailsProps) {
   const [formData, setFormData] = useState({
     fullName: '',
-    country: 'India',
     state: '',
     address: '',
     apartment: '',
@@ -44,7 +43,6 @@ export default function CheckoutOrderDetails({ totalAmount, isCouponApplied, cou
         if (data) {
           setFormData({
             fullName: data.fullName || '',
-            country: data.country || 'India',
             state: data.state || '',
             address: data.address || '',
             apartment: data.apartment || '',
@@ -94,15 +92,7 @@ export default function CheckoutOrderDetails({ totalAmount, isCouponApplied, cou
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-semibold mb-2">Country</label>
-          <input
-            type="text"
-            value={formData.country}
-            readOnly
-            className="w-full p-2 border border-gray-300 rounded"
-          />
-        </div>
+        
 
         <div>
           <label className="block text-sm font-semibold mb-2">State</label>
