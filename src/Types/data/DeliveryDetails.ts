@@ -1,7 +1,6 @@
 
 export interface DeliverDetails {
   fullName: string;
-  country: string;
   state: string;
   address: string;
   apartment: string;
