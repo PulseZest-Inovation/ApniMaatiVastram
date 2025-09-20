@@ -10,7 +10,11 @@ interface Product {
   productTitle: string;
 }
 
-const SearchBar: React.FC = () => {
+interface SearchBarProps {
+  onQueryChange?: (query: string) => void; // 🔹 Optional callback for parent
+}
+
+const SearchBar: React.FC<SearchBarProps> = ({ onQueryChange }) => {
   const [query, setQuery] = useState("");
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
@@ -30,6 +34,11 @@ const SearchBar: React.FC = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setQuery(value);
+
+    // 🔹 Call parent callback if provided
+    if (onQueryChange) {
+      onQueryChange(value);
+    }
 
     if (value.trim() === "") {
       setFilteredProducts([]);
@@ -60,10 +69,9 @@ const SearchBar: React.FC = () => {
   };
 
   // 🔹 Open product details page
-const openProduct = (product: Product) => {
-  router.push(`/collection/category/product/${product.id}`);
-};
-
+  const openProduct = (product: Product) => {
+    router.push(`/collection/category/product/${product.id}`);
+  };
 
   return (
     <div className="relative w-full max-w-sm">
