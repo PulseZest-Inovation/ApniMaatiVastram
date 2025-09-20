@@ -13,7 +13,6 @@ import MobilePaymentMethod from './MobilePayment';
 interface PaymentMethodProps {
   formData: {
     fullName: string;
-    country: string;
     state: string;
     address: string;
     apartment: string;
@@ -53,7 +52,6 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ formData, totalAmount: in
   const handleSubmitOrder = async () => {
     const requiredFields = [
       "fullName",
-      "country",
       "state",
       "address",
       "city",

@@ -168,7 +168,7 @@ export default function CheckoutOrderDetails({ totalAmount, isCouponApplied, cou
             value={formData.phoneNumber}
             onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
             required
-            disabled
+           
             className="w-full p-2 border border-gray-300 rounded"
 
           />
