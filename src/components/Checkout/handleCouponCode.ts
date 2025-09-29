@@ -1,3 +1,4 @@
+import { CartItem } from "@/Types/data/CartItemType";
 import { CouponsType } from "@/Types/data/CouponsType";
 
 export const handleApplyCoupon = (
@@ -7,7 +8,10 @@ export const handleApplyCoupon = (
   setIsCouponApplied: (value: boolean) => void,
   setDiscountMessage: (value: string) => void,
   setPrice: (value: number) => void,
-  isCouponApplied: boolean // Added parameter to check if coupon is already applied
+  isCouponApplied: boolean ,// Added parameter to check if coupon is already applied
+  // add cart item and setter update cart
+  cartItems?: CartItem[],
+  setCartItems?: (items: CartItem[]) => void,
 ) => {
   // Prevent reapplying the coupon
   if (isCouponApplied) {
@@ -23,7 +27,6 @@ export const handleApplyCoupon = (
 
   // Trim and make coupon code case-insensitive
   const trimmedCode = couponCode.trim().toLowerCase();
-
   if (!trimmedCode) {
     setDiscountMessage("Please enter a valid coupon code.");
     return;
@@ -44,6 +47,27 @@ export const handleApplyCoupon = (
     return;
   }
 
+  const hasMatchingItem =
+  cartItems &&
+  cartItems.some((item) => {
+    // Match product IDs (use productId if available)
+   const categoryMatch =
+  Array.isArray(item.categories) &&
+  (coupon.productCategories || []).some((cat) =>
+    item.categories.map((c) => c.toLowerCase()).includes(cat.toLowerCase())
+  );
+
+const productMatch =
+  Array.isArray(coupon.productsId) &&
+  coupon.productsId.includes(item.id);
+    return productMatch || categoryMatch;
+  });
+
+  if (!hasMatchingItem) {
+    setDiscountMessage("This coupon is not valid for selected items.");
+    return;
+  }
+  
   // Calculate the discount
   const discount =
     coupon.discountType === "percentage"
@@ -53,8 +77,28 @@ export const handleApplyCoupon = (
   // Calculate the discounted price
   const discountedPrice = totalAmount - discount;
 
+  //   Mark only matched items
+  if (cartItems && setCartItems) {
+    const updated = cartItems.map((item) => {
+      const productMatch =  (coupon.productsId || []).includes(item.productId || item.id); 
+      //coupon.productsId.includes(item.id);
+      const categoryMatch =
+         Array.isArray(item.categories) &&
+      (coupon.productCategories || []).some((cat) =>
+        item.categories.includes(cat)
+      );
+
+      if (productMatch || categoryMatch) {
+        return { ...item, appliedCouponCode: coupon.code };
+      }
+      return item;
+    });
+    setCartItems(updated);
+  }
+
   // Apply the coupon
   setIsCouponApplied(true);
-  setDiscountMessage(`Coupon applied! You saved ₹${discount.toFixed(2)}.`);
+  setDiscountMessage(`Coupon ${coupon.code}applied! You saved ₹${discount.toFixed(2)}.`);
   setPrice(discountedPrice);
+
 };

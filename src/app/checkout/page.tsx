@@ -79,6 +79,7 @@ export default function CheckoutPage() {
     initialize();
   }, []);
 
+  
   useEffect(() => {
     const calculateTotal = () => {
       const total = cartItems.reduce((sum, item) => {
@@ -91,11 +92,13 @@ export default function CheckoutPage() {
         return sum + (itemPrice + readyToWearCharges) * quantity;
       }, 0);
 
-      setPrice(total);
+     if (!isCouponApplied) {
+        setPrice(total);
+      }
     };
 
     calculateTotal();
-  }, [cartItems]);
+  }, [cartItems,isCouponApplied]);
 
   if (isLoading) {
     return (
@@ -131,12 +134,12 @@ export default function CheckoutPage() {
             setCouponCode={setCouponCode}
             isCouponApplied={isCouponApplied}
             handleApplyCoupon={(code, amount) =>
-              handleApplyCoupon(code, amount, validCoupons, setIsCouponApplied, setDiscountMessage, setPrice,  isCouponApplied)
+              handleApplyCoupon(code, amount, validCoupons, setIsCouponApplied, setDiscountMessage, setPrice,  isCouponApplied,cartItems,setCartItems)
             }
             discountMessage={discountMessage}
           />
 
-          <CheckoutProductReview totalAmount={price} cartItems={cartItems} />
+          <CheckoutProductReview totalAmount={price} cartItems={cartItems}/>
         </div>
       </div>
 
@@ -151,7 +154,9 @@ export default function CheckoutPage() {
         </div>
         <div className="md:w-[30%] flex flex-col gap-2">
           <div className="p-4 border rounded-md">
-            <CheckoutProductReview totalAmount={price} cartItems={cartItems} />
+            <CheckoutProductReview totalAmount={price} cartItems={cartItems}  appliedCoupon={isCouponApplied
+                ? validCoupons.find(c => c.code.toLowerCase() === couponCode.toLowerCase())
+                : undefined} />
           </div>
           <CouponCode
             totalAmount={price}
@@ -159,7 +164,7 @@ export default function CheckoutPage() {
             setCouponCode={setCouponCode}
             isCouponApplied={isCouponApplied}
             handleApplyCoupon={(code, amount) =>
-              handleApplyCoupon(code, amount, validCoupons, setIsCouponApplied, setDiscountMessage, setPrice,  isCouponApplied)
+              handleApplyCoupon(code, amount, validCoupons, setIsCouponApplied, setDiscountMessage, setPrice,  isCouponApplied,cartItems,setCartItems)
             }
             discountMessage={discountMessage}
           />
