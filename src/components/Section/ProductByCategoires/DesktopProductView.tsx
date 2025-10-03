@@ -57,30 +57,29 @@ export default function DesktopProductList({
             }
           >
             {/* Product Image */}
-            <div className="relative w-full h-56 overflow-hidden mb-2 rounded-md">
-              {/* 🔹 TagForImage Badge */}
-              {product.tagForImage && (
-                <div className="absolute top--1 left--3 z-10">
-                  <span className="relative inline-block bg-purple-600 text-white text-xs font-semibold px-3 py-1 rounded-md shadow-md">
-                    {product.tagForImage}
-                    {/* little triangle tail */}
-                    <span className="absolute -bottom-1 left-2 w-2 h-2 bg-purple-600 rotate-45"></span>
-                  </span>
-                </div>
-              )}
+          <div className="relative w-full h-56 overflow-hidden mb-2 rounded-md">
+  {/* 🔹 Diagonal Ribbon Tag */}
+  {product.tagForImage && (
+    <div className="absolute top-2 left-[-40px] z-10 rotate-[-45deg]">
+      <span className="bg-red-500 text-white text-xs font-semibold px-10 py-1 shadow-md">
+        {product.tagForImage}
+      </span>
+    </div>
+  )}
 
-              <Image
-                src={
-                  product.featuredImage
-                    ? product.featuredImage
-                    : "/images/placeholder.png"
-                }
-                alt={product.slug}
-                fill={true}
-                style={{ objectFit: "cover" }}
-                className="transition-transform transform hover:scale-110 duration-300"
-              />
-            </div>
+  <Image
+    src={
+      product.featuredImage
+        ? product.featuredImage
+        : "/images/placeholder.png"
+    }
+    alt={product.slug}
+    fill={true}
+    style={{ objectFit: "cover" }}
+    className="transition-transform transform hover:scale-110 duration-300"
+  />
+</div>
+
 
             {/* Product Title */}
             <h3 className="text-sm sm:text-base text-gray-800 truncate mb-1 capitalize text-center">

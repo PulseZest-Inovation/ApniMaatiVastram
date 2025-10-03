@@ -43,6 +43,30 @@ export default function MobileProductList({ products, categoryId, categoryName }
             <h3 className="text-sm sm:text-base text-gray-800 truncate mb-0 capitalize text-center">
               {product.productTitle}
             </h3>
+
+           <div className="relative w-full h-56 overflow-hidden mb-2 rounded-md">
+  {/* 🔹 Diagonal Ribbon Tag */}
+  {product.tagForImage && (
+    <div className="absolute top-2 left-[-40px] z-10 rotate-[-45deg]">
+      <span className="bg-red-500 text-white text-xs font-semibold px-10 py-1 shadow-md">
+        {product.tagForImage}
+      </span>
+    </div>
+  )}
+
+  <Image
+    src={
+      product.featuredImage
+        ? product.featuredImage
+        : "/images/placeholder.png"
+    }
+    alt={product.slug}
+    fill={true}
+    style={{ objectFit: "cover" }}
+    className="transition-transform transform hover:scale-110 duration-300"
+  />
+</div>
+
           </div>
         ))}
       </div>
