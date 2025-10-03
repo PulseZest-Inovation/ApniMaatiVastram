@@ -63,7 +63,7 @@ export interface ProductType {
   attributes: AttributeType[];
   menuOrder: number;
   metaData: MetaDataType[];
-
+tagForImage: string;
 
   gstRate: string;
   HSN: string;
