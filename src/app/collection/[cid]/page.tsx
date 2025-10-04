@@ -179,7 +179,7 @@ export default function CollectionPage() {
           {/* Other */}
           {otherCategories.length > 0 && (
             <div>
-              <h2 className="text-lg font-semibold mb-4"></h2>  
+              <h2 className="text-lg font-semibold mb-4"></h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-6">
                 {otherCategories.map((sub) => (
                   <div
@@ -219,7 +219,16 @@ export default function CollectionPage() {
             }
           >
             {/* Square image wrapper */}
-            <div className="relative w-full aspect-square">
+            <div className="relative w-full aspect-square overflow-hidden rounded-lg">
+              {/* 🔹 Diagonal Ribbon Tag */}
+              {product.tagForImage && (
+                <div className="absolute top-2 left-[-40px] z-10 rotate-[-45deg]">
+                  <span className="bg-red-500 text-white text-xs font-semibold px-10 py-1 shadow-md">
+                    {product.tagForImage}
+                  </span>
+                </div>
+              )}
+
               {hoveredProduct === product.id &&
               product.galleryImages &&
               product.galleryImages.length > 0 ? (
@@ -227,16 +236,18 @@ export default function CollectionPage() {
                   src={product.galleryImages[0]}
                   alt={`${product.productTitle} - gallery`}
                   fill
-                  className="object-cover rounded-lg"
+                  className="object-cover rounded-lg transition-transform duration-300 hover:scale-110"
                 />
               ) : (
                 <Image
                   src={product.featuredImage}
                   alt={product.id}
                   fill
-                  className="object-cover rounded-lg"
+                  className="object-cover rounded-lg transition-transform duration-300 hover:scale-110"
                 />
               )}
+
+              {/* Heart Icon */}
               <div
                 className="absolute bottom-2 right-2 bg-white p-1 rounded-full shadow cursor-pointer"
                 onClick={(e) => handleLoveClick(product.id, e)}
@@ -262,6 +273,7 @@ export default function CollectionPage() {
                   <p className="text-sm text-gray-500 line-through">
                     ₹{product.regularPrice}
                   </p>
+
                   <p className="text-sm text-black font-medium">
                     ₹{product.salePrice}
                   </p>
