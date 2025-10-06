@@ -11,6 +11,7 @@ import { ProductType } from "@/Types/data/ProductType";
 import { Spinner } from "@nextui-org/react";
 import { handleAddToWishlist } from "@/utils/handleAddToWishlist";
 import { CategoryType } from "@/Types/data/CategoryType";
+import FilterPanel from "@/components/filter/filterPanel";
 
 export default function CollectionPage() {
   const params = useParams() as Record<string, string>;
@@ -19,9 +20,10 @@ export default function CollectionPage() {
   const [categories, setCategories] = useState<CategoryType[]>([]);
   const [loading, setLoading] = useState(true);
   const [hoveredProduct, setHoveredProduct] = useState<string | null>(null);
-  const Route = useRouter();
+  const [isFilterVisible, setIsFilterVisible] = useState(false); // ✅ Added this
+  const router = useRouter();
 
-  // 🔹 Fetch products
+  // Fetch Products
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
@@ -37,13 +39,10 @@ export default function CollectionPage() {
           where("categories", "array-contains", category)
         );
         const querySnapshot = await getDocs(q);
-        const fetchedProducts: ProductType[] = querySnapshot.docs.map(
-          (doc) =>
-            ({
-              id: doc.id,
-              ...doc.data(),
-            } as ProductType)
-        );
+        const fetchedProducts: ProductType[] = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        } as ProductType));
         setProducts(fetchedProducts);
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -55,7 +54,7 @@ export default function CollectionPage() {
     fetchProducts();
   }, [category]);
 
-  // 🔹 Fetch categories (for subcategories list)
+  // Fetch Categories
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -66,13 +65,10 @@ export default function CollectionPage() {
           "categories"
         );
         const querySnapshot = await getDocs(catRef);
-        const fetchedCategories: CategoryType[] = querySnapshot.docs.map(
-          (doc) =>
-            ({
-              cid: doc.id,
-              ...doc.data(),
-            } as CategoryType)
-        );
+        const fetchedCategories: CategoryType[] = querySnapshot.docs.map((doc) => ({
+          cid: doc.id,
+          ...doc.data(),
+        } as CategoryType));
         setCategories(fetchedCategories);
       } catch (error) {
         console.error("Error fetching categories:", error);
@@ -82,10 +78,8 @@ export default function CollectionPage() {
     fetchCategories();
   }, []);
 
-  // 🔹 Find subcategories of current category
+  // Subcategories
   const subCategories = categories.filter((cat) => cat.parent === category);
-
-  // Group them
   const colourCategories = subCategories.filter((s) =>
     s.name.toLowerCase().includes("colour")
   );
@@ -111,13 +105,23 @@ export default function CollectionPage() {
     );
 
   return (
-    <div className="p-4">
+    <div className="p-4 relative"> {/* ✅ relative for absolute positioning */}
+      {/* Filter Button - Top Right */}
+      <div className="absolute top-4 right-4 z-10">
+        <button
+          className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition"
+          onClick={() => setIsFilterVisible(true)}
+        >
+          Filter
+        </button>
+      </div>
+
       {/* Page Title */}
       <h1 className="text-2xl font-bold mb-6 uppercase text-center">
         {category}
       </h1>
 
-      {/* 🔹 Subcategories Section */}
+      {/* Subcategories Section */}
       {subCategories.length > 0 && (
         <div className="mb-10">
           {/* By Colour */}
@@ -129,7 +133,7 @@ export default function CollectionPage() {
                   <div
                     key={sub.slug}
                     className="flex flex-col items-center cursor-pointer bg-white shadow-md rounded-lg p-3 hover:shadow-lg transition"
-                    onClick={() => Route.push(`/collection/${sub.slug}`)}
+                    onClick={() => router.push(`/collection/${sub.slug}`)}
                   >
                     <div className="w-20 h-20 aspect-square relative">
                       {sub.image && (
@@ -157,7 +161,7 @@ export default function CollectionPage() {
                   <div
                     key={sub.slug}
                     className="flex flex-col items-center cursor-pointer bg-white shadow-md rounded-lg p-3 hover:shadow-lg transition"
-                    onClick={() => Route.push(`/collection/${sub.slug}`)}
+                    onClick={() => router.push(`/collection/${sub.slug}`)}
                   >
                     <div className="w-20 h-20 aspect-square relative">
                       {sub.image && (
@@ -179,13 +183,12 @@ export default function CollectionPage() {
           {/* Other */}
           {otherCategories.length > 0 && (
             <div>
-              <h2 className="text-lg font-semibold mb-4"></h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-6">
                 {otherCategories.map((sub) => (
                   <div
                     key={sub.slug}
                     className="flex flex-col items-center cursor-pointer bg-white shadow-md rounded-lg p-3 hover:shadow-lg transition"
-                    onClick={() => Route.push(`/collection/${sub.slug}`)}
+                    onClick={() => router.push(`/collection/${sub.slug}`)}
                   >
                     <div className="w-28 h-32 aspect-square relative">
                       {sub.image && (
@@ -206,7 +209,7 @@ export default function CollectionPage() {
         </div>
       )}
 
-      {/* 🔹 Products Section */}
+      {/* Products Section */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 cursor-pointer">
         {products.map((product) => (
           <div
@@ -215,12 +218,10 @@ export default function CollectionPage() {
             onMouseEnter={() => setHoveredProduct(product.id)}
             onMouseLeave={() => setHoveredProduct(null)}
             onClick={() =>
-              Route.push(`/collection/${category}/product/${product.id}`)
+              router.push(`/collection/${category}/product/${product.id}`)
             }
           >
-            {/* Square image wrapper */}
             <div className="relative w-full aspect-square overflow-hidden rounded-lg">
-              {/* 🔹 Diagonal Ribbon Tag */}
               {product.tagForImage && (
                 <div className="absolute top-2 left-[-40px] z-10 rotate-[-45deg]">
                   <span className="bg-red-500 text-white text-xs font-semibold px-10 py-1 shadow-md">
@@ -247,7 +248,6 @@ export default function CollectionPage() {
                 />
               )}
 
-              {/* Heart Icon */}
               <div
                 className="absolute bottom-2 right-2 bg-white p-1 rounded-full shadow cursor-pointer"
                 onClick={(e) => handleLoveClick(product.id, e)}
@@ -273,7 +273,6 @@ export default function CollectionPage() {
                   <p className="text-sm text-gray-500 line-through">
                     ₹{product.regularPrice}
                   </p>
-
                   <p className="text-sm text-black font-medium">
                     ₹{product.salePrice}
                   </p>
@@ -287,6 +286,12 @@ export default function CollectionPage() {
           </div>
         ))}
       </div>
+
+      {/* Filter Modal */}
+      <FilterPanel
+        visible={isFilterVisible}
+        onClose={() => setIsFilterVisible(false)}
+      />
     </div>
   );
 }
