@@ -9,20 +9,40 @@ interface Coupon {
   couponTitle: string;
   couponSubtitle: string;
   code: string;
+  productsId : string[];
+  productCategories: string[];
 }
 
-const DiscountCard: React.FC = () => {
+interface DiscountCardProps{
+  productId : string;
+  categories : string[];
+}
+
+const DiscountCard: React.FC<DiscountCardProps> = ({productId, categories}) => {
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0); // To keep track of the current slide
 
   useEffect(() => {
     const fetchCoupons = async () => {
       const fetchedCoupons = await getAllDocsFromCollection<Coupon>("coupons");
-      setCoupons(fetchedCoupons);
+      const applicableCoupons = fetchedCoupons.filter((coupon) => {
+      const { productsId = [], productCategories = [] } = coupon;
+      // Check if coupon applies to this product by ID
+      const productMatch = productsId.some(
+        (id) => id.toLowerCase() === productId.toLowerCase()
+      );
+
+      // Check if coupon applies to this product by category
+      const categoryMatch =productCategories.map((cat) => cat.toLowerCase()).some((cat) => categories.map((c) => c.toLowerCase()).includes(cat.toLowerCase()));
+
+  // Return only if either matches
+  return productMatch || categoryMatch;
+});
+      setCoupons(applicableCoupons);
     };
 
     fetchCoupons();
-  }, []);
+  }, [productId, categories]);
 
   const handleCopyCouponCode = (couponCode: string) => {
     if (navigator.clipboard) {
