@@ -20,6 +20,9 @@ const ProductView: React.FC<ProductViewProps> = ({ slug }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [combinedImages, setCombinedImages] = useState<string[]>([]); // New state for combined images
 
+  // add variation feture image and all thing
+  const [selectedVariation, setSelectedVariation] = useState<any>(null);  
+
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -36,6 +39,9 @@ const ProductView: React.FC<ProductViewProps> = ({ slug }) => {
             ...(fetchedProduct.videoUrl ? [fetchedProduct.videoUrl] : []),
           ];
           setCombinedImages(combined); // Set the combined array
+            // Initialize selected variation
+          // setSelectedVariation(fetchedProduct.variation?.[0] || null);
+          setSelectedVariation(null);
         }
       } catch (error) {
         console.error("Error fetching product:", error);
@@ -48,6 +54,30 @@ const ProductView: React.FC<ProductViewProps> = ({ slug }) => {
       fetchProduct();
     }
   }, [slug]);
+
+   const handleColorSelect = (variation: any) => {
+    // Toggle selection
+    if (selectedVariation?.color[0] === variation.color[0]) {
+      setSelectedVariation(null); // unselect
+      setCombinedImages([
+        product?.featuredImage || "",
+        ...(product?.galleryImages || []),
+        ...(product?.videoUrl ? [product.videoUrl] : []),
+      ]);
+    } else {
+      setSelectedVariation(variation);
+      setCombinedImages([
+        variation.image, // Show variation image first
+        ...(product?.galleryImages || []),
+        ...(product?.videoUrl ? [product.videoUrl] : []),
+      ]);
+    }
+  };
+// added new
+  const handleSizeSelect = (size: string) => {
+  if (!selectedVariation) return; 
+  setSelectedVariation(prev => ({ ...prev, selectedSize: size }));// add size to variation
+};
 
   if (loading) {
     return (
@@ -73,17 +103,19 @@ const ProductView: React.FC<ProductViewProps> = ({ slug }) => {
           <Col xs={24} md={12} lg={14} className=" lg:sticky lg:top-20">
             <div className="flex gap-4">
               <ImageGallery
+               //  Show selected variation image if available
                 galleryImages={combinedImages}
-                initialSelectedImage={combinedImages[0]}
+                initialSelectedImage={ combinedImages[0]}
                 videoUrl={product.videoUrl}
-                videoCoverImage={combinedImages[0]}
+                videoCoverImage={ combinedImages[0]}
               />
             </div>
           </Col>
 
           {/* Right Section: Product Details */}
           <Col xs={24} md={12} lg={10}>
-            <ProductDetails product={product} />
+           {/*  Pass selectedVariation and handler to ProductDetails */}
+            <ProductDetails product={product} selectedVariation={selectedVariation} onColorSelect={handleColorSelect} onSizeSelect={handleSizeSelect}/>
 
             <div className="w-full flex justify-center">
               <Image
