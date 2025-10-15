@@ -11,12 +11,14 @@ import { ProductType } from "@/Types/data/ProductType";
 import { Spinner } from "@nextui-org/react";
 import { handleAddToWishlist } from "@/utils/handleAddToWishlist";
 import { CategoryType } from "@/Types/data/CategoryType";
-import FilterPanel from "@/components/filter/filterPanel";
+// import FilterPanel from "@/components/filter/filterPanel";
+import FilterModal from "@/components/filter/filterPanel";
 
 export default function CollectionPage() {
   const params = useParams() as Record<string, string>;
   const category = params.cid;
   const [products, setProducts] = useState<ProductType[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<ProductType[]>([]); //added this
   const [categories, setCategories] = useState<CategoryType[]>([]);
   const [loading, setLoading] = useState(true);
   const [hoveredProduct, setHoveredProduct] = useState<string | null>(null);
@@ -36,14 +38,15 @@ export default function CollectionPage() {
         );
         const q = query(
           productsRef,
-          where("categories", "array-contains", category)
-        );
+           where("categories", "array-contains", category)
+          );
         const querySnapshot = await getDocs(q);
         const fetchedProducts: ProductType[] = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         } as ProductType));
         setProducts(fetchedProducts);
+        setFilteredProducts(fetchedProducts); //added this
       } catch (error) {
         console.error("Error fetching products:", error);
       } finally {
@@ -78,18 +81,78 @@ export default function CollectionPage() {
     fetchCategories();
   }, []);
 
+  // Apply Filters
+  const handleApplyFilters = (filters: {
+    categories: string[];
+    stockStatus: string[];
+    priceRange: [number, number][];
+  }) => {
+    let filtered = [...products];
+
+  //Filter Categories
+  if (filters.categories.length > 0) {
+    const selectedCategories = filters.categories.map((c) => c.toLowerCase());
+    filtered = filtered.filter((p) =>
+      p.categories?.some((c) => selectedCategories.includes(c.toLowerCase()))
+    );
+  }
+ // --- stock status: USE stockQuantity ONLY ---
+  // Accept common label variants from FilterPanel and map them to checks
+  if (filters.stockStatus.length > 0) {
+    const wantsInStock = filters.stockStatus.some(
+      (s) => s.toLowerCase().includes("in") || s.toLowerCase().includes("in-stock")
+    );
+    const wantsOutStock = filters.stockStatus.some(
+      (s) => s.toLowerCase().includes("out") || s.toLowerCase().includes("out-stock")
+    );
+
+    filtered = filtered.filter((p) => {
+      const quantity = Number(p.stockQuantity ?? 0); // ensure number
+      const isInStock = quantity > 0;
+      const isOutStock = quantity === 0;
+
+      // if user selected both, keep all; otherwise match accordingly
+      if (wantsInStock && wantsOutStock) return true;
+      if (wantsInStock) return isInStock;
+      if (wantsOutStock) return isOutStock;
+      return true;
+    });
+  }
+    // Map the checkbox label to DB values
+//     const stockStatusMap: Record<string, string> = {
+//       "In Stock": "in-stock",
+//       "Out of Stock": "out-stock",
+//     };
+//     // Stock status filter
+//     if (filters.stockStatus.length > 0) {
+//   filtered = filtered.filter((p) =>
+//     filters.stockStatus.some((label) => p.stockStatus === stockStatusMap[label])
+//   );
+// }
+
+    // Price filter
+    if (filters.priceRange.length > 0) {
+      filtered = filtered.filter((p) => {
+        const price = p.salePrice ?? p.regularPrice ?? 0;
+        return filters.priceRange.some(([min, max]) => price >= min && price <= max);
+      });
+    }
+
+    setFilteredProducts(filtered);
+  };
+
   // Subcategories
   const subCategories = categories.filter((cat) => cat.parent === category);
   const colourCategories = subCategories.filter((s) =>
-    s.name.toLowerCase().includes("colour")
+     s.name.toLowerCase().includes("colour")
   );
-  const fabricCategories = subCategories.filter((s) =>
+  const fabricCategories = subCategories.filter((s) => 
     s.name.toLowerCase().includes("fabric")
   );
   const otherCategories = subCategories.filter(
     (s) =>
-      !s.name.toLowerCase().includes("colour") &&
-      !s.name.toLowerCase().includes("fabric")
+       !s.name.toLowerCase().includes("colour") && 
+    !s.name.toLowerCase().includes("fabric")
   );
 
   const handleLoveClick = (productId: string, e: React.MouseEvent) => {
@@ -130,11 +193,11 @@ export default function CollectionPage() {
               <h2 className="text-lg font-semibold mb-4">By Colour</h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-6">
                 {colourCategories.map((sub) => (
-                  <div
-                    key={sub.slug}
+            <div
+              key={sub.slug}
                     className="flex flex-col items-center cursor-pointer bg-white shadow-md rounded-lg p-3 hover:shadow-lg transition"
-                    onClick={() => router.push(`/collection/${sub.slug}`)}
-                  >
+              onClick={() => router.push(`/collection/${sub.slug}`)}
+            >
                     <div className="w-20 h-20 aspect-square relative">
                       {sub.image && (
                         <Image
@@ -144,10 +207,10 @@ export default function CollectionPage() {
                           className="rounded-md object-cover"
                         />
                       )}
-                    </div>
-                    <p className="text-sm mt-2 text-center">{sub.name}</p>
-                  </div>
-                ))}
+              </div>
+              <p className="text-sm mt-2 text-center">{sub.name}</p>
+            </div>
+          ))}
               </div>
             </div>
           )}
@@ -211,7 +274,7 @@ export default function CollectionPage() {
 
       {/* Products Section */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 cursor-pointer">
-        {products.map((product) => (
+        {filteredProducts.map((product) => (
           <div
             key={product.id}
             className="border p-2 rounded-lg flex flex-col items-center bg-white shadow hover:shadow-lg transition"
@@ -288,9 +351,10 @@ export default function CollectionPage() {
       </div>
 
       {/* Filter Modal */}
-      <FilterPanel
+      <FilterModal
         visible={isFilterVisible}
         onClose={() => setIsFilterVisible(false)}
+        onApplyFilters={handleApplyFilters}
       />
     </div>
   );
