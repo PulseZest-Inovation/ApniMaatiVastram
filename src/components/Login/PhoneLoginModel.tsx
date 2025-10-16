@@ -22,6 +22,7 @@ export default function PhoneLoginModel({ isOpen, onOpenChange }: PheneLoginModa
   const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
   const [isPending, startTransition] = useTransition();
   const [userName, setUserName] = useState(''); // State to hold the user's name
+  const [userEmail, setUserEmail] = useState(''); //state to hold the user email 
 
   useEffect(() => {
     if (!isOpen) return;
@@ -88,7 +89,7 @@ export default function PhoneLoginModel({ isOpen, onOpenChange }: PheneLoginModa
     try {
       await confirmationResult.confirm(otp);
       // Pass the user's name as an argument to createAccount
-      await createAccount(userName);
+      await createAccount(userName, userEmail);
       message.success("OTP Verified Successfully");
       onOpenChange(false); // Close the modal on success
       window.location.reload();
@@ -119,6 +120,18 @@ export default function PhoneLoginModel({ isOpen, onOpenChange }: PheneLoginModa
                     value={userName}
                     onChange={(e) => setUserName(e.target.value)}
                     placeholder="Enter your name"
+                  />
+                </div>
+                 {/* ✅ NEW: User Email Input */}
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="userEmail">Enter Email</label>
+                  <Input
+                    id="userEmail"
+                    className="w-full"
+                    type="email"
+                    value={userEmail}
+                    onChange={(e) => setUserEmail(e.target.value)}
+                    placeholder="Enter your email"
                   />
                 </div>
 

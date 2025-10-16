@@ -1,10 +1,10 @@
-import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '@/config/FirebaseConfig'; // Assuming 'db' is your Firestore instance
 import { getAuth } from 'firebase/auth';
 import { ApplicationConfig } from '@/config/ApplicationConfig';
 
 // Function to create the user in Firestore
-export const createAccount = async (userName: string) => {
+export const createAccount = async (userName: string, userEmail?: string) => {
   try {
         const auth = getAuth();
         const currentUser = auth.currentUser
@@ -22,10 +22,16 @@ export const createAccount = async (userName: string) => {
       await setDoc(userDocRef, {
         fullName: userName,
         phoneNumber: currentUser.phoneNumber, // Set the phone number as part of the user's document
+        ...(userEmail && {email: userEmail})
       });
 
       console.log('User account created successfully.');
     } else {
+       // ✅ Update the email if provided
+      if (userEmail) {
+        await updateDoc(userDocRef, { email: userEmail });
+        console.log('User email updated successfully.');
+      }
       console.log('User document already exists. No changes made.');
     }
   } catch (error) {
