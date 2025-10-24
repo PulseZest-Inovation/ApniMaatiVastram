@@ -6,7 +6,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 interface Coupon {
   id: string;
   code: string;
-  discount: number;
+  amount: number;
   description: string;
 }
 
@@ -28,7 +28,7 @@ const CouponCode: React.FC<CouponCodeProps> = ({
   totalAmount,
 }) => {
   const [coupons, setCoupons] = useState<Coupon[]>([]);
-  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const scrollRef = useRef<HTMLDivElement | null>(null);  
 
   useEffect(() => {
     const fetchCoupons = async () => {
@@ -107,7 +107,7 @@ const CouponCode: React.FC<CouponCodeProps> = ({
               >
                 <p className="text-sm font-bold text-gray-800">{coupon.code}</p>
                 <p className="text-xs text-gray-600">{coupon.description}</p>
-                <p className="text-green-600 font-semibold">{coupon.discount}% OFF</p>
+                <p className="text-green-600 font-semibold">{coupon.amount}% OFF</p>
               </div>
             ))}
           </div>

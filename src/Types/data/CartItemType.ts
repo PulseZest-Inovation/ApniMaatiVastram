@@ -5,6 +5,11 @@ export interface CartItem {
     quantity: number;
     image: string;
     productTitle: string;
-    isReadyToWear: boolean;
+    isReadyToWear: boolean;   
     readyToWearCharges: number;
+    // new add
+    categories: string[];
+    productId: string;
+    // to show applied coupon under product
+    appliedCouponCode: string;
   }

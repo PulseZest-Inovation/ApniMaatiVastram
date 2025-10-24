@@ -1,3 +1,4 @@
+'use client';
 import React, { useEffect, useState } from "react";
 import { Card } from "@nextui-org/react";
 import { FaPercent, FaClipboard } from "react-icons/fa";
@@ -5,24 +6,51 @@ import { useSwipeable } from "react-swipeable";
 import { getAllDocsFromCollection } from "@/service/Firebase/getFirestore";
 import { toast } from "react-toastify"; // Importing toast for a better notification
 
+
 interface Coupon {
   couponTitle: string;
   couponSubtitle: string;
   code: string;
+  productsId : string[];
+  productCategories: string[];
 }
 
-const DiscountCard: React.FC = () => {
+interface DiscountCardProps{
+  productId : string;
+  categories : string[];
+}
+
+const DiscountCard: React.FC<DiscountCardProps> = ({productId, categories}) => {
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0); // To keep track of the current slide
 
   useEffect(() => {
     const fetchCoupons = async () => {
       const fetchedCoupons = await getAllDocsFromCollection<Coupon>("coupons");
-      setCoupons(fetchedCoupons);
+      const applicableCoupons = fetchedCoupons.filter((coupon) => {
+        const { productsId = [], productCategories = [] } = coupon;
+        // Check if coupon applies to this product by ID
+        const productMatch = productsId
+          .map(id => id.toLowerCase())
+          .includes(productId.toLowerCase());
+        // Check if coupon applies to this product by category
+        const categoryMatch =
+          Array.isArray(categories) &&
+          productCategories
+            .map(cat => cat.trim().toLowerCase())
+            .some(couponCat =>
+              categories.map(c => c.trim().toLowerCase()).includes(couponCat)
+            );
+
+            // Return only if either matches
+            return productMatch || categoryMatch;
+      });
+
+      setCoupons(applicableCoupons);
     };
 
     fetchCoupons();
-  }, []);
+  }, [productId, categories]);
 
   const handleCopyCouponCode = (couponCode: string) => {
     if (navigator.clipboard) {
@@ -38,7 +66,7 @@ const DiscountCard: React.FC = () => {
             },
           });
         })
-        .catch((err) => {
+        .catch(err => {
           console.error("Failed to copy coupon code: ", err);
           toast.error("Failed to copy coupon code.", {
             position: "top-center",
@@ -60,14 +88,14 @@ const DiscountCard: React.FC = () => {
           color: "#FF6347", // Red text color for error
           border: "1px solid #FF6347", // Red border for error
         },
-      });
+        });
     }
   };
 
   // Swipeable handler to go to next/previous coupon
   const handlers = useSwipeable({
-    onSwipedLeft: () => setCurrentIndex((prevIndex) => (prevIndex + 1) % coupons.length), // Go to next slide
-    onSwipedRight: () => setCurrentIndex((prevIndex) => (prevIndex - 1 + coupons.length) % coupons.length), // Go to previous slide
+    onSwipedLeft: () => setCurrentIndex((prevIndex) => (prevIndex + 1) % coupons.length),// Go to next slide
+    onSwipedRight: () => setCurrentIndex((prevIndex) => (prevIndex - 1 + coupons.length) % coupons.length),// Go to previous slide
   });
 
   return (
@@ -75,7 +103,7 @@ const DiscountCard: React.FC = () => {
       {coupons.length > 0 ? (
         <div {...handlers} className="relative">
           <div className="flex overflow-hidden w-full">
-            {/* Card 1 */}
+              {/* Card 1 */}
             <Card
               className="cursor-pointer"
               style={{
