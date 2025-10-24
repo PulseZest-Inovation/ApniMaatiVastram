@@ -24,15 +24,15 @@ export const handleAddToWishlist = async (product: ProductType): Promise<boolean
       productId: product.id,
       productTitle: product.productTitle,
       productSubtitle: product.productSubtitle,
-      image: product.featuredImage,
+      image: product.image || product.variation?.image || product.featuredImage,
       addedAt: new Date(), // Timestamp of when the product was added to the wishlist
       sku: product.sku ?? "",
       isReadyToWear: product.isReadyToWear ?? null,
       isPrePlated: product.isPrePlated ?? null,
-      price:product.price ?? 0,
-      salePrice: product.salePrice ?? 0,
-      regularPrice: product.regularPrice ?? 0,
-      
+      price:  product.price ?? 0,
+      salePrice: product.salePrice ?? product.price ?? 0,
+      regularPrice: product.regularPrice ?? product.price ?? 0,
+      variation: product.variation || null,
     };
 
     // Use Firestore to add product to the wishlist subcollection

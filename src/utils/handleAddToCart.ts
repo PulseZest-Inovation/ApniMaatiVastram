@@ -34,13 +34,17 @@ export const handleAddToCart = async (
     const cartData = {
       productId: product.id,
       quantity: 1, // Default quantity can be 1 or passed from the front-end
-      price: price, // Ensure price is a number
+      // price: price, // Ensure price is a number
+      price : product?.variation?.price ?? product.price ?? product.salePrice ?? product.regularPrice ?? 0, //new upudate
       productTitle: product.productTitle,
       productSubtitle: product.productSubtitle,
-      totalPrice: price * 1, // Total price calculated for quantity (1 in this case)
+      // totalPrice: price * 1, // Total price calculated for quantity (1 in this case)
+      totalPrice : (product?.variation?.price ?? product.price ?? product.salePrice ?? product.regularPrice ?? 0)*1,
       addedAt: new Date(), // Timestamp of when the product was added to the cart
       status: "pending", // Could be "pending", "in-process", "purchased", etc.
-      image: product.featuredImage,
+      // image: product.featuredImage,
+      image: product.image || product.featuredImage || product.variation?.image,
+      variation: product.variation || null,
       readyData: product.readyToWear ?? null, // Ensure readyToWear is not undefined
       readyToWearCharges: product.readyToWearCharges ?? 0, // Make sure this is defined
       isReadyToWear: product.isReadyToWear ?? null, // Ensure a valid value (null if undefined)
