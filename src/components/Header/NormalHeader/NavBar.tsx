@@ -105,7 +105,7 @@ const NavBar: React.FC<NavBarProps> = ({onSearchQueryChange}) => {
 </div>
 
 {/* Right: Icons (User, Wishlist, Cart, Menu) */}
-<div className="flex items-center justify-end w-1/4">
+<div className="flex items-center justify-end w-auto space-x-3">
   {/* Icons Group */}
   <div className="flex items-center space-x-3 sm:space-x-4">
     {/* User Icon */}

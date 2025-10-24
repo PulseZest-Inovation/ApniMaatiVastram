@@ -11,17 +11,17 @@ interface Product {
 }
 
 interface SearchBarProps {
-  onQueryChange?: (query: string) => void; // 🔹 Optional callback for parent
+  onQueryChange?: (query: string) => void;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({ onQueryChange }) => {
   const [query, setQuery] = useState("");
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-  const [selectedIndex, setSelectedIndex] = useState(-1); // for keyboard navigation
+  const [selectedIndex, setSelectedIndex] = useState(-1);
   const router = useRouter();
 
-  // 🔹 Fetch products from Firestore once
+  // Fetch products from Firestore once
   useEffect(() => {
     const fetchProducts = async () => {
       const data = await getAllDocsFromCollection<Product>("products");
@@ -30,15 +30,12 @@ const SearchBar: React.FC<SearchBarProps> = ({ onQueryChange }) => {
     fetchProducts();
   }, []);
 
-  // 🔹 Handle input change & filter products
+  // Handle input change & filter products
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setQuery(value);
 
-    // 🔹 Call parent callback if provided
-    if (onQueryChange) {
-      onQueryChange(value);
-    }
+    if (onQueryChange) onQueryChange(value);
 
     if (value.trim() === "") {
       setFilteredProducts([]);
@@ -52,7 +49,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onQueryChange }) => {
     }
   };
 
-  // 🔹 Handle key navigation
+  // Handle key navigation
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "ArrowDown") {
       setSelectedIndex((prev) =>
@@ -68,8 +65,11 @@ const SearchBar: React.FC<SearchBarProps> = ({ onQueryChange }) => {
     }
   };
 
-  // 🔹 Open product details page
+  // Open product details page and close suggestions
   const openProduct = (product: Product) => {
+    setFilteredProducts([]);
+    setSelectedIndex(-1);
+    setQuery(""); // clear input after selecting
     router.push(`/collection/category/product/${product.id}`);
   };
 
@@ -82,14 +82,14 @@ const SearchBar: React.FC<SearchBarProps> = ({ onQueryChange }) => {
           value={query}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
-          className="w-full border border-gray-300 rounded-md pl-10 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600"
+          className="w-full border border-gray-300 rounded-md pl-10 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600 placeholder-animated"
         />
         <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer">
           <SearchIcon size={18} />
         </span>
       </div>
 
-      {/* 🔹 Suggestions Dropdown */}
+      {/* Suggestions Dropdown */}
       {filteredProducts.length > 0 && (
         <ul className="absolute w-full bg-white border border-gray-200 rounded-md mt-1 shadow-md max-h-60 overflow-y-auto z-10">
           {filteredProducts.map((product, index) => (
@@ -105,6 +105,8 @@ const SearchBar: React.FC<SearchBarProps> = ({ onQueryChange }) => {
           ))}
         </ul>
       )}
+
+    
     </div>
   );
 };
