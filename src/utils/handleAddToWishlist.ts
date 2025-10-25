@@ -24,7 +24,8 @@ export const handleAddToWishlist = async (product: ProductType): Promise<boolean
       productId: product.id,
       productTitle: product.productTitle,
       productSubtitle: product.productSubtitle,
-      image: product.featuredImage,
+      // image: product.featuredImage,
+      image: product.image || product.variations?.image || product.featuredImage,
       addedAt: new Date(), // Timestamp of when the product was added to the wishlist
       sku: product.sku ?? "",
       isReadyToWear: product.isReadyToWear ?? null,
@@ -32,6 +33,7 @@ export const handleAddToWishlist = async (product: ProductType): Promise<boolean
       price:product.price ?? 0,
       salePrice: product.salePrice ?? 0,
       regularPrice: product.regularPrice ?? 0,
+      variations: product.variations || null,
       
     };
 

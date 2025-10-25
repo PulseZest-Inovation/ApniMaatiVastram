@@ -19,6 +19,9 @@ const ProductView: React.FC<ProductViewProps> = ({ slug }) => {
   const [product, setProduct] = useState<ProductType | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [combinedImages, setCombinedImages] = useState<string[]>([]); // New state for combined images
+    // add variation feture image and all thing
+  const [selectedVariation, setSelectedVariation] = useState<any>(null);  
+
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -36,6 +39,7 @@ const ProductView: React.FC<ProductViewProps> = ({ slug }) => {
             ...(fetchedProduct.videoUrl ? [fetchedProduct.videoUrl] : []),
           ];
           setCombinedImages(combined); // Set the combined array
+            setSelectedVariation(null);
         }
       } catch (error) {
         console.error("Error fetching product:", error);
@@ -48,6 +52,33 @@ const ProductView: React.FC<ProductViewProps> = ({ slug }) => {
       fetchProduct();
     }
   }, [slug]);
+    // Correct toggle logic to handle null (unselect)
+  const handleColorSelect = (variation: any | null) => {
+    if (!variation) {
+      // When null is passed → reset everything
+      setSelectedVariation(null);
+      setCombinedImages([
+        product?.featuredImage || "",
+        ...(product?.galleryImages || []),
+        ...(product?.videoUrl ? [product.videoUrl] : []),
+      ]);
+      return;
+    }
+
+    // Otherwise select new variation
+    setSelectedVariation(variation);
+    setCombinedImages([
+      variation.image || product?.featuredImage,
+      ...(product?.galleryImages || []),
+      ...(product?.videoUrl ? [product.videoUrl] : []),
+    ]);
+  };
+
+// added new
+  const handleSizeSelect = (size: string) => {
+  if (!selectedVariation) return; 
+  setSelectedVariation(prev => ({ ...prev, selectedSize: size }));// add size to variation
+};
 
   if (loading) {
     return (
@@ -83,7 +114,9 @@ const ProductView: React.FC<ProductViewProps> = ({ slug }) => {
 
           {/* Right Section: Product Details */}
           <Col xs={24} md={12} lg={10}>
-            <ProductDetails product={product} />
+            {/* <ProductDetails product={product} /> */}
+              {/*  Pass selectedVariation and handler to ProductDetails */}
+            <ProductDetails product={product} selectedVariation={selectedVariation} onColorSelect={handleColorSelect} onSizeSelect={handleSizeSelect}/>
 
             <div className="w-full flex justify-center">
               <Image
