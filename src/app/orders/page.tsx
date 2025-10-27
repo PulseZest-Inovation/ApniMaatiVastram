@@ -94,6 +94,8 @@ export default function OrderHistoryPage() {
                   {order.status}
                 </span>
               </div>
+              <p className='text-sm text-gray-500'>Email: {order.email}</p>
+              <p className='text-sm text-gray-500'>Address: {order.address}</p>
               <p className="text-sm text-gray-500">Total: ₹{order.totalAmount}</p>
               <p className="text-sm text-gray-500">
                 Date: {new Date(order.createdAt?.toDate()).toLocaleDateString()}
