@@ -193,8 +193,8 @@ export default function CheckoutOrderDetails({ totalAmount, isCouponApplied, cou
             type="email"
             placeholder="Enter your email"
             value={formData.email}
-            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            required
+            // onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            readOnly
             className={`w-full p-2 border ${validateEmail(formData.email) ? 'border-gray-300' : 'border-red-500'} rounded`}
           />
         </div>
