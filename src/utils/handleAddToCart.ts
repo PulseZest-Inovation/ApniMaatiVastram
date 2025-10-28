@@ -41,8 +41,8 @@ export const handleAddToCart = async (
       addedAt: new Date(), // Timestamp of when the product was added to the cart
       status: "pending", // Could be "pending", "in-process", "purchased", etc.
       // image: product.featuredImage,
-      image: product.image || product.featuredImage || product.variations?.image,
-      variations: product.variations || null,
+      image: product.image || product.featuredImage || product.variation?.image,
+      variation: product.variation || null,
       readyData: product.readyToWear ?? null, // Ensure readyToWear is not undefined
       readyToWearCharges: product.readyToWearCharges ?? 0, // Make sure this is defined
       isReadyToWear: product.isReadyToWear ?? null, // Ensure a valid value (null if undefined)

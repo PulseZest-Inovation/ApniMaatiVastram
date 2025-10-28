@@ -59,7 +59,7 @@ export interface ProductType {
   tags: string[];
   featuredImage: string;
   galleryImages: string[];
-  variations: VariationType[];
+  // variations: VariationType[];
   variation: VariationType[];
   attributes: AttributeType[];
   menuOrder: number;
@@ -84,7 +84,8 @@ export interface VariationType {
   name: string;
   value: string;
   color: string;
-  // image: string;
+  colorCode: string;
+  image: string;
 }
 
 export interface AttributeType {

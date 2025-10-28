@@ -67,8 +67,10 @@ const ProductView: React.FC<ProductViewProps> = ({ slug }) => {
 
     // Otherwise select new variation
     setSelectedVariation(variation);
+    const variationImage = Array.isArray(variation.images) && variation.images.length > 0 ? variation.images[0].imageUrl : variation.images?.imageUrl || variation.image || product?.featuredImage;
     setCombinedImages([
-      variation.image || product?.featuredImage,
+      variationImage,
+      // variation.image|| product?.featuredImage,
       ...(product?.galleryImages || []),
       ...(product?.videoUrl ? [product.videoUrl] : []),
     ]);
@@ -104,11 +106,12 @@ const ProductView: React.FC<ProductViewProps> = ({ slug }) => {
           <Col xs={24} md={12} lg={14} className=" lg:sticky lg:top-20">
             <div className="flex gap-4">
               <ImageGallery
-                galleryImages={combinedImages}
-                initialSelectedImage={combinedImages[0]}
-                videoUrl={product.videoUrl}
-                videoCoverImage={combinedImages[0]}
-              />
+              key={selectedVariation ? selectedVariation.colorCode || selectedVariation.id : "default"}
+              galleryImages={combinedImages}
+              initialSelectedImage={combinedImages[0]}
+              videoUrl={product.videoUrl}
+              videoCoverImage={combinedImages[0]}
+            />
             </div>
           </Col>
 

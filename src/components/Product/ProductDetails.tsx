@@ -83,14 +83,14 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product,selectedVariati
     // Pass isReadyToWear state along with the product and readyToWear fields
     const success = await handleAddToCart({
       ...product,
-       variations: {
+       variation: {
     ...selectedVariation,
     //  override image here and size
     selectedSize: selectedVariation?.selectedSize,
     image: selectedVariation?.image || product.featuredImage,
   },
   price: selectedVariation?.price || product.price,
-  image: selectedVariation?.image || product.featuredImage, //  also send main image
+image: selectedVariation?.images?.[0]?.imageUrl || selectedVariation?.image || product.featuredImage,
       readyToWear,
       isReadyToWear,
       isPrePlated,
@@ -138,11 +138,11 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product,selectedVariati
     price,
     salePrice,
     regularPrice,
-    image: selectedVariation?.image || product.featuredImage,
+    image: selectedVariation?.images?.[0]?.imageUrl || selectedVariation?.image || product.featuredImage,
     variation: selectedVariation || null,
   };
 
-    const success = await handleAddToWishlist(productWithVariation);
+    const success = await handleAddToWishlist(productWithVariation,selectedVariation);
   
     setLoading((prev) => ({ ...prev, wishlist: false }));
   
@@ -241,40 +241,42 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product,selectedVariati
         {stockToCheck <= 0 && <p className="text-red-600 font-bold mt-2 ">Out of Stock</p>}
       </div>
       {/* Variation Selection */}
-      {product.variations && product.variations.length > 0 && (
+      {product.variation && product.variation.length > 0 && (
         <div className="mt-4 space-y-3">
-          {/*  Colors */}
-          <div>
-            <p className="font-semibold mb-1">Color</p>
-            <div className="flex gap-2 flex-wrap">
-              {product.variations.map((v, idx) => {
-                const isSelected =
-                  selectedVariation?.color?.[0]?.toLowerCase() ===
-                  v.color?.[0]?.toLowerCase();
+        {/* Color Selection */}
+      <div>
+        <p className="font-semibold mb-1">Color</p>
+        <div className="flex gap-3 flex-wrap">
+          {product.variation.map((v, idx) => {
+            const colorCode = v.colorCode || "#ccc"; // 🔹 use colorCode from DB
+            const isSelected =
+              selectedVariation?.colorCode?.toLowerCase() ===
+              colorCode?.toLowerCase();
 
-                return (
-                  <button
-                    key={idx}
-                    className={`px-3 py-1 rounded border transition ${
-                      isSelected
-                        ? "border-black bg-black text-white font-bold"
-                        : "border-gray-300 hover:border-black"
-                    }`}
-                    onClick={() => {
-                      //  Toggle selection: if same color clicked again, deselect
-                      if (isSelected) {
-                        onColorSelect?.(null); // Unselect → goes back to featured image
-                      } else {
-                        onColorSelect?.(v); // Select new color → show its image
-                      }
-                    }}
-                  >
-                    {v.color?.[0] || "—"}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+            return (
+              <button
+                key={idx}
+                onClick={() => {
+                  if (isSelected) {
+                    onColorSelect?.(null); // Unselect → back to featured image
+                  } else {
+                    onColorSelect?.(v); // Select variation → show its image
+                  }
+                }}
+                className={`w-6 h-6 rounded-full border-2 transition-all duration-100 ${
+                  isSelected
+                    ? "border-black scale-110"
+                    : "border-gray-300 hover:border-black"
+                }`}
+                style={{
+                  backgroundColor: colorCode, //  actual color fill
+                }}
+                title={colorCode}
+              ></button>
+            );
+          })}
+        </div>
+      </div>
       {/*  SIZE SELECTION */}
       {(() => {
         const sizesArray: string[] =
