@@ -20,9 +20,12 @@ import ProductGuide from "./ProductGuide";
 
 interface ProductDetailsProps {
   product: ProductType;
+  selectedVariation?: any; //  Selected variation from parent
+  onColorSelect?: (variation: any) => void; //  handler to select variation
+  onSizeSelect?:(size:string) => void;
 }
 
-const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
+const ProductDetails: React.FC<ProductDetailsProps> = ({ product, selectedVariation, onColorSelect ,onSizeSelect}) => {
   const [loading, setLoading] = useState({ cart: false, wishlist: false });
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -78,6 +81,14 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
     // Pass isReadyToWear state along with the product and readyToWear fields
     const success = await handleAddToCart({
       ...product,
+      variation: {
+    ...selectedVariation,
+    //  override image here and size
+    selectedSize: selectedVariation?.selectedSize,
+    image: selectedVariation?.image || product.featuredImage,
+  },
+  price: selectedVariation?.price || product.price,
+  image: selectedVariation?.image || product.featuredImage, //  also send main image
       readyToWear,
       isReadyToWear,
       isPrePlated,
@@ -106,8 +117,30 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
 
   const handleWishlistClick = async () => {
     setLoading((prev) => ({ ...prev, wishlist: true }));
-  
-    const success = await handleAddToWishlist(product);
+
+    
+  // Decide which data to use
+  const source = selectedVariation || product;
+
+  const price = source.price ? Number(source.price) : 0;
+  const salePrice = source.salePrice
+    ? Number(source.salePrice)
+    : price; // fallback to price if empty
+  const regularPrice = source.regularPrice
+    ? Number(source.regularPrice)
+    : price; // fallback to price if empty
+
+    //  Merge selectedVariation data before sending
+  const productWithVariation = {
+    ...product,
+    price,
+    salePrice,
+    regularPrice,
+    image: selectedVariation?.image || product.featuredImage,
+    variation: selectedVariation || null,
+  };
+
+    const success = await handleAddToWishlist(productWithVariation);
   
     setLoading((prev) => ({ ...prev, wishlist: false }));
   
@@ -134,6 +167,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
   
 
   const rating = parseFloat(product.averageRating);
+  // const availableSizes = selectedVariation?.size || []; //added new
 
   // Only render rating if it's a valid number and not 0
   const shouldShowRating = !isNaN(rating) && rating > 0;
@@ -191,7 +225,8 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
               ₹{product.regularPrice}
             </span>
           )}
-          <span className="text-3xl font-bold ">₹{product.price}</span>
+          {/* add variation price */}
+          <span className="text-3xl font-bold ">₹{selectedVariation?.price || product.price}</span> 
         </div>
         <p className="text-1xl text-gray-500 capitalize font-thin">
           Inclusive of All Taxes
@@ -202,6 +237,100 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
           <p className="text-red-600 font-bold mt-2">Out of Stock</p>
         )}
       </div>
+ {/* Variation Selection */}
+{product.variation && product.variation.length > 0 && (
+  <div className="mt-4 space-y-3">
+    {/* ✅ Colors */}
+    <div>
+      <p className="font-semibold mb-1">Color</p>
+      <div className="flex gap-2 flex-wrap">
+        {product.variation.map((v, idx) => {
+          const isSelected =
+            selectedVariation?.color?.[0]?.toLowerCase() ===
+            v.color?.[0]?.toLowerCase();
+
+          return (
+            <button
+              key={idx}
+              className={`px-3 py-1 rounded border transition ${
+                isSelected
+                  ? "border-black bg-black text-white font-bold"
+                  : "border-gray-300 hover:border-black"
+              }`}
+              onClick={() => {
+                // ✅ Toggle selection: if same color clicked again, deselect
+                if (isSelected) {
+                  onColorSelect?.(null); // Unselect → goes back to featured image
+                } else {
+                  onColorSelect?.(v); // Select new color → show its image
+                }
+              }}
+            >
+              {v.color?.[0] || "—"}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+{/* ✅ SIZE SELECTION */}
+{(() => {
+  const sizesArray: string[] =
+    selectedVariation?.size == null
+      ? []
+      : Array.isArray(selectedVariation.size)
+      ? selectedVariation.size
+      : [String(selectedVariation.size)];
+
+  if (sizesArray.length === 0) return null;
+
+  return (
+    <div>
+      <p className="font-semibold mb-2">Size</p>
+      <div className="flex gap-2 flex-wrap">
+        {sizesArray.map((sz: string) => (
+          <button
+            key={sz}
+            className={`px-3 py-1 border rounded ${
+              selectedVariation?.selectedSize === sz
+                ? "bg-black text-white border-black"
+                : "bg-white text-black border-gray-300 hover:border-black"
+            }`}
+            onClick={() => onSizeSelect?.(sz)}
+          >
+            {sz}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+})()}
+
+ {/* <div>
+  <p className="font-semibold mb-2">Size</p>
+  <div className="flex gap-2">
+    {availableSizes.map((size) => (
+      <button
+        key={size}
+        className={`px-3 py-1 border rounded ${
+          selectedVariation?.size === size
+            ? "bg-blue-500 text-white"
+            : "bg-white text-black"
+        }`}
+        onClick={() => onSizeSelect?.(size)}
+      >
+        {size}
+      </button>
+    ))}
+  </div>
+</div> */}
+    {/* ✅ Weight */}
+    <div>
+      <p className="font-semibold mb-1">Weight</p>
+      <div>{selectedVariation?.weight || "N/A"} kg</div>
+    </div>
+  </div>
+)}
+
 
       <ProductGuide Product={product} />
 
@@ -293,7 +422,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
             product.description.find(
               (d) => d.heading.toLowerCase() === section.toLowerCase()
             )?.content || "<p>Content not available.</p>"
-          }
+          } 
         />
       ))}
 
