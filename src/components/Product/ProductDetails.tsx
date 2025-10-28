@@ -20,9 +20,12 @@ import ProductGuide from "./ProductGuide";
 
 interface ProductDetailsProps {
   product: ProductType;
+  selectedVariation?: any; //  Selected variation from parent
+  onColorSelect?: (variation: any) => void; //  handler to select variation
+  onSizeSelect?:(size:string) => void;
 }
 
-const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
+const ProductDetails: React.FC<ProductDetailsProps> = ({ product,selectedVariation, onColorSelect, onSizeSelect }) => {
   const [loading, setLoading] = useState({ cart: false, wishlist: false });
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -65,6 +68,8 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
   const handlePrePlateToChange = (isPrePlated: boolean) => {
     setIsPrePlated(isPrePlated);
   };
+  //  Determine the stock to check (variation first, then main product)
+  const stockToCheck = Number(selectedVariation?.product_stock ?? product.stockQuantity);
 
   const handleCartClick = async () => {
     // Check if the user is logged in
@@ -78,6 +83,14 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
     // Pass isReadyToWear state along with the product and readyToWear fields
     const success = await handleAddToCart({
       ...product,
+       variation: {
+    ...selectedVariation,
+    //  override image here and size
+    selectedSize: selectedVariation?.selectedSize,
+    image: selectedVariation?.image || product.featuredImage,
+  },
+  price: selectedVariation?.price || product.price,
+image: selectedVariation?.images?.[0]?.imageUrl || selectedVariation?.image || product.featuredImage,
       readyToWear,
       isReadyToWear,
       isPrePlated,
@@ -107,7 +120,29 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
   const handleWishlistClick = async () => {
     setLoading((prev) => ({ ...prev, wishlist: true }));
   
-    const success = await handleAddToWishlist(product);
+    // const success = await handleAddToWishlist(product);
+     // Decide which data to use
+  const source = selectedVariation || product;
+
+  const price = source.price ? Number(source.price) : 0;
+  const salePrice = source.salePrice
+    ? Number(source.salePrice)
+    : price; // fallback to price if empty
+  const regularPrice = source.regularPrice
+    ? Number(source.regularPrice)
+    : price; // fallback to price if empty
+
+    //  Merge selectedVariation data before sending
+  const productWithVariation = {
+    ...product,
+    price,
+    salePrice,
+    regularPrice,
+    image: selectedVariation?.images?.[0]?.imageUrl || selectedVariation?.image || product.featuredImage,
+    variation: selectedVariation || null,
+  };
+
+    const success = await handleAddToWishlist(productWithVariation,selectedVariation);
   
     setLoading((prev) => ({ ...prev, wishlist: false }));
   
@@ -191,18 +226,96 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
               ₹{product.regularPrice}
             </span>
           )}
-          <span className="text-3xl font-bold ">₹{product.price}</span>
+          {/* <span className="text-3xl font-bold ">₹{product.price}</span> */}
+             {/* add variation price */}
+          <span className="text-3xl font-bold ">₹{selectedVariation?.price || product.price}</span> 
         </div>
         <p className="text-1xl text-gray-500 capitalize font-thin">
           Inclusive of All Taxes
         </p>
 
         {/* Out of Stock Message */}
-        {product.stockQuantity <= 0 && (
+        {/* {product.stockQuantity <= 0 && (
           <p className="text-red-600 font-bold mt-2">Out of Stock</p>
-        )}
+        )} */}
+        {stockToCheck <= 0 && <p className="text-red-600 font-bold mt-2 ">Out of Stock</p>}
       </div>
+      {/* Variation Selection */}
+      {product.variation && product.variation.length > 0 && (
+        <div className="mt-4 space-y-3">
+        {/* Color Selection */}
+      <div>
+        <p className="font-semibold mb-1">Color</p>
+        <div className="flex gap-3 flex-wrap">
+          {product.variation.map((v, idx) => {
+            const colorCode = v.colorCode || "#ccc"; // 🔹 use colorCode from DB
+            const isSelected =
+              selectedVariation?.colorCode?.toLowerCase() ===
+              colorCode?.toLowerCase();
 
+            return (
+              <button
+                key={idx}
+                onClick={() => {
+                  if (isSelected) {
+                    onColorSelect?.(null); // Unselect → back to featured image
+                  } else {
+                    onColorSelect?.(v); // Select variation → show its image
+                  }
+                }}
+                className={`w-6 h-6 rounded-full border-2 transition-all duration-100 ${
+                  isSelected
+                    ? "border-black scale-110"
+                    : "border-gray-300 hover:border-black"
+                }`}
+                style={{
+                  backgroundColor: colorCode, //  actual color fill
+                }}
+                title={colorCode}
+              ></button>
+            );
+          })}
+        </div>
+      </div>
+      {/*  SIZE SELECTION */}
+      {(() => {
+        const sizesArray: string[] =
+          selectedVariation?.size == null
+            ? []
+            : Array.isArray(selectedVariation.size)
+            ? selectedVariation.size
+            : [String(selectedVariation.size)];
+
+        if (sizesArray.length === 0) return null;
+
+        return (
+          <div>
+            <p className="font-semibold mb-2">Size</p>
+            <div className="flex gap-2 flex-wrap">
+              {sizesArray.map((sz: string) => (
+                <button
+                  key={sz}
+                  className={`px-3 py-1 border rounded ${
+                    selectedVariation?.selectedSize === sz
+                      ? "bg-black text-white border-black"
+                      : "bg-white text-black border-gray-300 hover:border-black"
+                  }`}
+                  onClick={() => onSizeSelect?.(sz)}
+                >
+                  {sz}
+                </button>
+              ))}
+            </div>
+          </div>
+        );
+      })()}
+          {/*  Weight */}
+          <div>
+            <p className="font-semibold mb-1">Weight</p>
+            <div>{selectedVariation?.weight || "N/A"} kg</div>
+          </div>
+        </div>
+      )}
       <ProductGuide Product={product} />
 
       <ReadyToWear
@@ -221,7 +334,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
       <DiscountCard />
 
       {/* Sticky Footer for Action Buttons (Mobile Only) */}
-      {product.stockQuantity > 0 && (
+      {stockToCheck > 0 && (
         <div className="p-4 bg-white flex flex-col md:flex-row md:space-x-2 space-y-4 md:space-y-0 md:items-center md:static fixed bottom-0 left-0 right-0 z-10">
           <Button
             endContent={

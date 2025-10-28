@@ -10,7 +10,7 @@ export interface ProductType {
   permalink: string;
   createdAt: Timestamp;
   ModifiedAt: Timestamp;
-
+    image: string;
   
   isPrePlated: boolean;
   prePlatedCharges: number;
@@ -59,6 +59,7 @@ export interface ProductType {
   tags: string[];
   featuredImage: string;
   galleryImages: string[];
+  // variations: VariationType[];
   variation: VariationType[];
   attributes: AttributeType[];
   menuOrder: number;
@@ -82,6 +83,9 @@ export interface VariationType {
   id: string;
   name: string;
   value: string;
+  color: string;
+  colorCode: string;
+  image: string;
 }
 
 export interface AttributeType {
