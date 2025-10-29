@@ -30,6 +30,7 @@ export default function FilterModal({visible,onClose,onApplyFilters,}: FilterMod
       title="Filter Products"
       open={visible}
       onCancel={onClose}
+      width={400} 
       footer={[
         <Button key="cancel" onClick={onClose}>
           Cancel

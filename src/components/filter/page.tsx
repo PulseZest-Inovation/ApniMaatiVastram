@@ -105,7 +105,7 @@ const FilterPanel = forwardRef<FilterPanelRef>((props, ref) => {
   }));
 
   return (
-    <div className="w-64 border border-gray-200 rounded-md p-4 overflow-y-auto max-h-[500px]">
+    <div className=" border border-gray-200 rounded-md p-4 overflow-y-auto max-h-[500px]">
       <FilterSection title="Availability" options={[{ label: "In Stock" }, { label: "Out of Stock" }]}
         onSelect={(label, checked) => handleSelect("stockStatus", label, checked)}
       />
