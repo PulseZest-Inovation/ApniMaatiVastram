@@ -28,9 +28,9 @@ export const handleAddToCart = async (
       console.error("Invalid product price");
       return false;
     }
-
     
-  // Updated Data to store in the cart
+    
+    // Updated Data to store in the cart
     const cartData = {
       productId: product.id,
       quantity: 1, // Default quantity can be 1 or passed from the front-end
@@ -56,6 +56,9 @@ export const handleAddToCart = async (
       breadth: product.breadth ?? 0,
       height: product.height ?? 0,
       weight: product.weight ?? 0,
+
+      // ✅ Add categories for coupon matching
+      categories: product.categories?.map((c) => c.toLowerCase()) || [],
     };
 
     // Use the collection name to create a document in the cart subcollection

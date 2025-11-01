@@ -4,10 +4,13 @@ import { Card } from '@nextui-org/react';
 import Image from 'next/image';
 import { CartItem } from '@/Types/data/CartItemType';
 import { useRouter } from 'next/navigation';
+import { CouponsType } from '@/Types/data/CouponsType';
+
 
 interface CheckoutProductReviewProps {
   cartItems: CartItem[];
   totalAmount: number;
+   appliedCoupon?: CouponsType;
 }
 
 export default function CheckoutProductReview({
@@ -15,7 +18,6 @@ export default function CheckoutProductReview({
   totalAmount,
 }: CheckoutProductReviewProps) {
   const router = useRouter();
-
   return (
     <div className="hidden md:block">
       <h3 className="text-lg font-bold mb-4">Order Summary</h3>
@@ -41,6 +43,12 @@ export default function CheckoutProductReview({
                 width={50}
                 className="rounded-md object-cover"
               />
+              {/* show coupon applied  */}
+              {item.appliedCouponCode && (
+                <p className='text-green-600 text-xs mt-1  text-center'>
+                  Coupon: {item.appliedCouponCode}
+                </p>
+              )}
             </div>
             <div className="flex-1 ml-3">
               <p className="font-semibold line-clamp-1">{item.productTitle}</p>

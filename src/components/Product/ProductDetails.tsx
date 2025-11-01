@@ -218,7 +218,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
 
       <ProductCard product={product} />
 
-      <DiscountCard />
+      <DiscountCard productId={product.id} categories={product.categories || []}/>
 
       {/* Sticky Footer for Action Buttons (Mobile Only) */}
       {product.stockQuantity > 0 && (
