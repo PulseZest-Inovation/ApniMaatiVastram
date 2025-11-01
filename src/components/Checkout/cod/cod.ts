@@ -15,6 +15,20 @@ export const handleCodOrder = async (
   setLoading(true); // Start loading state immediately
 
   try {
+    // validate email
+    if(!deliveryDetails.email || deliveryDetails.email.trim() === ''){
+      toast.error('Email is required');
+      setLoading(false);
+      return false;
+    }
+    // step 2 check the valid email format regex
+    const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+    if(!emailRegex.test(deliveryDetails.email)){
+      toast.error("Please enter a valid email address.");
+      setLoading(false);
+      return false;
+    }
+
     // Fetch cart details
     const cartDetails = await getAllDocsFromSubCollection('customers', deliveryDetails.customerId ,"cart");
 
